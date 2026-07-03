@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software or the report, please cite it as below."
+authors:
+  - family-names: "Mellet"
+    given-names: "Emeric"
+title: "Mechanical Waves in 1D Disordered Chains: Simulation and Report"
+version: "1.0.0"
+date-released: 2026-07-03
+url: "https://github.com/SlippyRicky/LinChainLMS"

@@ -102,8 +102,34 @@ Some figures (such as the wavepacket envelopes in `plot_08_wavepacket_envelopes.
 ---
 
 ## Contribution & Guidelines
-
+ 
 If you are modifying or extending this codebase:
 * Always resolve folder paths relative to the repository root using `simulation/sim_config.py` and `plotting/plot_config.py`. Do **not** hardcode relative path jumps like `../../data`.
 * Always use `plot_config.save_figure("filename", category="category_name")` in plotting scripts to preserve the centralized file type control.
 * Check `.agents/AGENTS.md` for exhaustive workspace scripting guidelines.
+
+---
+
+## Citation
+
+If you use this codebase or refer to the findings in the report, please cite it as:
+
+```bibtex
+@techreport{mellet2026waves,
+  author      = {Mellet, Emeric},
+  title       = {Ondes M{\'e}caniques dans les Chaines 1D D{\'e}sordonn{\'e}s},
+  institution = {Laboratoire de M{\'e}canique des Solides (LMS), {\'E}cole Polytechnique},
+  year        = {2026},
+  type        = {Research Internship Report}
+}
+```
+
+## AI Collaboration & Transparency Disclosure
+
+This repository is the result of academic research conducted during a research internship. 
+* **Core Research & Physics**: All physical modeling, mathematical derivations, analysis of the results, and research directions were conceived and directed by the human author (Emeric Mellet).
+* **AI Assistance**: Large language models (LLMs) were utilized as pair-programming assistants to support code refactoring, styling optimization (Matplotlib), documentation, and codebase restructuring. 
+
+## Disclaimer
+
+The software and report are provided "as is", without warranty of any kind. The views and conclusions contained in the report are those of the author and should not be interpreted as representing the official policies or endorsements of the Laboratoire de Mécanique des Solides (LMS) or École Polytechnique.
