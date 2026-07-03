@@ -1,0 +1,173 @@
+\chapter{Dérivation de la Longueur de Localisation (Transformation de Riccati)}\label{annexe:lyapunov-derivation}
+
+\section{Équation du mouvement et définitions}
+L'équation fondamentale du mouvement du système avec des masses aléatoires s'écrit:
+\begin{equation}
+    -m_n\omega^2 \Psi_n = k(\Psi_{n+1} - \Psi_n) + k(\Psi_{n-1} - \Psi_n)
+\end{equation}
+
+Ici, la masse fluctue autour d'une valeur moyenne $m$:
+\begin{equation}
+    m_n = m(1+\epsilon_n)
+\end{equation}
+
+Donc l'équation devient:
+\begin{equation}
+    -m\omega^2(1+\epsilon_n) \Psi_n = k(\Psi_{n+1} + \Psi_{n-1} - 2\Psi_n)
+\end{equation}
+
+Réarrangement des termes:
+\begin{equation}
+    \left( 2 - \frac{m\omega^2}{k}(1+\epsilon_n) \right) \Psi_n = \Psi_{n+1} + \Psi_{n-1}
+\end{equation}
+
+Définition de $E$ et du rapport $R_{n+1}$:
+On définit l'énergie non perturbée $E = 2 - \frac{m\omega^2}{k} = 2 \cos(qa) = e^{iqa} + e^{-iqa}$.
+Le terme $\frac{m\omega^2}{k}$ s'écrit $(2-E)$. L'équation donne donc:
+\begin{equation}
+    [ 2 - (2-E)(1+\epsilon_n) ] \Psi_n = \Psi_{n+1} + \Psi_{n-1}
+\end{equation}
+\begin{equation}
+    [ E - (2-E)\epsilon_n ] \Psi_n = \Psi_{n+1} + \Psi_{n-1}
+\end{equation}
+
+Avec $R_{n+1} \equiv \frac{\Psi_{n+1}}{\Psi_n} = e^{iqa + \eta_{n+1}}$, on obtient la relation exacte:
+\begin{equation}
+    R_{n+1} = E - (2-E)\epsilon_n - \frac{1}{R_n}
+\end{equation}
+
+\section{Développement au second ordre}
+On effectue le développement à l'ordre 2 en $\epsilon$ et $\eta$, avec $\frac{1}{R_n} = e^{-i(qa+\eta_n)} \approx e^{-iqa}(1 - i\eta_n - \frac{\eta_n^2}{2})$.
+Pour suivre la convention adoptée dans le modèle original, $R_{n+1} = e^{iqa + \eta_{n+1}}$, on a $\frac{1}{R_n} = e^{-iqa-\eta_n} \approx e^{-iqa}(1 - \eta_n + \frac{\eta_n^2}{2})$.
+
+Expression de $R_{n+1}$:
+\begin{align}
+    R_{n+1} &= (e^{iqa} + e^{-iqa}) - (2 - e^{iqa} - e^{-iqa})\epsilon_n - e^{-iqa}\left(1 - \eta_n + \frac{\eta_n^2}{2}\right) \\
+    &= e^{iqa} - (2 - e^{iqa} - e^{-iqa})\epsilon_n + \eta_n e^{-iqa} - \frac{\eta_n^2}{2} e^{-iqa}
+\end{align}
+
+En factorisant $e^{iqa}$:
+\begin{align}
+    R_{n+1} &= e^{iqa} \left[ 1 - (2e^{-iqa} - 1 - e^{-2iqa})\epsilon_n + \eta_n e^{-2iqa} - \frac{\eta_n^2}{2} e^{-2iqa} \right]
+\end{align}
+
+Calcul du logarithme pour obtenir $\eta_{n+1}$:
+\begin{equation}
+    \ln(R_{n+1}) = iqa + \eta_{n+1}
+\end{equation}
+
+Utilisation du développement $\ln(1+x) \approx x - \frac{1}{2}x^2$, avec $X = - (2e^{-iqa} - 1 - e^{-2iqa})\epsilon_n + \eta_n e^{-2iqa} - \frac{\eta_n^2}{2} e^{-2iqa}$:
+\begin{align}
+    \eta_{n+1} &= - (2e^{-iqa} - 1 - e^{-2iqa})\epsilon_n + \eta_n e^{-2iqa} - \frac{\eta_n^2}{2} e^{-2iqa} \nonumber \\
+    &\quad - \frac{1}{2} {\left[ - (2e^{-iqa} - 1 - e^{-2iqa})\epsilon_n + \eta_n e^{-2iqa} \right]}^2 \\
+    &= - (2e^{-iqa} - 1 - e^{-2iqa})\epsilon_n + \eta_n e^{-2iqa} - \frac{\eta_n^2}{2} e^{-2iqa} \nonumber \\
+    &\quad - \frac{1}{2} {\left(2e^{-iqa} - 1 - e^{-2iqa}\right)}^2 \epsilon_n^2 + (2e^{-iqa} - 1 - e^{-2iqa})e^{-2iqa}\epsilon_n\eta_n - \frac{1}{2}e^{-4iqa}\eta_n^2
+\end{align}
+
+\section{Relation de récurrence et résolution}
+La relation de récurrence sur la fluctuation de phase s'identifie sous la forme polynomiale suivante:
+\begin{equation}
+    \eta_{n+1} = A_n(q) + B_n(q) \eta_n - \frac{1}{2} C_n(q) \eta_n^2
+\end{equation}
+
+En regroupant les termes par ordre de dépendance, on isole les coefficients du développement de Matsuda-Ishii:
+\begin{itemize}
+    \item Coefficient de dérive $A_n(q)$: Regroupe les termes purement liés au désordre (indépendants de $\eta_n$). Il pilote la création de phase due à l'impureté pondérale au site $n$.
+    \begin{equation}
+        A_n(qa) = - (2e^{-iqa} - 1 - e^{-2iqa})\epsilon_n - \frac{1}{2}{\left(2e^{-iqa} - 1 - e^{-2iqa}\right)}^2 \epsilon_n^2
+    \end{equation}
+    \item Coefficient de diffusion $B_n(qa)$: Facteur multiplicatif linéaire de la phase entrante. Il capture à la fois la propagation en milieu sain ($e^{-2iqa}$) et la correction de transmission induite par la masse.
+    \begin{equation}
+        B_n(qa) = e^{-2iqa} + (2e^{-iqa} - 1 - e^{-2iqa})e^{-2iqa}\epsilon_n
+    \end{equation}
+    \item Terme quadratique $C_n(qa)$:
+    \begin{equation}
+        \frac{1}{2} C_n(qa) = \frac{1}{2} [e^{-2iqa} + e^{-4iqa}]
+    \end{equation}
+\end{itemize}
+
+\section{Résolution de la partie linéaire}
+En première approche, la partie linéaire de l'équation ($\eta_{n+1} = A_n + B_n \eta_n$) permet d'estimer l'évolution stochastique de la phase. Cette équation aux différences finies du premier ordre, à coefficients non constants, se résout de manière séquentielle.
+
+Pour $n=0$: $\eta_1 = A_0 + B_0 \eta_0$. \\
+Pour $n=1$: $\eta_2 = A_1 + B_1 \eta_1 = A_1 + B_1 A_0 + B_1 B_0 \eta_0$.
+
+Par itération successive, on démontre que l'opérateur de propagation global s'accumule de la manière suivante:
+\begin{align}
+    \eta_n &= \left( \prod_{k=0}^{n-1} B_k(qa) \right) \eta_0 + \sum_{j=0}^{n-1} A_j(qa) \left( \prod_{k=j+1}^{n-1} B_k(qa) \right) \\
+    &= \left[ \eta_0 + \sum_{j=0}^{n-1} \frac{A_j(qa)}{\prod_{k=0}^{j} B_k(qa)} \right] \times \prod_{k=0}^{n-1} B_k(qa)
+\end{align}
+
+\section{Exposant de Lyapunov et Stationnarité}
+L'exposant de Lyapunov $\gamma$ caractérise le taux de croissance spatial asymptotique de perturbation. Dans le régime de faible désordre perturbatif (approximation de Matsuda-Ishii), il est directement relié à la moyenne stationnaire de la fluctuation de phase:
+\begin{equation}
+    \gamma(q) \approx \lim_{n \to \infty} \langle \eta_{n+1} \rangle
+\end{equation}
+
+\section{Résolution de la partie stationnaire}
+L'exposant de Lyapunov $\gamma$ caractérise le taux de croissance spatial asymptotique de la perturbation. Dans le régime de faible désordre perturbatif (Weak Disorder Expansion), il est relié à la moyenne stationnaire de la fluctuation de phase.
+
+Puisque le processus de diffusion atteint un régime quasi-stationnaire, on peut poser $\langle \eta_{n+1} \rangle = \langle \eta_n \rangle = \gamma$.
+De plus, la perturbation structurelle du site courant $n$, contenue exclusivement dans le terme $B_n(\epsilon_n)$, est statistiquement indépendante de l'historique global de l'onde contenu dans $\eta_n$. L'espérance du produit se sépare donc naturellement:
+\begin{align}
+    \langle \eta_{n+1} \rangle &= \langle A_n \rangle + \langle B_n \eta_n \rangle \\
+    \gamma &= \langle A_n \rangle + \langle B_n \rangle \langle \eta_n \rangle \\
+    \gamma &= \langle A_n \rangle + \langle B_n \rangle \gamma
+\end{align}
+
+On extrait alors la formule résolue de la limite:
+\begin{equation}
+    \gamma(q) = \frac{\langle A_n \rangle}{1 - \langle B_n \rangle} = \frac{\langle A_n \rangle}{1 - e^{-2iqa}}
+\end{equation}
+
+Avec l'espérance de la dérive $\langle A_n \rangle$ calculée mathématiquement sous hypothèse de désordre indépendant et identiquement distribué, centré et de variance $\sigma^2$ ($\langle \epsilon_n \rangle = 0$ et $\langle \epsilon_n^2 \rangle = \sigma^2$):
+\begin{align}
+    \langle A_n \rangle &= - \frac{\sigma^2}{2} {\left(2e^{-iqa} - 1 - e^{-2iqa}\right)}^2 \\
+    &= - \frac{\sigma^2}{2} \left( 1 - 4e^{-iqa} + 6e^{-2iqa} - 4e^{-3iqa} + e^{-4iqa} \right)
+\end{align}
+
+En remplaçant cette valeur d'espérance dans l'expression de la limite, on trouve l'exposant de Lyapunov complet:
+\begin{equation}
+    \gamma(q) = \frac{\sigma^2}{2} \left[ \frac{6 \sin(qa) + e^{-iqa} \sin(qa) - 4e^{-iqa/2} \sin(3qa/2) - 4e^{iqa/2} \sin(qa/2)}{\sin(qa)} \right]
+\end{equation}
+
+Pour caractériser l'atténuation spatiale, seule la partie réelle nous intéresse. En développant et en extrayant les parties réelles:
+\begin{align}
+    \text{Re}[\gamma(q)] &= \frac{\sigma^2}{2 \sin(qa)} (6 \sin(qa) + 2 \cos(qa) \sin(qa) - 4 \cos(qa/2) \sin(qa/2) + \dots) \\
+    &= \frac{\sigma^2}{2 \sin(qa)} [8 \sin(qa) - 2 \sin^3(qa) - 8 \sin(qa) \cos^2(qa/2)] \\
+    &= \frac{\sigma^2}{2 \sin(qa)} [8 \sin(qa) (1 - \cos^2(qa/2)) - 2 \sin^3(qa)] \\
+    &= \sigma^2 [-\sin^2(qa) + 4 \sin^2(qa/2)] \\
+    &= \sigma^2 \times 4 \sin^2(qa/2) \left[ 1 - \cos^2(qa/2) \right] \\
+    &= 4 \sigma^2 \sin^2(qa/2) \sin^2(qa/2)
+\end{align}
+
+Ce qui conduit au résultat final théorique pour l'exposant de Lyapunov moyen:
+
+\begin{equation}
+    \text{Re}[\gamma(q)] = \frac{\sigma^2}{2} \tan^2(q/2) \approx \frac{1}{8} \sigma^2 (qa)^2 \quad (\text{pour } q \to 0)
+\end{equation}
+
+Ce résultat confirme que l'atténuation suit une loi en $q^2$ (et non en $q^4$ comme on pourrait le supposer pour une diffusion de Rayleigh classique en 3D). Le facteur $1/8$ provient de la moyenne d'ensemble des fluctuations de phase dans le régime de faible désordre (Weak Disorder Expansion), en accord avec les travaux de Derrida et Gardner~\cite{Derrida1984}.
+
+\section{Effet de l'Ordre de Développement sur la Localisation}
+Le choix de l'ordre de développement conditionne la capacité du modèle à capturer formellement l'atténuation d'Anderson :
+\begin{itemize}
+    \item Premier ordre ($O(\epsilon)$): Si l'on néglige tous les termes croisés $\eta_n \epsilon_n$ et les termes quadratiques $\eta_n^2, \epsilon_n^2$, la partie réelle du coefficient limitant s'annule rigoureusement ($\text{Re}[\gamma] = 0$). Le modèle prédit un simple déphasage fluctuant mais une enveloppe géométrique non localisée (longueur de localisation infinie).
+    \item Second ordre ($O(\epsilon^2)$): L'inclusion des termes d'ordre 2 génère le couplage responsable de la diffusion de phase. C'est l'ordre minimal strict nécessaire pour obtenir $\text{Re}[\gamma] > 0$, générant une longueur de localisation finie $\xi \propto 1/\sigma^2$. Passer au second ordre est donc indispensable pour déduire analytiquement la présence de la localisation d'Anderson unidimensionnelle.
+    \item Troisième ordre ($O(\epsilon^3)$) et supérieurs: L'intégration de termes perturbatifs additionnels apporte de simples corrections quantitatives à l'exposant (déplaçant marginalement la courbe de dispersion pour de forts désordres), mais le comportement physique fondamental de confinement exponentiel est déjà entièrement capturé par le formalisme développé au second ordre.
+\end{itemize}
+
+\section[Lien avec la Physique: La Longueur de Localisation xi]{Lien avec la Physique: La Longueur de Localisation $\xi$}
+Le sens physique du propagateur complexe réside dans ses composantes. Sachant que le propagateur complet initial a été posé comme $R_{n+1} = e^{i(q - i\eta_{n+1})}$, le module de champ d'onde asymptotique se comporte comme $|R_n| \sim e^{\text{Re}(\eta_n)}$.
+
+Dans un système ordonné cristallin, la solution est représentée sous forme d'une onde plane de Bloch $\psi_n = \psi_0 e^{iqn}$ (module unitaire constant). L'introduction du désordre sur les masses modifie l'enveloppe fondamentale de cette onde, produisant une atténuation spatiale exponentielle typique du phénomène de Localisation d'Anderson:
+\begin{equation}
+    |\psi_n| \sim |\psi_0| \exp \left( - \frac{|n|}{\xi} \right)
+\end{equation}
+
+Par définition théorique, la longueur de localisation $\xi_{MI}$ (en nombre de sites discrets) de la formulation Matsuda-Ishii s'identifie macroscopiquement à l'inverse stricte de la partie réelle de l'exposant de Lyapunov global effectif:
+\begin{equation}
+    \frac{1}{\xi_{MI}(\omega)} = -\lim_{n \to \infty} \frac{1}{n} \langle \ln |\psi_n| \rangle = \text{Re} \left( \gamma(q(\omega)) \right) = \text{Re} \left( \frac{\langle A_n \rangle}{1 - e^{-2iq}} \right)
+\end{equation}
+
+Cette quantité $\xi_{MI}$ calculée constitue le paramètre théorique d'intérêt suprême et servira de ligne de base mathématique pour la comparaison contre la longueur de localisation extraite numériquement par la régression linéaire sur l'enveloppe de décroissance du signal dans les simulations \verb|Python| du travail de thèse associé.

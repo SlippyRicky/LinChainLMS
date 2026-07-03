@@ -1,0 +1,109 @@
+\subsection{Analyse statistique et diagrammes de phase de localisation}
+
+Afin de valider la robustesse physique et la cohérence statistique des régimes de localisation observés, nous avons mené une vérification numérique complète combinant approches modale et dynamique. Ces analyses sont synthétisées sur le diagramme de phase multi-physique de la Figure~\ref{fig:localization_phase_map}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{16_localization_phase_diagram.pdf}
+    \caption{Vérification multi-physique de la localisation d'Anderson. (A) Analyse modale : Phase de localisation montrant l'évolution de l'exposant de Lyapunov. (B) Analyse de transport : Évolution temporelle de la largeur quadratique du paquet d'ondes $\sigma^2(t)$, révélant l'arrêt de la diffusion (saturation) en régime désordonné par rapport au régime diffusif classique. (C) Contraste de localisation ($\gamma_{stiff} - \gamma_{mass}$). (D) Sensibilité statistique du calcul.}
+    \label{fig:localization_phase_map}
+\end{figure}
+
+
+%% TODO Review wording
+La carte d'intensité de la Figure~\ref{fig:localization_phase_map}(A) présente l'évolution de l'exposant de Lyapunov moyen $\langle \gamma \rangle$ en fonction de la fréquence d'excitation $\omega$ et de l'amplitude du désordre $\epsilon$. On observe une transition continue d'un régime de couplage homogène à basse fréquence ($\langle \gamma \rangle \to 0$, ondes quasi-balistiques) vers un régime de localisation forte à haute fréquence ($\langle \gamma \rangle > 1$). Cette augmentation de $\langle \gamma \rangle$ avec $\omega$ illustre le fait que les ondes de courtes longueurs d'onde sont plus sensibles aux fluctuations à l'échelle sub-métrique du réseau.
+
+L'impact dynamique de cette localisation sur le transport d'énergie est mis en évidence sur la Figure~\ref{fig:localization_phase_map}(B), qui compare l'évolution temporelle de la largeur quadratique moyenne d'un paquet d'ondes $\sigma^2(t) = \sum_n (n - \langle n \rangle)^2 E_n(t)$ en présence de désordre ($\epsilon = 1{,}0$) par rapport à la croissance linéaire théorique attendue en régime diffusif classique (croissant comme $2Dt$). En présence de désordre, le paquet d'ondes commence par s'étaler de manière transitoire avant de saturer brutalement vers une valeur asymptotique constante. Cet arrêt complet de la diffusion est la signature dynamique de la transition d'Anderson : l'auto-confinement par interférences destructives fige définitivement la propagation de l'énergie.
+
+Le contraste d'efficacité entre les désordres de masse et de raideur est quantifié sur la carte différentielle de la Figure~\ref{fig:localization_phase_map}(C). La différence positive $\gamma_{\text{stiff}} - \gamma_{\text{mass}}$ met en évidence que le désordre de raideur est systématiquement plus efficace pour localiser l'énergie, en particulier à haute fréquence. D'un point de vue physique, les fluctuations de raideur affectent directement les coefficients de couplage inter-atomes et restreignent la connectivité locale de la chaîne, là où le désordre de masse n'introduit qu'une inertie locale sans modifier le transfert de force élastique entre sites adjacents.
+
+Enfin, la Figure~\ref{fig:localization_phase_map}(D) cartographie la sensibilité statistique du calcul via la variance relative $\sigma_\gamma / \langle \gamma \rangle$. On constate que les fluctuations sample-to-sample sont maximales ($\sigma_\gamma / \langle \gamma \rangle \approx 1{,}5$) dans le régime de couplage faible ($\gamma \to 0$). Dans cette zone, la longueur de localisation $\xi = 1/\gamma$ excède la taille physique de la chaîne, rendant le système extrêmement sensible à la configuration stochastique individuelle (perte de self-averaging). à l'inverse, en régime de localisation forte (haute fréquence et fort désordre), la variance relative converge vers zéro, confirmant que l'auto-confinement à courte distance s'affranchit des effets de bord et des détails microscopiques des réalisations.
+
+\subsection{Fonction de diffusion intermédiaire et relaxation KWW}
+
+L'étude phénoménologique de la localisation d'Anderson en régime linéaire peut être enrichie en connectant nos résultats à d'autres modèles théoriques issus de la physique des milieux amorphes et des verres. En collaboration avec Anne Tanguy, nous avons exploré deux pistes physiques : l'analyse fine de la décroissance spatiale des enveloppes stationnaires et le calcul de la fonction de corrélation temporelle sous excitation thermique.
+
+\subsubsection{Caractérisation spatiale : Transition vers le régime étiré et diffusif}
+
+Asymptotiquement, le théorème d'Oseledec et la théorie de la localisation d'Anderson imposent une décroissance purement exponentielle de l'amplitude moyenne de l'onde : $|u(x)| \propto \exp(-x/\xi)$, où $\xi = 1/\gamma$ désigne la longueur de localisation. Cependant, sur des distances finies et selon le contenu spectral de l'onde, l'enveloppe spatiale peut présenter des écarts significatifs à ce comportement idéal. 
+
+Afin de caractériser ces déviations, nous avons ajusté les enveloppes de déplacement stationnaires $u(x)$ issues de notre balayage fréquentiel haute performance ($\epsilon = 0{,}7$, $N = 6000$) à l'aide de trois modèles rivaux :
+\begin{enumerate}
+    \item \textbf{Modèle exponentiel pur (Anderson) :} $f_{\exp}(x) = A \exp(-x/\xi)$
+    \item \textbf{Modèle exponentiel étiré (KWW Spatial) :} $f_{\text{stretch}}(x) = A \exp(-(x/\xi)^\beta)$
+    \item \textbf{Modèle en loi de puissance (Diffusif) :} $f_{\text{pow}}(x) = A (x + x_0)^{-\alpha}$
+\end{enumerate}
+
+Les résultats de ces ajustements statistiques non linéaires (regroupés dans la Table~\ref{tab:spatial_envelope_fits}) révèlent des signatures physiques extrêmement claires en fonction du régime fréquentiel de l'onde :
+\begin{itemize}
+    \item \textbf{Limite acoustique ($\omega = 0{,}0005 \approx 1{,}6 \times 10^{-4}\pi$) :} L'onde se propage de façon quasi-homogène et ne subit pratiquement aucune atténuation. La longueur de localisation ajustée est gigantesque ($\xi \approx 2{,}4 \times 10^5$ sites), confirmant la limite balistique. L'ajustement non linéaire pour les modèles complexes KWW et loi de puissance est mal conditionné dans ce régime de profil plat, conduisant à des valeurs extrêmes ou non convergées.
+    \item \textbf{Régime intermédiaire ($\omega = 0{,}6184 \approx 0{,}197\pi$) :} L'atténuation spatiale est caractérisée par une excellente adéquation avec la loi de puissance (exposant de décroissance $\alpha \approx 2{,}03$, $R^2 \approx 0{,}987$) ainsi que le modèle exponentiel étiré ($\beta \approx 0{,}66$, $R^2 \approx 0{,}985$). La puissance $\alpha \approx 2$ est la signature classique d'un régime de diffusion élastique transitoire, où l'étalement spatial de l'énergie par diffusion précède la phase ultime d'auto-confinement par interférences.
+    \item \textbf{Limite de bande ($\omega = 1{,}9021 \approx 0{,}605\pi$) :} À l'approche de la singularité de Van Hove, la localisation devient extrême ($\xi \approx 11{,}5$ sites). L'enveloppe spatiale s'écarte fortement de l'exponentielle simple et est idéalement modélisée par une loi exponentielle étirée (KWW) avec un exposant sous-exponentiel $\beta \approx 0{,}55$. Cette valeur sous-unitaire traduit l'existence d'une forte hétérogénéité spatiale : l'onde est confinée sur des micro-clusters résonants agissant comme des pièges élastiques locaux.
+\end{itemize}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Caractérisation statistique de l'atténuation spatiale des enveloppes stationnaires ($N = 6000$, $\epsilon = 0{,}7$). Les enveloppes numériques sont confrontées aux trois modèles d'ajustement théoriques pour trois régimes fréquentiels représentatifs. Les coefficients $R^2$ et paramètres optimaux démontrent la transition structurelle de l'atténuation.}
+    \label{tab:spatial_envelope_fits}
+    \begin{tabular}{@{}llp{4.8cm}c@{}}
+        \toprule
+        \textbf{Régime physique} & \textbf{Modèle} & \textbf{Paramètres optimaux} & \textbf{$R^2$} \\
+        \midrule
+        \textbf{Limite acoustique} & Exponentiel & $\xi = \num{2.42e5}$ & $0{,}599$ \\
+        ($\omega = 0{,}0005 \approx 1{,}6\cdot 10^{-4}\pi$) & KWW étiré & $\xi = \num{1.72e9}$, $\beta = 0{,}06$ & $-40{,}8$ \\
+        & Loi de puissance & n.a. & $-\infty$ \\
+        \midrule
+        \textbf{Régime intermédiaire} & Exponentiel & $\xi = 436{,}9$ & $0{,}962$ \\
+        ($\omega = 0{,}6184 \approx 0{,}197\pi$) & KWW étiré & $\xi = 285{,}1$, $\beta = 0{,}66$ & $0{,}985$ \\
+        & Loi de puissance & $\alpha = 2{,}03$, $x_0 = 510{,}8$ & $0{,}987$ \\
+        \midrule
+        \textbf{Limite de bande} & Exponentiel & $\xi = 19{,}7$ & $0{,}912$ \\
+        ($\omega = 1{,}9021 \approx 0{,}605\pi$) & KWW étiré & $\xi = 11{,}5$, $\beta = 0{,}55$ & $0{,}941$ \\
+        & Loi de puissance & $\alpha = 1{,}42$, $x_0 = 13{,}5$ & $0{,}954$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Caractérisation temporelle}
+
+Dans les matériaux amorphes comme les verres structurels ou les polymères, la relaxation des corrélations de densité à l'équilibre thermique est classiquement caractérisée dans l'espace réciproque par la Self Intermediate Scattering Function (SISF), définie par :
+\begin{equation}
+    F_s(q, t) = \frac{1}{N} \sum_{j=1}^N \langle \exp\left(i q \left(x_j(t) - x_j(0)\right)\right) \rangle = \frac{1}{N} \sum_{j=1}^N \langle \cos\left(q \left(u_j(t) - u_j(0)\right)\right) \rangle
+\end{equation}
+où $q$ désigne le vecteur d'onde d'observation, et $u_j(t)$ le déplacement thermique du $j$-ième atome par rapport à sa position d'équilibre. 
+
+Pour tester cette analogie, nous avons mené une simulation de dynamique moléculaire microcanonique (NVE, conditions périodiques, $N = 1000$) sur notre chaîne harmonique à l'équilibre thermique ($T = 0.2$), pour trois intensités de désordre $\epsilon \in \{0.1, 0.7, 1.4\}$. Les corrélations temporelles sont moyennées sur toutes les origines de temps de la trajectoire par une méthode glissante.
+
+Comme l'illustre la Figure~\ref{fig:intermediate_scattering}(a), la fonction de corrélation $F_s(q, t)$ décroît de manière monotone et continue vers zéro pour toutes les intensités de désordre étudiées. Cette relaxation temporelle, qui s'oppose aux oscillations persistantes caractéristiques d'un cristal harmonique parfait, est parfaitement modélisée par une loi de Kohlrausch-Williams-Watts (KWW) :
+\begin{equation}
+    F_s(q, t) \approx A \exp\left(-\left(\frac{t}{\tau}\right)^\beta\right)
+\end{equation}
+où $\tau$ est le temps de relaxation structural et $\beta$ est l'exposant d'étirement temporel.
+
+Les ajustements non linéaires donnent des valeurs d'étirement sous-exponentielles remarquablement stables, synthétisées dans la Table~\ref{tab:temporal_kww_fits}. Pour confirmer visuellement que cette dynamique obéit à la loi KWW étirée, le tracé linéarisé $-\ln(F_s(q, t)/A)$ en fonction de $t$ en double échelle logarithmique est présenté sur la Figure~\ref{fig:intermediate_scattering}(b).
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{17_intermediate_scattering.pdf}
+    \caption{Caractérisation de la dynamique de relaxation à l'équilibre thermique ($N=1000, T=0{,}2$) pour la Self Intermediate Scattering Function $F_s(q, t)$ à $q = \pi/2$ (centre de bande) sous différents niveaux de désordre. (a) Décroissance temporelle de $F_s(q, t)$ en fonction du temps $t$ (points) ajustée par des lois KWW étirées (tirets). (b) Représentation linéarisée en double échelle logarithmique (log-log) de $-\ln(F_s/A)$ en fonction de $t$. L'alignement parfait sur la droite de pente $\beta \approx 0{,}75 \sim 0{,}79 < 1$ confirme le caractère sous-exponentiel de la relaxation, signature de la dynamique hétérogène vitreuse induite par la localisation des modes propres.}
+    \label{fig:intermediate_scattering}
+\end{figure}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Paramètres d'ajustement de la relaxation temporelle Kohlrausch-Williams-Watts (KWW) sous différents niveaux de désordre $\epsilon$ ($N = 1000$, $T = 0{,}2$, $q = \pi/2$).}
+    \label{tab:temporal_kww_fits}
+    \begin{tabular}{@{}ccc@{}}
+        \toprule
+        \textbf{Désordre $\epsilon$} & \textbf{Temps de relaxation $\tau$ (u.a.)} & \textbf{Exposant d'étirement $\beta$} \\
+        \midrule
+        $0{,}1$ & $5{,}72$ & $0{,}751$ \\
+        $0{,}7$ & $5{,}62$ & $0{,}772$ \\
+        $1{,}4$ & $5{,}43$ & $0{,}788$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+L'existence d'un exposant d'étirement temporel $\beta \approx 0.75 \sim 0.79 < 1$ est la signature classique de la dynamique vitreuse. Physiquement, ce comportement provient du fait que le désordre localise les modes propres vibrationnels. Les fluctuations thermiques sont alors composées d'une superposition de modes localisés ayant des fréquences et des échelles spatiales très différentes, constituant une hétérogénéité dynamique. La sommation statistique de ces relaxations locales indépendantes conduit mathématiquement à une enveloppe temporelle étirée (KWW), établissant un pont direct entre la localisation d'Anderson linéaire et les mécanismes de relaxation lente des verres.

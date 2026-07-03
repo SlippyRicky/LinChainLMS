@@ -1,0 +1,146 @@
+\chapter{Formalismes Calculatoires : De l'Équation à l'Algorithme}\label{annexe:computational_logic}
+
+Cette annexe détaille la traduction mathématique des moteurs de calcul utilisés. Chaque section explicite le passage de la physique continue à la structure discrète implémentée en Python.
+
+\section{Analyse Modale et Symétrisation de la Matrice (\texttt{calc\_01})}
+
+L'implémentation de la fonction \texttt{build\_matrix} repose sur la transformation du problème aux valeurs propres généralisé en un problème standard symétrique.
+
+\paragraph{1. Équation du mouvement :}
+Pour une masse $n$ au sein d'une chaîne harmonique, le principe fondamental de la dynamique s'écrit :
+\begin{equation}
+    m_n \ddot{u}_n = K_n(u_{n+1} - u_n) - K_{n-1}(u_n - u_{n-1})
+\end{equation}
+
+\paragraph{2. Passage au domaine fréquentiel :}
+En posant $u_n(t) = \tilde{u}_n e^{i\omega t}$, on obtient :
+\begin{equation}
+    -m_n \omega^2 \tilde{u}_n = K_n \tilde{u}_{n+1} + K_{n-1} \tilde{u}_{n-1} - (K_n + K_{n-1}) \tilde{u}_n
+\end{equation}
+
+\paragraph{3. Symétrisation par changement de variable :}
+Pour obtenir une matrice hermitienne (nécessaire pour l'usage de \texttt{scipy.linalg.eigh}), nous introduisons le déplacement pondéré $v_n = \sqrt{m_n} \tilde{u}_n$. L'équation devient :
+\begin{equation}
+    \omega^2 v_n = \frac{K_n + K_{n-1}}{m_n} v_n - \frac{K_n}{\sqrt{m_n m_{n+1}}} v_{n+1} - \frac{K_{n-1}}{\sqrt{m_n m_{n-1}}} v_{n-1}
+\end{equation}
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python, caption={Construction de la matrice dynamique symétrisée}]
+def build_matrix(m_arr, k_arr):
+    n = len(m_arr)
+    D = np.zeros((n, n))
+    for i in range(n):
+        kl = k_arr[i-1] if i > 0 else 0
+        kr = k_arr[i] if i < n-1 else 0
+        D[i, i] = (kl + kr) / m_arr[i] # Diagonale
+        if i < n-1:
+            off = -k_arr[i] / np.sqrt(m_arr[i] * m_arr[i+1])
+            D[i, i+1] = off # Extra-diagonale superieure
+            D[i+1, i] = off # Extra-diagonale inferieure
+    return D
+\end{lstlisting}
+
+\section{Récurrence de Riccati et Accumulation de Phase (\texttt{calc\_03})}
+
+Le script \texttt{compute\_riccati\_walk} utilise une variable auxiliaire $R_n$ pour transformer l'équation linéaire du second ordre en une équation du premier ordre non-linéaire.
+
+\paragraph{1. Réduction d'ordre :}
+Partant de $\Psi_{n+1} + \Psi_{n-1} = (2 - \omega^2 \tilde{m}_n) \Psi_n$, nous posons $R_n = \Psi_{n+1}/\Psi_n$, d'où la récurrence :
+\begin{equation}
+    R_n = (2 - \omega^2 \tilde{m}_n) - \frac{1}{R_{n-1}}
+\end{equation}
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python, caption={Boucle de récurrence de Riccati stochastique}]
+for n in range(1, N):
+    # m_tilde = 1 + eps[n] (desordre de masse)
+    R[n] = (2 - omega_sq * (1 + eps[n])) - 1/R[n-1]
+\end{lstlisting}
+
+\paragraph{2. Extraction de l'exposant de Lyapunov :}
+La croissance spatiale est extraite via la moyenne d'ensemble :
+\begin{equation}
+    \gamma = \frac{1}{N} \sum_{n=1}^N \ln |R_n|
+\end{equation}
+
+\section{Conditions aux Limites de Rayonnement (RBC) (\texttt{calc\_05})}
+
+Le script résout le système $\mathbf{A} \mathbf{u} = \mathbf{F}$ en simulant une onde sortante par une condition d'impédance complexe $z = e^{iq_0}$ aux frontières.
+
+\paragraph{Algorithme de résolution :}
+L'équation au bord $n=0$ (source avec condition de rayonnement) s'écrit :
+\begin{equation}
+    A_{0,0} = (M_0 \omega^2 - K_0 - K_{-1}) + K_{-1} e^{iq_0}
+\end{equation}
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python, caption={Inversion de matrice avec conditions aux limites de rayonnement}]
+# z = exp(i*q0) est l'impedance de rayonnement
+A = np.zeros((N, N), dtype=complex)
+# Condition de bord gauche (Source + RBC)
+A[0, 0] = (M0 * omega**2 - K[0] - K0) + K0 * z
+A[0, 1] = K[0]
+
+# ... remplissage de la diagonale interne ...
+
+# Condition de bord droite (Terminaison RBC)
+A[-1, -1] = (M0 * omega**2 - K0 - K[-2]) + K0 * z
+A[-1, -2] = K[-2]
+\end{lstlisting}
+
+\section{Benchmark Expérimental et Lois d'Échelle (\texttt{calc\_06})}
+
+Le script \texttt{generate\_hu\_2008\_data} modélise l'évolution du second moment spatial $\sigma^2(t)$.
+
+\paragraph{1. Régime diffusif :}
+\begin{equation}
+    \sigma^2(t) = 4D t + \sigma_0^2
+\end{equation}
+
+\paragraph{2. Régime localisé (Saturation) :}
+\begin{equation}
+    \sigma^2(t) = \sigma_{\text{sat}}^2 \left[ 1 - \exp\left( -\frac{4Dt}{\sigma_{\text{sat}}^2} \right) \right] + \sigma_0^2
+\end{equation}
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python, caption={Modélisation des lois d'échelle de transport}]
+# Regime Diffusif (Lineaire)
+width2_dif = slope * t + w0_sq + noise_diff
+
+# Regime Localise (Saturation exponentielle)
+width2_loc = w_sat_sq * (1 - np.exp(-slope * t / w_sat_sq)) + w0_sq + noise_loc
+\end{lstlisting}
+
+
+\section{Initialisation et Lissage de l'Excitation : Choc vs Paquet d'ondes (\texttt{calc\_07})}\label{sec:excitation_implementation}
+
+Pour simuler la dynamique temporelle, les conditions initiales du réseau sont définies au centre de la chaîne ($n_0 = N/2$).
+
+\paragraph{1. Profil d'excitation par choc (impulsion étroite) :}
+Pour approcher une impulsion ponctuelle de Dirac excitante, on utilise un profil gaussien très étroit ($\sigma = 0{,}8$) sans modulation spatiale ($q_0 = 0$) :
+\begin{equation}
+    u_n(0) = U_0 \exp\left(-\frac{(n-n_0)^2}{2\sigma^2}\right)
+\end{equation}
+
+\paragraph{2. Profil d'excitation par paquet d'ondes (sélective en fréquence) :}
+Pour isoler une fréquence de propagation spécifique, l'excitation est élargie ($\sigma = 10$) et modulée par le vecteur d'onde cible $q_0$ :
+\begin{equation}
+    u_n(0) = U_0 \exp\left(-\frac{(n-n_0)^2}{2\sigma^2}\right) \cos\left(q_0(n-n_0)a\right)
+\end{equation}
+
+\paragraph{3. Lissage de la densité d'énergie :}
+Pour chaque pas de temps d'enregistrement, la densité locale d'énergie $E_n \propto u_n^2$ fait l'objet d'un lissage spatial par convolution avec un filtre moyenneur uniforme glissant sur 5 sites pour éliminer les oscillations intra-maille.
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python, caption={Initialisation et lissage de l'excitation (choc et paquet d'ondes)}]
+# Initialisation du deplacement
+nodes = np.arange(N)
+u0 = np.exp(-(nodes - center)**2 / (2 * sigma**2))
+if q > 0:
+    u0 *= np.cos(q * (nodes - center))
+u0 = u0 / np.linalg.norm(u0) # Normalisation energetique
+
+# Calcul et lissage de la densite d'energie temporelle
+energy = u**2
+data[idx, :] = np.convolve(energy, np.ones(5)/5, mode='same')
+\end{lstlisting}

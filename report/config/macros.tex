@@ -1,0 +1,33 @@
+% --- Custom Math Macros ---
+
+% Anderson Localization specific
+\newcommand{\locLength}{\xi} % Localization length
+\newcommand{\lyapunov}{\gamma} % Lyapunov exponent
+\newcommand{\disorder}{\sigma} % Disorder strength
+
+% Shorthands
+\newcommand{\E}{\mathbb{E}} % Expectation
+\newcommand{\V}{\mathbb{V}} % Variance
+\newcommand{\R}{\mathbb{R}} % Real numbers
+\newcommand{\C}{\mathbb{C}} % Complex numbers
+
+% Operators
+\DeclareMathOperator{\diag}{diag}
+\let\Tr\relax
+\DeclareMathOperator{\Tr}{Tr}
+
+% Notes/Todo
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{TODO: #1}}}
+\newcommand{\note}[1]{\textcolor{blue}{\textit{Note: #1}}}
+
+% Figure inclusion shorthand
+\newcommand{\fig}[4]{
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[width=#2\textwidth]{#1}
+        \caption{#3}
+        \label{#4}
+    \end{figure}
+}
+
+% --- Fin des macros ---

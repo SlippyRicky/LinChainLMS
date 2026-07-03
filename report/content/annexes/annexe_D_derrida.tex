@@ -1,0 +1,191 @@
+\chapter{Dérivation détaillée du Développement en Désordre Faible (Méthode de Derrida \& Gardner)}\label{annexe:derrida-derivation}
+
+Cette annexe présente la dérivation détaillée du développement en désordre faible pour une chaîne harmonique 1D, basé sur le formalisme développé par B. Derrida et E. Gardner~\cite{derrida1984lyapounov} dans leur article de 1984.
+
+\section{Équation de propagation et modèle}
+
+On considère une chaîne harmonique 1D avec du désordre de masse. Les masses $m_n$ sur chaque site $n$ fluctuent autour de la masse moyenne $m$ :
+\begin{equation}
+    m_n = m(1 + \epsilon_n)
+\end{equation}
+où $\epsilon_n$ est une variable aléatoire de moyenne nulle ($\langle\epsilon_n\rangle = 0$) et de variance $\langle\epsilon_n^2\rangle$.
+
+L'équation du mouvement dans le régime harmonique (à la pulsation $\omega$) s'écrit :
+\begin{equation}
+    -m_n\omega^2\varphi_n = K(\varphi_{n+1} - \varphi_n) + K(\varphi_{n-1} - \varphi_n)
+\end{equation}
+où $K$ représente la raideur des ressorts couplant les masses adjacentes. En réarrangeant les termes, on obtient :
+\begin{equation}
+    (\varphi_{n+1} + \varphi_{n-1}) = \left[ 2 - \frac{m\omega^2}{K} - \frac{m\epsilon_n\omega^2}{K} \right] \varphi_n
+\end{equation}
+
+Pour la chaîne ordonnée ($\epsilon_n = 0$), la relation de dispersion relie l'énergie ordonnée $E$ au vecteur d'onde $q$ (avec une distance inter-réticulaire $a$) :
+\begin{equation}
+    E = e^{iqa} + e^{-iqa} = 2\cos(qa) = 2 - \frac{m\omega^2}{K}
+\end{equation}
+L'équation avec désordre se réécrit donc sous la forme :
+\begin{equation}
+    (\varphi_{n+1} + \varphi_{n-1}) = \left[ E - (E - 2)\epsilon_n \right] \varphi_n
+\end{equation}
+
+\section{Méthode de la Matrice de Transfert}
+
+En posant la variable de phase $R_{n+1} = \frac{\varphi_{n+1}}{\varphi_n}$, on obtient la relation de récurrence non-linéaire suivante (similaire à une marche de Riccati) :
+\begin{equation}
+    R_{n+1} = E - (E - 2)\epsilon_n - \frac{1}{R_n} \label{eq:recurrence}
+\end{equation}
+
+Cette relation est à comparer directement avec l'équation de Schrödinger discrète unidimensionnelle étudiée par Derrida :
+\begin{equation}
+    (\Psi_{n+1} + \Psi_{n-1}) = E\Psi_n - \lambda V_n \Psi_n
+\end{equation}
+où le potentiel sur le site $n$ est identifié à :
+\begin{equation}
+    \lambda V_n = (E - 2)\epsilon_n
+\end{equation}
+ce qui donne la forme de récurrence standard de Derrida :
+\begin{equation}
+    R_{n+1} = E - \lambda V_n - \frac{1}{R_n}
+\end{equation}
+
+\section{Développement Perturbatif de Derrida \& Gardner}
+
+On postule un développement perturbatif de la variable $R_n$ en puissances du paramètre de désordre faible $\lambda$ :
+\begin{equation}
+    R_n = A \exp\left( \lambda B_n + \lambda^2 C_n + \lambda^3 D_n + \dots \right)
+\end{equation}
+En injectant cet ansatz dans l'équation de récurrence et en effectuant un développement limité pour $\lambda \ll 1$, on a d'une part pour le membre de gauche :
+\begin{equation}
+    R_{n+1} = A \left[ 1 + \lambda B_{n+1} + \lambda^2 C_{n+1} + \frac{1}{2}\lambda^2 B_{n+1}^2 + \mathcal{O}(\lambda^3) \right]
+\end{equation}
+et d'autre part pour le terme en $1/R_n$ du membre de droite :
+\begin{equation}
+    \frac{1}{R_n} = \frac{1}{A} \left[ 1 - \lambda B_n - \lambda^2 C_n + \frac{1}{2}\lambda^2 B_n^2 + \mathcal{O}(\lambda^3) \right]
+\end{equation}
+
+L'équation de récurrence complète s'écrit alors :
+\begin{align}
+    &A + \lambda A B_{n+1} + \lambda^2 A C_{n+1} + \tfrac{1}{2}\lambda^2 A B_{n+1}^2 + \mathcal{O}(\lambda^3) \nonumber \\
+    &\quad = E - \lambda V_n - \frac{1}{A} \left[ 1 - \lambda B_n - \lambda^2 C_n + \tfrac{1}{2}\lambda^2 B_n^2 + \mathcal{O}(\lambda^3) \right]
+\end{align}
+
+\subsection{Identification Ordre par Ordre}
+
+En regroupant les termes selon les puissances de $\lambda$, on obtient le système d'équations suivant :
+\begin{description}
+    \item[Ordre 0 ($\lambda^0$) :]
+    \begin{equation}
+        A = E - \frac{1}{A} \quad \implies \quad A = e^{iqa} \label{eq:ordre0}
+    \end{equation}
+    \item[Ordre 1 ($\lambda^1$) :]
+    \begin{equation}
+        A B_{n+1} = -V_n + \frac{B_n}{A} \label{eq:ordre1}
+    \end{equation}
+    \item[Ordre 2 ($\lambda^2$) :]
+    \begin{equation}
+        A C_{n+1} + \frac{1}{2}A B_{n+1}^2 = \frac{C_n}{A} - \frac{B_n^2}{2A} \label{eq:ordre2}
+    \end{equation}
+\end{description}
+
+\section{Calcul à la limite stationnaire}
+
+À la limite stationnaire, les statistiques des variables deviennent indépendantes du site $n$ ($B_n \sim B_{n+1} \sim B$, $C_n \sim C_{n+1} \sim C$, etc.).
+
+\subsection{Ordre 1}
+D'après l'équation \eqref{eq:ordre1}, on exprime directement la variable de premier ordre $B$ :
+\begin{equation}
+    B \left( A - \frac{1}{A} \right) = -V_n \quad \implies \quad B = \frac{-V_n}{A - 1/A} = \frac{-A V_n}{A^2 - 1}
+\end{equation}
+
+\subsection{Ordre 2}
+D'après l'équation \eqref{eq:ordre2}, on isole la variable stationnaire de second ordre $C$ :
+\begin{align}
+    C \left( A - \frac{1}{A} \right) &= -\frac{B^2}{2}\left(A + \frac{1}{A}\right) \nonumber \\
+    \implies C &= -\frac{B^2}{2} \left( \frac{A^2 + 1}{A^2 - 1} \right)
+\end{align}
+En utilisant la relation $A = e^{iqa}$, le facteur géométrique se simplifie en :
+\begin{equation}
+    \frac{A + 1/A}{A - 1/A} = \frac{2\cos(qa)}{2i\sin(qa)} = -i\cot(qa)
+\end{equation}
+
+\section{Exposant de Lyapunov et statistiques}
+
+L'exposant de Lyapunov $\gamma$ caractérise le taux de décroissance exponentiel moyen des modes localisés (Anderson localization). Il est défini par la valeur moyenne de la phase log-amplitude :
+\begin{equation}
+    \gamma = \langle \ln(R_n) \rangle = \ln(A) + \lambda \langle B \rangle + \lambda^2 \langle C \rangle + \mathcal{O}(\lambda^3)
+\end{equation}
+
+\subsection{Moyennes statistiques}
+\begin{enumerate}
+    \item \textbf{Moyenne de $B$ :}
+    Puisque $\langle V_n \rangle = 0$, on obtient immédiatement :
+    \begin{equation}
+        \langle B \rangle = 0
+    \end{equation}
+    
+    \item \textbf{Calcul de $\langle B^2 \rangle$ :}
+    En élevant l'équation \eqref{eq:ordre1} au carré et en moyennant :
+    \begin{equation}
+        A^2 \langle B_{n+1}^2 \rangle = \langle V_n^2 \rangle - \frac{2}{A}\langle V_n B_n \rangle + \frac{1}{A^2}\langle B_n^2 \rangle
+    \end{equation}
+    Puisque $B_n$ dépend uniquement des potentiels passés $\{V_{n-1}, V_{n-2}, \dots\}$, la variable $B_n$ et le potentiel courant $V_n$ sont statistiquement indépendants, ce qui implique $\langle V_n B_n \rangle = \langle V_n \rangle\langle B_n \rangle = 0$. Il vient :
+    \begin{equation}
+        A^2 \langle B^2 \rangle = \langle V^2 \rangle + \frac{1}{A^2}\langle B^2 \rangle \quad \implies \quad \langle B^2 \rangle = \frac{A^2}{A^4 - 1}\langle V^2 \rangle
+    \end{equation}
+    
+    \item \textbf{Moyenne de $C$ :}
+    En prenant la moyenne stationnaire de l'expression de $C$ obtenue précédemment :
+    \begin{equation}
+        \langle C \rangle = -\frac{\langle B^2 \rangle}{2} \left( \frac{A^2 + 1}{A^2 - 1} \right) = -\frac{\langle V^2 \rangle}{2} \left( \frac{A^2}{A^4 - 1} \right) \left( \frac{A^2 + 1}{A^2 - 1} \right) = -\frac{\langle V^2 \rangle}{2} \frac{A^2}{(A^2 - 1)^2}
+    \end{equation}
+\end{enumerate}
+
+\section{Application au désordre de masse}
+
+Nous réinjectons maintenant la définition physique du désordre de masse, c'est-à-dire $\lambda V_n = -(E - 2)\epsilon_n$ (avec $\lambda=1$).
+L'énergie ordonnée s'écrit $E = 2\cos(qa)$. L'amplitude du désordre quadratique moyen s'exprime par $\langle V^2 \rangle = (E - 2)^2 \langle \epsilon_n^2 \rangle = 4(\cos(qa) - 1)^2 \langle \epsilon_n^2 \rangle$.
+
+En substituant avec $A = e^{iqa}$ dans $\langle C \rangle$ :
+\begin{align}
+    \langle C \rangle &= -\langle \epsilon_n^2 \rangle \frac{(E - 2)^2 A^2}{2(A^2 - 1)^2} \nonumber \\
+    &= -\langle \epsilon_n^2 \rangle \frac{4(\cos(qa) - 1)^2 e^{2iqa}}{2(e^{2iqa} - 1)^2} \nonumber \\
+    &= -\langle \epsilon_n^2 \rangle \frac{4(\cos(qa) - 1)^2}{2(e^{iqa} - e^{-iqa})^2} \nonumber \\
+    &= +\langle \epsilon_n^2 \rangle \frac{\left( 2\sin^2(qa/2) \right)^2}{2 \cdot 4\sin^2(qa)} \nonumber \\
+    &= \frac{\langle \epsilon_n^2 \rangle}{2} \frac{\sin^4(qa/2)}{4\sin^2(qa/2)\cos^2(qa/2)} \nonumber \\
+    &= \frac{\langle \epsilon_n^2 \rangle}{8} \tan^2\left(\frac{qa}{2}\right)
+\end{align}
+
+L'exposant de Lyapunov s'écrit donc (en réintroduisant la dimension spatiale via la constante de réseau $a$) :
+\begin{equation}
+    \gamma(q) = iq + \frac{1}{8}\langle\epsilon_n^2\rangle \tan^2\left(\frac{qa}{2}\right) + \mathcal{O}(\epsilon^3)
+\end{equation}
+
+La partie réelle positive $\text{Re}(\gamma)$ correspond à l'inverse de la longueur de localisation $\xi$ (ou libre parcours moyen élastique $l_{\text{MFP}}$) :
+\begin{equation}
+    \Psi_n \sim \Psi_0 \exp(-\gamma n) \propto \exp\left( -\frac{an}{l_{\text{MFP}}} \right) e^{iqna}
+\end{equation}
+D'où l'expression de la longueur de localisation / libre parcours moyen :
+\begin{equation}
+    l_{\text{MFP}}(q) = \frac{a}{\text{Re}(\gamma)} = \frac{8a}{\langle\epsilon_n^2\rangle \tan^2\left(\frac{qa}{2}\right)}
+\end{equation}
+
+\section{Critère de Ioffe-Regel et limites à basse fréquence}
+
+Le critère de Ioffe-Regel stipule que la localisation forte apparaît lorsque le libre parcours moyen devient inférieur à la longueur d'onde du mode propagatif :
+\begin{equation}
+    l_{\text{MFP}} < \lambda_{\text{onde}} = \frac{2\pi}{q}
+\end{equation}
+En injectant notre dérivation :
+\begin{equation}
+    \frac{8a}{\langle\epsilon_n^2\rangle \tan^2(qa/2)} < \frac{2\pi}{q}
+\end{equation}
+
+Dans la limite du régime acoustique basse fréquence ($q \to 0$), on effectue un développement de Taylor au premier ordre $\tan(qa/2) \sim qa/2$ :
+\begin{equation}
+    \frac{32}{\langle\epsilon_n^2\rangle q^2 a} < \frac{2\pi}{q} \quad \implies \quad q > \frac{16}{\pi \langle\epsilon_n^2\rangle a}
+\end{equation}
+
+Cela correspond à une longueur d'onde maximale critique au-delà de laquelle le critère est rompu :
+\begin{equation}
+    \lambda_{\text{max}} < \frac{\pi^2 a \langle\epsilon_n^2\rangle}{8}
+\end{equation}

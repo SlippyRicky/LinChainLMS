@@ -1,0 +1,30 @@
+# LaTeX build artifacts
+build/
+output/
+*.aux
+*.log
+*.toc
+*.out
+*.pdf
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.xdv
+
+# Python environment & cache
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# System / IDE files
+.DS_Store
+.vscode/
+.idea/
+.agents/

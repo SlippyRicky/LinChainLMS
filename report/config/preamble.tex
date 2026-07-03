@@ -1,0 +1,113 @@
+% --- Professional LaTeX Preamble ---
+
+% Core packages
+\usepackage[english,french]{babel}
+\usepackage{fontspec} % Requires LuaLaTeX or XeLaTeX
+\usepackage{microtype} % Better typography (kerning, etc.)
+
+% Math packages
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{physics} % Standard physics notation
+\usepackage{siunitx} % Units
+\sisetup{locale = FR, separate-uncertainty = true}
+\AtBeginDocument{\RenewCommandCopy\qty\SI}
+ % \usepackage{breqn} % For dmath environments (Removed due to conflicts causing comma mapping issues)
+
+% Layout & Styling
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    top=3cm,
+    bottom=3cm,
+    left=2.5cm,
+    right=2.5cm,
+    headheight=15pt
+}
+\emergencystretch=5em % Give LaTeX more breathing room for word spacing
+\raggedbottom{} % Prevent vertical stretching on pages with sparse content
+
+
+\usepackage{fancyhdr} % Headers and footers
+\usepackage{titlesec} % Section titles styling
+\titleformat{\section}{\normalfont\Large\bfseries\raggedright}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\raggedright}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\raggedright}{\thesubsubsection}{1em}{}
+\usepackage{setspace} % Line spacing
+\setstretch{1.15}
+
+% Tables & Figures
+\usepackage{graphicx}
+\graphicspath{
+    {figures/}
+    {figures/01_introduction/}
+    {figures/02_linear_disorder/}
+    {figures/99_annexes/}
+}
+\usepackage{booktabs} % Professional tables
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+% --- Paramètres de placement des flottants ---
+\renewcommand{\topfraction}{.85}      % Max fraction de la page occupée par des flottants en haut
+\renewcommand{\bottomfraction}{.7}    % Max fraction en bas
+\renewcommand{\textfraction}{.15}     % Min fraction de texte par page
+\renewcommand{\floatpagefraction}{.66} % Fraction minimale pour une page de flottants seule
+\setcounter{topnumber}{3}             % Nb max de flottants en haut
+\setcounter{bottomnumber}{3}          % Nb max de flottants en bas
+\setcounter{totalnumber}{5}           % Nb max de flottants par page
+
+% Bibliography
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none,
+    language=french,
+    autolang=none
+]{biblatex}
+\addbibresource{bib/references.bib}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=red,
+}
+
+% Miscellaneous
+\usepackage{csquotes} % Context sensitive quotes
+\usepackage{etoolbox} % Programming tools
+
+% Code highlighting
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    language=Python,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+% --- End of Preamble ---

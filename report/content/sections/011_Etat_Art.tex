@@ -1,0 +1,324 @@
+% !TEX root = ../../main.tex
+\renewcommand{\thesection}{\arabic{section}}
+\chapter*{Dynamique des Chaînes 1D en Régimes Linéaires}
+\addcontentsline{toc}{chapter}{Dynamique des Chaînes 1D en Régimes Linéaires}
+\markboth{Dynamique des Chaînes 1D en Régimes Linéaires}{Dynamique des Chaînes 1D en Régimes Linéaires}
+
+\section{État de l'Art}
+
+L'étude de la localisation des ondes dans les milieux désordonnés a été développée par Philip W. Anderson en 1958~\cite{anderson1958}. Il a démontré que le désordre spatial peut entraîner l'apparition d'une phase isolante qui inhibe tout transport diffusif. Si cette notion fut initialement formulée pour décrire le comportement des électrons dans les solides désordonnés, elle s'applique aujourd'hui à une vaste classe de phénomènes ondulatoires~\cite{skipetrov2010localisation}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{01_historical_context}
+    \caption{(A) Dans un cristal parfait, l'onde se propage de manière balistique. (B) En régime de diffusion classique, les défauts provoquent un élargissement continu du faisceau d'ondes. (C) En régime de localisation d'Anderson, les interférences destructives confinent l'énergie. (D) Signature dynamique illustrant l'évolution temporelle de la variance transverse $\sigma^2(t)$. La diffusion balistique croît en $t^2$, la diffusion classique s'étale linéairement, et la localisation sature de manière asymptotique ($\sigma^2 \to \xi^2$). Ce schéma illustre la localisation transverse dans un milieu à plusieurs dimensions (2D ou 3D), directement inspiré par la configuration expérimentale de \textcite{hu2008localization}.}
+    \label{fig:historical_context}
+\end{figure}
+
+L'existence de cette localisation pour les ondes mécaniques a été confirmée expérimentalement en 3D par \textcite{hu2008localization}, qui ont observé un arrêt net de la diffusion transverse. La Figure~\ref{fig:historical_context} illustre ce phénomène de manière conceptuelle.
+
+L'objectif de ce travail est d’étudier le cas unidimensionnel. En effet, contrairement aux systèmes 3D qui présentent un seuil de mobilité, il a été démontré par la théorie d'échelle \cite{abrahams1979scaling} que tout désordre en 1D entraîne la localisation de tous les modes propres. Cependant, la loi d'échelle de Matsuda-Ishii montre que la longueur de localisation $\xi$ présente une dépendance fréquentielle quadratique ($\xi \propto \omega^{-2}$) dans la 
+limite acoustique, rendant le milieu quasi-transparent pour les basses fréquences.
+
+La quantification de l'exposant de Lyapunov $\gamma$ et indirectement la longueur de localisation $\xi = 1/\gamma$ peut être atteinte grâce à des méthodes complémentaires: l'approche perturbative de Matsuda et Ishii~\cite{matsuda1970localization} pour le régime acoustique basse fréquence, le formalisme exact de la matrice de transfert (TMM) développé pour les réseaux désordonnés par \textcite{schmidt1957disordered}, l'analyse de phase par la transformation de Riccati, ainsi que les mesures globales basées sur le taux de participation modal (PR). Dans la limite du désordre faible, le développement de Derrida et Gardner~\cite{derrida1984lyapounov} fournit également un formalisme perturbatif rigoureux. Ces différents modèles permettent de relier le désordre structurel microscopique au taux de décroissance spatial macroscopique.
+
+Ces questions s'inscrivent dans une démarche plus globale de caractérisation de la dynamique des systèmes hétérogènes. Les travaux de A. Tanguy et ses collaborateurs ont notamment démontré le rôle critique des effets de taille finie dans la transition entre les régimes de piégeage forts et faibles d'une ligne élastique en potentiel aléatoire~\cite{tanguy2004weak}. Cette approche a ensuite permis d'isoler les contributions propagatives et diffusives de l'atténuation acoustique dans les milieux amorphes massifs~\cite{beltukov2018propagative}.
+
+\section{Fondements Cinématiques}
+
+\subsection[La chaîne ordonnée]{La chaîne ordonnée}
+Considérons le modèle d'une chaîne monoatomique idéale infinie. Dans ce milieu parfaitement ordonné, une infinité de masses ponctuelles identiques $m$ sont séparées au repos par une distance interatomique constante $a$. Elles sont couplées à leurs plus proches voisins par des ressorts linéaires sans masse de raideur uniforme $K$. L'absence totale de bords (milieu infini) ou de conditions aux limites artificielles exclut toute réflexion macroscopique, tandis que la régularité absolue du réseau (aucun défaut ni impureté) empêche toute rétrodiffusion locale. Dans ce vide mécanique unidimensionnel, l'énergie vibratoire se propage de manière balistique sans aucune atténuation spatiale.
+
+L'équation du mouvement \eqref{eq:eom_chain} pour le déplacement $u_n(t)$ du $n$-ième atome dans une chaine infinie s'écrit:
+
+\begin{equation}\label{eq:eom_chain}
+    m \ddot{u}_n = K(u_{n+1} + u_{n-1} - 2u_n) \hspace{2em}  \text{avec} \hspace{1em} n \in \mathbb{N}^*
+\end{equation}
+
+Sur le plan mathématique, la résolution de ce système à coefficients périodiques s'appuie sur le théorème de Floquet~\cite{floquet1883equations}, étendu en physique de l'état solide sous le nom de théorème de Bloch~\cite{bloch1929quantenmechanik}. En exploitant la symétrie de translation discrète du réseau, on cherche des solutions sous la forme d'ondes planes :
+
+\begin{equation*}
+    u_n(t) = U_0 e^{i(q n a - \omega t)}
+\end{equation*}
+
+Cette formulation relie l'espace et le temps via les grandeurs fondamentales du système :
+
+\begin{itemize}
+    \item \textbf{La pulsation} $\omega$: Exprimée en $\text{rad}\cdot\text{s}^{-1}$, elle dicte la dynamique temporelle locale du système ($\omega = 2\pi f$, avec $f$ la fréquence temporelle en Hz).
+    \item \textbf{Le vecteur d'onde} $q$: Exprimé en $\text{rad}\cdot\text{m}^{-1}$, il représente la fréquence spatiale de l'onde ($q = 2\pi/\lambda$). Il quantifie le déphasage exact $\Delta \phi = q a$ entre l'oscillation de deux atomes adjacents.
+\end{itemize}
+
+L'injection de cette solution dans l'équation du mouvement contraint le système à respecter la relation de dispersion de Brillouin~\cite{brillouin1953wave}. Celle-ci régit la pulsation temporelle autorisée pour un vecteur d'onde donné :
+
+\begin{equation}
+    \omega(q) = 2\sqrt{\frac{K}{m}} \left| \sin\left(\frac{qa}{2}\right) \right|
+\end{equation}
+
+De cette relation découle la densité d'états vibratoires analytique $g(\omega)$ de la chaîne monoatomique idéale, définie comme le nombre de modes disponibles par unité de pulsation et par atome :
+\begin{equation}\label{eq:dos_mono}
+    g(\omega) = \frac{2}{\pi} \frac{1}{\sqrt{\omega_{\max}^2 - \omega^2}}
+\end{equation}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{02_dispersion}
+    \caption{Physique du réseau monoatomique périodique ordonné : (a) Relation de dispersion illustrant la bande passante $[0 \text{ ; } \omega_{\max}]$ dans la première zone de Brillouin~\cite{brillouin1953wave}. (b) Densité d'états vibratoires $g(\omega)$ associée, mettant en évidence la limite continue à basse fréquence et l'apparition d'une singularité de Van Hove en bord de bande.} \label{fig:dispersion_ordered}
+\end{figure}
+
+L'analyse de cette relation de dispersion et de la densité d'états (Fig.~\ref{fig:dispersion_ordered}) révèle deux comportements asymptotiques remarquables: à basse fréquence ($\omega \to 0$), la longueur d'onde est grande devant le pas du réseau ($qa \ll 1$), et la densité d'états converge vers la limite continue $2/(\pi \omega_{\max})$. Cette différence entre la maille et la longueur d'onde est la marque d'une onde plane. 
+
+À l'inverse, à la limite de bande ($\omega \to \omega_{\max}$), la vitesse de groupe s'annule. Le tracé de la densité d'etats met en évidence la singularité de Van Hove, caractéristique des systèmes unidimensionnels, où la densité d'états diverge vers l'infini en raison de l'aplatissement de la courbe de dispersion. Cette asymptote décrit une onde qui tend vers une onde stationnaire.
+
+Pour une chaîne de taille finie composée de $N$ atomes, les effets de taille finie sont généralement pris en compte en imposant des conditions aux limites périodiques (CLP), dites de Born-von Karman~\cite{Born1912} : $u_{n+N}(t) = u_n(t)$. Physiquement, cela revient à boucler la chaîne sur elle-même sous forme d'un anneau fermé afin d'éliminer les effets de bord tout en conservant la symétrie de translation discrète du réseau. Cette condition limite restreint le vecteur d'onde $q$ à un ensemble de valeurs discrètes et quantifiées :
+\begin{equation*}
+    q_k = \frac{2\pi k}{N a} \quad \text{avec } k \in \left[ -\frac{N}{2} \text{ ; } \frac{N}{2} - 1 \right]
+\end{equation*}
+L'espacement constant entre deux modes adjacents dans l'espace réciproque s'exprime par $\Delta q = q_{k+1} - q_k = \frac{2\pi}{N a} = \frac{2\pi}{L}$, où $L = N a$ désigne la longueur totale de la chaîne.
+
+Dans la limite acoustique des grandes longueurs d'onde, caractérisée par un vecteur d'onde petit devant l'échelle atomique ($q \ll \frac{2}{a}$ ou de manière équivalente $\lambda \gg \pi a$), le déphasage entre atomes voisins est infime. On peut alors effectuer un développement limité au premier ordre de la fonction sinus ($\sin(qa/2) \approx qa/2$), ce qui permet de passer de la relation de dispersion discrète à l'approximation continue :
+\begin{equation*}
+    \omega(q) \approx a \sqrt{\frac{K}{m}} q = c_0 q
+\end{equation*}
+où $c_0 = a \sqrt{K/m}$ représente la vitesse de propagation de l'onde dans le milieu continu associé. Sous cette approximation linéaire, la vitesse de groupe devient constante ($v_g = c_0$) et l'espacement fréquentiel entre modes successifs est rigoureusement uniforme et quantifié par $\Delta \omega \approx c_0 \Delta q = \frac{2\pi c_0}{L}$.
+
+Dans ce réseau périodique idéal, en dehors de la limite continue, l'absence de processus dissipatifs ou diffusifs garantit une propagation sans atténuation, caractéristique d'un transport purement balistique. L'énergie mécanique y est ainsi véhiculée le long de la chaîne à la vitesse de groupe $v_g$, définie par :
+
+\begin{equation*}
+    v_g = \frac{\partial \omega}{\partial q} = a \sqrt{\frac{K}{m}} \cos\left(\frac{qa}{2}\right)
+\end{equation*}
+
+La discrétisation des vecteurs d'onde dicte la distribution des modes dans l'espace des fréquences. On définit la densité d'états vibrationnels $g(\omega)$ comme le nombre de modes disponibles par unité de pulsation. En exploitant la conservation du nombre d'états et en tenant compte des deux directions de propagation, on obtient $g(\omega)d\omega = \frac{2L}{\pi}dq$, et donc la densité d'états s'écrit :
+
+\begin{equation*}
+    g(\omega) = \frac{2L}{\pi} \frac{dq}{d\omega} = \frac{2L}{\pi} \frac{1}{|v_g(\omega)|}
+\end{equation*}
+
+En normalisant cette quantité par le nombre d'atomes $N$ pour obtenir la densité par site, et en substituant l'expression de la vitesse de groupe, on retrouve l'expression analytique de l'Équation~\eqref{eq:dos_mono} :
+
+\begin{equation*}
+    g(\omega) = \frac{2}{\pi} \frac{1}{\sqrt{\omega_{\max}^2 - \omega^2}}
+\end{equation*}
+
+Cette densité d'états est représentée sur la Fig.~\ref{fig:dispersion_ordered}(b). À basse fréquence ($\omega \to 0$), elle converge vers la valeur constante $g_0 = \frac{2}{\pi \omega_{\max}}$, caractéristique d'un milieu homogène continu. En revanche, à l'approche de la limite de bande ($\omega \to \omega_{\max}$), la vitesse de groupe s'annule ($v_g \to 0$) car l'onde devient stationnaire, provoquant une divergence asymptotique de la densité d'états.Cette divergence tend vers une densité  d'etats ou il y une activité singuliere en $1/\sqrt{\omega_{\max}^2 - \omega^2}$, constitue la célèbre singularité de Van Hove unidimensionnelle, signature fondamentale de la discrétisation spatiale du réseau.
+
+
+
+\subsubsection[L'extension au réseau diatomique]{L'extension au réseau diatomique}
+Considérons maintenant une chaîne périodique composée d'une alternance de deux masses distinctes $m_1$ (atomes légers) et $m_2$ (atomes lourds) reliées par des ressorts de raideur uniforme $K$. La maille élémentaire, de longueur $a$, contient désormais deux atomes dont les déplacements par rapport à leurs positions d'équilibre sont notés $u_{2n}$ et $u_{2n+1}$. Les équations couplées du mouvement s'écrivent :
+
+\begin{subequations}
+    \begin{align}
+        m_1 \ddot{u}_{2n} &= K(u_{2n+1} + u_{2n-1} - 2u_{2n}) \\
+        m_2 \ddot{u}_{2n+1} &= K(u_{2n+2} + u_{2n} - 2u_{2n+1}
+    \end{align}
+\end{subequations}
+
+En exploitant la symétrie de translation discrète de la maille, on recherche des solutions sous la forme d'ondes planes distinctes pour chaque sous-réseau :
+\begin{equation*}
+    u_{2n}(t) = U_1 e^{i(q n a - \omega t)} \quad \text{et} \quad u_{2n+1}(t) = U_2 e^{i\left(q \left(n + 1/2\right) a - \omega t\right)}
+\end{equation*}
+L'introduction de ces expressions dans les équations du mouvement conduit au système algébrique homogène suivant :
+\begin{equation*}
+    \begin{pmatrix}
+        2K - m_1 \omega^2 & -2K \cos\left(\frac{qa}{2}\right) \\
+        -2K \cos\left(\frac{qa}{2}\right) & 2K - m_2 \omega^2
+    \end{pmatrix}
+    \begin{pmatrix}
+        U_1 \\
+        U_2
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        0 \\
+        0
+    \end{pmatrix}
+\end{equation*}
+Pour obtenir des solutions non-triviales, l'annulation du déterminant séculaire fournit l'équation bicarrée caractéristique dont découlent deux branches de dispersion analytiques distinctes (voir Fig.~\ref{fig:diatomic_dispersion}(a)) :
+\begin{equation}
+    \omega^2(q) = K \left( \frac{1}{m_1} + \frac{1}{m_2} \right) \pm K \sqrt{\left(\frac{1}{m_1} + \frac{1}{m_2}\right)^2 - \frac{4}{m_1 m_2} \sin^2\left(\frac{qa}{2}\right)}
+\end{equation}
+Ces deux branches structurent la dynamique vibratoire du système :
+\begin{itemize}
+    \item \textbf{La branche acoustique} ($\omega_-$) s'étend de $\omega = 0$ jusqu'à sa limite en bord de zone ($q = \pm \pi/a$) :
+    \begin{equation*}
+        \omega_{\text{ac}}^{\max} = \sqrt{\frac{2K}{m_2}}
+    \end{equation*}
+    À basse fréquence ($q \to 0$), les atomes oscillent en phase avec des amplitudes égales ($U_1 = U_2$), traduisant un mouvement collectif rigide de la maille (Fig.~\ref{fig:diatomic_dispersion}(b)).
+    \item Dans \textbf{la branche optique} ($\omega_+$), les atomes oscillent en opposition de phase ($m_1 U_1 + m_2 U_2 = 0$), maintenant le centre de masse de chaque maille stationnaire (Fig.~\ref{fig:diatomic_dispersion}(c)). LA branche s'étend de sa valeur minimale en bord de zone ($q = \pm \pi/a$), $\omega_{\text{op}}^{\min} = \sqrt{\frac{2K}{m_1}}$, jusqu'au centre de zone ($q = 0$) :
+    \begin{equation*}
+        \omega_{\text{op}}^{\max} = \sqrt{2K \left(\frac{1}{m_1} + \frac{1}{m_2}\right)}
+    \end{equation*}
+\end{itemize}
+
+Entre ces deux branches s'ouvre une bande interdite définie par l'intervalle $]\omega_{\text{ac}}^{\max} \text{ , } \omega_{\text{op}}^{\min}[$. Pour toute pulsation située dans ce gap, le vecteur d'onde $q$ devient purement complexe, forçant les ondes à s'atténuer exponentiellement sous forme de modes évanescents, interdisant ainsi toute propagation d'énergie à travers le réseau périodique parfait.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{03_diatomic_modes.pdf}
+    \caption{Physique du réseau diatomique périodique ($m_1=1.0, m_2=4.0$) : (a) Relation de dispersion faisant apparaître les branches acoustique (bleu) et optique (rouge) séparées par une bande interdite (GAP) de fréquences. (b) Déplacements atomiques pour un mode acoustique ($q \to 0$) où les atomes légers ($m_1$, petits disques blancs) et lourds ($m_2$, grands disques hachurés) oscillent en phase. (c) Mode optique au centre de zone ($q \to 0$) illustrant l'opposition de phase caractéristique où le centre de masse de chaque maille reste stationnaire.} \label{fig:diatomic_dispersion}
+\end{figure}
+
+Afin d'étudier l'influence de la fréquence sur le confinement spatial, la réponse du milieu désordonné est sondée par deux approches d'excitation distinctes. Une excitation spatiale ponctuelle (impulsion de Dirac) sollicite uniformément l'ensemble du spectre, superposant ainsi des modes propres dont les longueurs de localisation $\xi$ s'étendent sur plusieurs ordres de grandeur. Pour s'affranchir de ce mélange modal et isoler une réponse fréquentielle ciblée, cette approche large bande est confrontée à l'injection d'un paquet d'ondes gaussien. Ce dernier, modulé par un vecteur d'onde porteur $q_0$, permet de se concentrer sur une pulsation centrale $\omega_0 = 2\sin(q_0/2)$. Pour permettre la comparaison, la condition initiale est systématiquement normalisée à énergie constante, puis la propagation est résolue par intégration temporelle. La densité d'énergie locale ($u_n^2$) est ensuite moyennée spatialement pour en extraire l'enveloppe macroscopique (voir Annexe~\ref{annexe:computational_logic}, section~\ref{sec:excitation_implementation}).
+
+\subsection{Types de désordre et brisure de symétrie}
+L'introduction d'un désordre structurel brise l'invariance spatiale par translation discrète. Le vecteur d'onde $q$ perd sa validité globale, et l'équation du mouvement devient une récurrence différentielle à coefficients aléatoires :
+\begin{equation}
+    m_n \ddot{u}_n = K_n(u_{n+1} - u_n) - K_{n-1}(u_n - u_{n-1})
+\end{equation}
+
+Afin de généraliser l'étude, le système est adimensionné. La masse moyenne $m_0$, la raideur moyenne $K_0$ et le pas du réseau $a$ sont fixés à l'unité ($m_0 = 1$, $K_0 = 1$, $a = 1$). Ce choix définit naturellement l'unité de temps du système physique par $[t] = \sqrt{m_0/K_0}$. 
+
+Les fluctuations des propriétés mécaniques de la chaîne sont décrites par des variables aléatoires indépendantes et identiquement distribuées, de moyenne nulle et sans corrélation spatiale. L'intensité du désordre est contrôlée par le paramètre d'amplitude $\varepsilon$. Trois types de désordres sont ainsi modélisés :
+\begin{itemize}
+    \item \textbf{Le désordre de raideur} (désordre structurel hors-diagonal) : Les raideurs locales des ressorts $K_n$ fluctuent de façon aléatoire :
+    \begin{equation*}
+        K_n = K_0 (1 + \varepsilon X_n)
+    \end{equation*}
+    \item \textbf{Le désordre de masse} (désordre isotopique diagonal) : Les masses des atomes $m_n$ fluctuent de façon aléatoire :
+    \begin{equation*}
+        m_n = m_0 (1 + \varepsilon Y_n)
+    \end{equation*}
+    \item \textbf{Le désordre combiné} (désordre mixte) : Les masses et les raideurs fluctuent simultanément et de manière indépendante :
+    \begin{equation*}
+        m_n = m_0 (1 + \varepsilon Y_n) \quad \text{et} \quad K_n = K_0 (1 + \varepsilon X_n)
+    \end{equation*}
+\end{itemize}
+où $X_n$ et $Y_n$ sont deux variables aléatoires décorrélées, chacune suivant une loi uniforme $\mathcal{U}(-1, 1)$.
+
+Dans la limite quasi-statique des grandes longueurs d'onde ($\lambda \gg a$), les détails discrets de la chaîne s'estompent au profit d'un comportement élastique continu équivalent. Ces concepts fondamentaux d'homogénéisation sont classiquement encadrés par deux limites macroscopiques : la borne de Voigt ($K_{\text{Voigt}} = \langle K_n \rangle = K_0$, moyenne arithmétique pour un couplage en parallèle) et la borne de Reuss ($K_{\text{Reuss}} = \langle 1/K_n \rangle^{-1}$, moyenne harmonique pour un couplage en série). 
+
+Dans le cas de notre chaîne 1D (couplée en série), l'inégalité fondamentale $K_{\text{Reuss}} \le K_{\text{Voigt}}$ traduit la prédominance des éléments les plus souples (effet de maillon faible). Pour une distribution uniforme d'amplitude $\varepsilon \ll 1$, le développement asymptotique de la borne de Reuss conduit à un assouplissement quadratique effectif du milieu macroscopique : $K_{\text{Reuss}} \approx K_0 ( 1 - \sigma_{\varepsilon}^2 )$, où $\sigma_{\varepsilon}^2 = \varepsilon^2/12$ est la variance du désordre. Cette raideur homogénéisée régit la propagation balistique à très basse fréquence.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{04_disordered_chain_schematic}
+    \caption{Représentation schématique de l'implémentation numérique de la chaîne harmonique unidimensionnelle. Le système de taille finie est soumis à un désordre spatial ($\varepsilon \neq 0$) au centre, et est tronqué par des couches absorbantes (ABC) pour imiter l'ouverture vers l'infini.} \label{fig:lattice_disordered_schematic}
+\end{figure}
+
+\subsubsection{Théorème de Furstenberg : de la croissance matricielle à l'atténuation physique}
+L'évolution spatiale de l'onde est régie par le théorème de Furstenberg sur les produits de matrices aléatoires. \textcite{matsuda1970localization} soulignent que, dans une chaîne désordonnée, la norme du produit des matrices de transfert $\mathbf{T}_i$ croît de manière exponentielle avec la distance parcourue. 
+
+Ce comportement peut sembler paradoxal : comment la croissance exponentielle d'un produit matriciel peut-elle décrire l'atténuation d'une onde ? Cette apparente contradiction, source de confusion fréquente dans la littérature, se lève en considérant le sens physique du formalisme de transfert. Si l'on fixe une amplitude unitaire en sortie de chaîne (onde transmise), la multiplication des matrices de transfert calcule l'onde incidente correspondante. La croissance exponentielle du produit matriciel (en $e^{\gamma N}$) indique ainsi qu'il faudrait injecter une amplitude exponentiellement grande pour forcer la transmission d'un signal unitaire à travers le désordre. Réciproquement, pour une excitation initiale d'amplitude donnée, la fraction de l'onde qui parvient à progresser dans le milieu est atténuée du facteur inverse ($e^{-\gamma N}$). L'accumulation des déphasages par rétrodiffusion détruit le transport balistique, ce qui confine l'énergie et force le profil spatial physique de l'onde à décroître exponentiellement à mesure que l'on s'éloigne de la source.
+
+\subsubsection{Définition de l'exposant de Lyapunov et de la longueur de localisation}
+Pour formaliser mathématiquement l'atténuation spatiale induite par la localisation d'Anderson, deux grandeurs physiques centrales sont introduites :
+\begin{itemize}
+    \item \textbf{L'exposant de Lyapunov} $\gamma$ : Pour un état stationnaire vibratoire de pulsation $\omega$, l'amplitude complexe de l'onde $u_n$ décroît asymptotiquement à partir du site d'excitation $n_0$. L'exposant de Lyapunov est défini comme le taux moyen de décroissance exponentielle :
+    \begin{equation}
+        \gamma(\omega) = - \lim_{n \to \infty} \frac{1}{n} \langle \ln |\frac{u_n}{u_0}| \rangle
+        \label{eq:lyapunov_def_th}
+    \end{equation}
+    où $\langle \cdot \rangle$ désigne la moyenne d'ensemble sur les réalisations du désordre.
+    \item \textbf{La longueur de localisation} $\xi$ : Elle correspond à l'échelle spatiale caractéristique au-delà de laquelle la cohérence de phase est perdue et l'enveloppe de l'onde a décru d'un facteur $e^{-1}$. En conservant la distance interatomique $a$, elle est reliée à la partie réelle positive de l'exposant de Lyapunov par :
+    \begin{equation}
+        \xi(\omega) = \frac{a}{\text{Re}(\gamma(\omega))}
+        \label{eq:loc_len_def_th}
+    \end{equation}
+\end{itemize}
+
+Cette longueur caractéristique spatiale $\xi$ régit la nature physique du transport d'énergie, permettant de distinguer deux régimes de transmission selon la longueur physique $L$ de la chaîne :
+
+\begin{itemize}
+    \item \textbf{Le régime de diffusion} ($L \ll \xi$) : L'onde subit des collisions élastiques multiples sans que l'effet de localisation ne fige le transport. La transmission globale décroît linéairement selon une loi diffusive : $T \propto 1/L$.
+    \item \textbf{Le régime de localisation} ($L \gg \xi$) : Les interférences destructives multiples bloquent la transmission, provoquant une décroissance exponentielle rapide de l'onde : $T \propto \exp(-2L/\xi)$.
+\end{itemize}
+
+Dans un milieu semi-infini ou de taille supérieure à $\xi$, cette décroissance restreint les modes propres stationnaires $\psi_n$ à des états confinés, dont l'amplitude décroît à partir d'un site de localisation central $n_c$ :
+\begin{equation}
+    |u_n| \leq U \exp\left(-\gamma |n - n_c|\right) = U \exp\left(-\frac{|x_n - x_c|}{\xi}\right)
+\end{equation}
+L'enveloppe définit ainsi une longueur caractéristique de confinement, la longueur de localisation $\xi = a/\gamma$, au-delà de laquelle la cohérence de phase est rompue.
+
+\subsubsection{Perte de cohérence spatiale et diffusion de phase}
+L'introduction du désordre transforme la progression déterministe de la phase d'une onde plane en une véritable marche aléatoire. L'onde subit une décorrélation spatiale rapide qui détruit toute possibilité d'interférence constructive à longue distance au bout de quelques périodes de propagation. 
+
+Cette diffusion de phase altère fondamentalement la topologie des solutions stationnaires. Au sein du formalisme de transfert, l'exposant de Lyapunov $\gamma$ n'est donc pas qu'un simple taux d'atténuation de l'amplitude : il émerge rigoureusement pour quantifier ce taux de décorrélation spatiale progressive de la phase le long du réseau désordonné.
+
+\subsection{Méthodes de quantification de la localisation}
+La détermination de la longueur de localisation fait intervenir différentes méthodes, dont la modélisation sous-jacente et les limites physiques diffèrent.
+
+\subsubsection{Modélisation analytique en désordre faible}
+L'évaluation théorique de l'atténuation spatiale repose sur des développements perturbatifs qui se distinguent par le formalisme employé. La théorie de Matsuda et Ishii~\cite{matsuda1970localization} s'appuie sur la dynamique des matrices de transfert et l'étude de la diffusion de la phase. Elle démontre que dans la limite acoustique basse fréquence ($\omega \to 0$), l'exposant de Lyapunov suit une loi d'échelle quadratique proportionnelle à la variance effective du désordre : $\gamma(\omega) \propto \sigma_{\text{eff}}^2 \omega^2$.
+
+De manière distincte, l'approche par transformation de Riccati convertit l'équation du mouvement en une récurrence non-linéaire portant sur le ratio complexe des amplitudes. C'est sur ce formalisme que s'appuie la méthode de Derrida et Gardner~\cite{derrida1984lyapounov} pour proposer un schéma perturbatif rigoureux. Cette approche caractérise le comportement analytique en désordre faible sur l'ensemble de la bande passante et révèle d'importantes singularités de localisation aux énergies rationnelles ou en bord de bande.
+
+\subsubsection{Quantification numérique directe}
+Pour s'affranchir des limites des approches perturbatives, trois méthodes numériques indépendantes sont déployées. La méthode de la matrice de transfert (TMM) extrait l'exposant de Lyapunov en propageant itérativement les vecteurs d'état. Sa valeur asymptotique est calculée par $\gamma_{\text{TMM}} = \lim_{N \to \infty} \frac{1}{N} \ln \| \prod_{i=1}^N \mathbf{T}_i \|$. N'imposant aucune condition aux limites, cette méthode simule une chaîne ouverte quasi-infinie, autorisant l'évaluation de longueurs de localisation $\xi$ théoriques excédant les dimensions d'un système physique réel ($\xi \gg N$).
+
+La résolution modale offre une caractérisation directe sur un réseau fermé de taille finie $N$. Le taux de participation absolu, représentant le nombre effectif de sites sur lesquels l'énergie du mode est répartie, s'écrit sous sa forme générale :
+\begin{equation}
+    PR(\psi) = \frac{\left(\sum_{n=1}^N |\psi_n|^2\right)^2}{\sum_{n=1}^N |\psi_n|^4}
+    \label{eq:participation_ratio}
+\end{equation}
+Cette grandeur absolue prend ses valeurs dans l'intervalle $[1, N]$ : $PR = 1$ pour un mode parfaitement localisé sur un seul site, et $PR = N$ pour un mode uniformément délocalisé sur l'ensemble de la chaîne. Dans ce travail, nous conservons cette convention absolue de manière à ce que la relation $\xi_{PR} = a \cdot PR$ soit directement applicable, avec $a = 1$ en unités réduites. Le lien avec le taux de participation normalisé $PR_{\text{norm}}(\psi) = PR(\psi)/N$, qui quantifie la fraction de sites participants (comprise entre $1/N$ et $1$, soit de $1/N$ à $100\%$), est pour un mode propre normalisé ($\sum_{n=1}^N |\psi_n|^2 = 1$) :
+\begin{equation*}
+    PR_{\text{norm}}(\psi) = \frac{1}{N \sum_{n=1}^N |\psi_n|^4}
+\end{equation*}
+
+Enfin, les simulations dynamiques de paquets d'ondes confrontent ces modélisations spectrales à la véritable réponse temporelle. La propagation d'une impulsion gaussienne modulée à une fréquence porteuse $\omega_0$ permet d'observer en temps réel le piégeage de l'énergie. L'analyse de l'enveloppe du signal asymptotique figé donne accès à une longueur d'atténuation effective, offrant une validation purement empirique et physique du confinement d'Anderson.
+
+Il est crucial de souligner que ces approches numériques n'ont pas le même domaine de validité. La méthode TMM calcule l'atténuation d'une onde propagative libre sur une géométrie semi-infinie sans condition de bord : elle peut donc estimer des longueurs de localisation $\xi$ arbitrairement grandes. À l'inverse, le $PR$ évalue des modes stationnaires sur un domaine spatialement borné. Par construction, la valeur du $PR$ est plafonnée par le nombre de sites $N$. Dans le régime basse fréquence où l'étendue théorique du mode excède la taille du système ($\xi \gg N a$), l'onde se délocalise totalement sur la chaîne. Le $PR$ sature alors vers une limite macroscopique étendue ($\sim N$), le rendant incapable de capturer la divergence asymptotique de la véritable longueur de localisation.
+
+\subsubsection{Transformation de Riccati et intégration stochastique}\label{sec:riccati_node}
+En modélisant la dynamique de la chaîne harmonique désordonnée par une équation de Schrödinger discrète unidimensionnelle équivalente, le ratio complexe d'amplitude entre sites adjacents $R_{n+1} = \psi_{n+1}/\psi_n$ obéit à une relation de récurrence non-linéaire (analogue à une équation de Riccati discrète) :
+\begin{equation}
+    R_{n+1} = E - \lambda V_n - \frac{1}{R_n}
+    \label{eq:riccati_recurrence}
+\end{equation}
+où $E = 2\cos(qa)$ est l'énergie ordonnée liée à la relation de dispersion, et la fluctuation locale du potentiel est modélisée par $\lambda V_n = (E - 2)\epsilon_n$.
+
+En exprimant ce ratio d'amplitudes sous la forme d'une phase complexe $R_{n+1} = e^{iqa + \eta_{n+1}}$, on extrait une récurrence stochastique linéaire pour la perturbation de phase $\eta_n$, dont la solution exacte s'exprime séquentiellement par une sommation d'opérateurs de propagation cumulés :
+\begin{align*}
+    \eta_n &= \left( \prod_{k=0}^{n-1} B_k(qa) \right) \eta_0 + \sum_{j=0}^{n-1} A_j(qa) \left( \prod_{k=j+1}^{n-1} B_k(qa) \right) \\
+    &= \left[ \eta_0 + \sum_{j=0}^{n-1} \frac{A_j(qa)}{\prod_{k=0}^{j} B_k(qa)} \right] \times \prod_{k=0}^{n-1} B_k(qa)
+\end{align*}
+où les coefficients stochastiques $A_j$ (dérive) et $B_k$ (diffusion) intègrent le couplage entre la longueur d'onde spatiale $qa$ et la fluctuation locale de masse $\epsilon_n$. Le détail mathématique rigoureux permettant de dériver cette forme analytique à partir de l'équation de Riccati est exposé en Annexe~\ref{annexe:lyapunov-derivation} pour le lecteur intéressé.
+
+L'exposant de Lyapunov $\gamma$ est alors évalué numériquement par la moyenne spatiale de la partie imaginaire de cette perturbation de phase cumulée :
+\begin{equation}
+    \gamma_{\text{Riccati}} = \lim_{N \to \infty} \frac{1}{N} \text{Im} \sum_{n=1}^N \eta_n \quad \implies \quad \xi_{\text{Riccati}} = \frac{a}{\gamma_{\text{Riccati}}}
+    \label{eq:riccati_lyapunov}
+\end{equation}
+
+\subsubsection{Développement en désordre faible : Méthode de Derrida et Gardner}
+Pour caractériser analytiquement le comportement de l'exposant de Lyapunov $\gamma$ dans la limite du faible désordre ($\lambda \to 0$), B. Derrida et E. Gardner~\cite{derrida1984lyapounov} ont développé un formalisme perturbatif rigoureux basé sur la récurrence de Riccati (Eq.~\ref{eq:riccati_recurrence}). Ils postulent un développement perturbatif sous la forme de l'ansatz :
+\begin{equation}
+    R_n = A \exp\left( \lambda B_n + \lambda^2 C_n + \mathcal{O}(\lambda^3) \right)
+    \label{eq:derrida_ansatz}
+\end{equation}
+L'exposant de Lyapunov $\gamma$ est défini par la moyenne d'ensemble du logarithme de $R_n$ en régime stationnaire ($n \to \infty$) :
+\begin{equation}
+    \gamma = \langle \ln(R_n) \rangle = \ln(A) + \lambda \langle B_n \rangle + \lambda^2 \langle C_n \rangle + \mathcal{O}(\lambda^3)
+    \label{eq:lyapunov_average}
+\end{equation}
+En injectant l'ansatz~\eqref{eq:derrida_ansatz} dans l'équation de récurrence~\eqref{eq:riccati_recurrence} et en effectuant un développement de Taylor au second ordre en $\lambda \ll 1$, l'identification ordre par ordre conduit aux relations caractéristiques :
+\begin{itemize}
+    \item \textbf{Ordre 0 ($\lambda^0$)} : $A = E - 1/A \implies A = e^{iqa}$ (propagation libre sans atténuation, soit $\text{Re}(\gamma) = 0$).
+    \item \textbf{Ordre 1 ($\lambda^1$)} : $A B_{n+1} = -V_n + B_n / A$, ce qui garantit $\langle B_n \rangle = 0$ car le désordre est supposé centré ($\langle V_n \rangle = 0$). Cette condition de centrage est physiquement cruciale. Si l'on étudie un désordre hors-diagonal (comme une fluctuation de compliance sur les ressorts $\epsilon_n = 1/K_n - 1$), la fluctuation présente intrinsèquement une moyenne non nulle. Il est alors impératif de recentrer ces fluctuations (ce qui revient physiquement à définir le milieu homogène de référence par la borne de Reuss $\langle 1/K \rangle^{-1}$) pour annuler la dérive d'ordre 1 et garantir la validité analytique du développement.
+    \item \textbf{Ordre 2 ($\lambda^2$)} : $A C_{n+1} + \frac{1}{2}A B_{n+1}^2 = C_n / A - B_n^2 / (2A)$.
+\end{itemize}
+À la limite stationnaire, la variable $B_n$ est statistiquement indépendante du potentiel courant $V_n$. Cela permet de résoudre les moments statistiques d'ordre deux (dont la dérivation complète étape par étape est présentée dans l'Annexe~\ref{annexe:derrida-derivation}) :
+\begin{align}
+    \langle B^2 \rangle &= \frac{A^2}{A^4 - 1}\langle V^2 \rangle \\
+    \langle C \rangle &= -\frac{\langle B^2 \rangle}{2} \left( \frac{A^2 + 1}{A^2 - 1} \right) = \frac{\langle V^2 \rangle}{8\sin^2(qa)}
+\end{align}
+En réinjectant la définition physique du désordre de masse ($\lambda V_n = (E-2)\epsilon_n$) et l'expression géométrique de $A = e^{iqa}$, on obtient la partie réelle positive de l'exposant de Lyapunov au second ordre perturbatif :
+\begin{equation}
+    \text{Re}(\gamma) = \lambda^2 \langle C \rangle = \frac{\langle\epsilon_n^2\rangle}{8} \tan^2\left(\frac{qa}{2}\right) + \mathcal{O}(\epsilon^3)
+    \label{eq:lyapunov_derrida_final}
+\end{equation}
+\subsubsection{Sélectivité spectrale de l'excitation : Choc vs Paquet d'ondes}
+La propagation transitoire d'une perturbation dynamique dépend de la distribution spectrale de l'excitation initiale :
+\begin{itemize}
+    \item \textbf{L'excitation par choc (Dirac spatial)} : Elle correspond à une perturbation ponctuelle localisée sur un unique site $n_0$ ($u_n(t=0) = u_0 \delta_{n, n_0}$). Dans le domaine spectral, sa transformée de Fourier est plane et excite de manière équitable toutes les fréquences de la première zone de Brillouin. Ce choc engendre une propagation hybride : les composantes de haute fréquence se localisent immédiatement à proximité de la source, tandis que les composantes acoustiques de basse fréquence se propagent loin à travers la chaîne (voir la Figure~\ref{fig:wp_comparison}(a)).
+    \item \textbf{Le paquet d'ondes modulé} : Pour isoler le transport à une fréquence d'excitation spécifique $\omega_0$, on applique sur le nœud central $n_0$ un forçage temporel de type paquet d'ondes gaussien de largeur temporelle $\sigma_t$ centré sur $t_0$ :
+    \begin{equation*}
+        u_{n_0}(t) = U_0 \exp\left( -\frac{(t-t_0)^2}{2\sigma_t^2} \right) \sin\left( \omega_0 (t - t_0) \right)
+    \end{equation*}
+    où $\sigma_t$ régit la durée de l'impulsion. Dans un milieu parfaitement périodique, la propagation de cette excitation se traduit par un paquet d'ondes se déplaçant vers l'extérieur de la source à la vitesse de groupe $v_g = \frac{\partial \omega}{\partial q}$. Le déplacement à une distance $n$ s'écrit alors :
+    \begin{equation*}
+        u_n(t) \approx U_0 \exp\left( -\frac{\left( t - t_0 - \frac{|n-n_0|a}{v_g} \right)^2}{2\sigma_t^2} \right) \sin\left( \omega_0 \left( t - t_0 - \frac{|n - n_0|a}{v_g} \right) \right)
+    \end{equation*}
+    Cette excitation sélective permet de sonder directement la longueur de localisation $\xi(\omega_0)$. À basse fréquence, la perturbation traverse les fluctuations locales et se propage à longue distance. À haute fréquence, le paquet d'ondes subit une rétrodiffusion destructrice et se fige spatialement à proximité de la source.
+\end{itemize}
+
+Ce résultat analytique, valable dans la limite du faible désordre, fournit une expression fermée de l'exposant de Lyapunov $\gamma$ en fonction du vecteur d'onde et de l'intensité des fluctuations. Afin de confronter ces prédictions théoriques à des configurations physiques plus générales, il convient d'implémenter des méthodes numériques directes de propagation et de diagonalisation modale. L'architecture de ces solveurs numériques et la caractérisation spectrale associée font l'objet de la section suivante.

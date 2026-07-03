@@ -1,0 +1,15 @@
+# --- Project ChkTeX configuration ---
+# Note: Warning suppression by number is done via -nN flags in .vscode/settings.json
+# This file extends the global chktexrc with project-specific macro declarations.
+
+# Suppress warnings for common French LaTeX patterns.
+# The \cite macro is often followed by punctuation in French typography.
+WipeArg
+{
+    \cite:[}
+    \citet:[}
+    \citep:[}
+    \ref:[}
+    \label:[}
+    \input:[}
+}

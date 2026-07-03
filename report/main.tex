@@ -1,0 +1,63 @@
+\documentclass[11pt, a4paper, twoside]{report}
+
+\input{config/metadata.tex}
+\input{config/preamble.tex}
+\input{config/macros.tex}
+
+\begin{document}
+
+% --- Cover Page ---
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    % \includegraphics[width=0.4\textwidth]{logo_ensta.png}
+    
+    \vspace{3cm}
+    {\scshape\Large \labName{} \par}
+    {\scshape\large Stage de Recherche \par}
+    
+    \vspace{2.5cm}
+    \hrule
+    \vspace{0.5cm}
+    {\huge\bfseries \reportTitle{} \par}
+    \vspace{0.2cm}
+    \vspace{0.5cm}
+    \hrule
+    
+    \vspace{3cm}
+    {\Large \reportAuthor{} \par}
+    \vspace{1cm}
+    {\large Sous la direction de \tutorLab{} \par}
+    
+    \vfill
+    {\large \enstaName{} \par}
+    \vspace{0.8cm}
+    {\large \reportDate{} \par}
+\end{titlepage}
+
+% --- Front Matter ---
+\input{content/sections/001_Abstract.tex}
+
+\tableofcontents
+
+% --- Content ---
+\input{content/sections/002_Introduction.tex}
+
+\input{content/sections/011_Etat_Art.tex}
+
+\input{content/sections/012_Modelisation.tex}
+\input{content/sections/013_Resultats.tex}
+\input{content/sections/014_Analyse.tex}
+\input{content/sections/015_Discussion.tex}
+\input{content/sections/900_Conclusion.tex}
+
+% --- Back Matter ---
+\printbibliography[heading=bibintoc]
+
+\renewcommand{\thesection}{\thechapter.\arabic{section}}
+\appendix
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+\input{content/annexes/computational_logic}
+\input{content/annexes/99_annexes}
+
+\end{document}

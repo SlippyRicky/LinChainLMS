@@ -1,0 +1,131 @@
+% !TEX root = ../../main.tex
+\section[Modélisation de la chaîne]{Modélisation de la chaîne harmonique}
+
+\subsection{Simulation numérique de propagation d'une excitation temporelle}
+La résolution numérique de nos modèles s'effectue selon deux approches complémentaires : une résolution stationnaire dans le domaine fréquentiel et une intégration temporelle pour le régime transitoire. Afin de limiter le coût de calcul tout en assurant la validité physique des simulations, nous détaillons ici le schéma d'intégration symplectique employé ainsi que les conditions aux limites adoptées pour simuler le milieu de taille finie (voir le schéma de la Figure~\ref{fig:lattice_disordered_schematic}).
+
+\paragraph{1. Schéma d'intégration temporelle : Algorithme de Leapfrog (Hockney, 1970)}
+Pour résoudre l'évolution instationnaire des paquets d'ondes, la dynamique temporelle de la chaîne est régie par l'équation du second ordre :
+\begin{equation*}
+    m_0 \ddot{u}_n(t) = f_n^{\text{couplage}}(t) + f_n^{\text{ABC}}(t) + f_n^{\text{ext}}(t)
+\end{equation*}
+Nous intégrons ce système en utilisant le schéma de Leapfrog Verlet (\textcite{hockney1970potential}), qui s'appuie sur des sauts de temps demi-entiers pour évaluer la vitesse. Ce schéma symplectique et conservateur est particulièrement robuste : il conserve l'espace des phases et prévient toute dérive d'énergie à long terme, ce qui permet d'observer le confinement stable de l'énergie caractéristique de la localisation.
+
+Le passage d'un pas temporel au suivant s'effectue explicitement via les relations récurrentes suivantes :
+\begin{align*}
+    v_n\left(t + \frac{\Delta t}{2}\right) &= v_n\left(t - \frac{\Delta t}{2}\right) + \Delta t \, a_n(t) + \mathcal{O}(\Delta t^3) \\
+    u_n(t + \Delta t) &= u_n(t) + \Delta t \, v_n\left(t + \frac{\Delta t}{2}\right) + \mathcal{O}(\Delta t^3) \\
+    a_n(t + \Delta t) &= \frac{1}{m_0} f_n\left(u_n(t + \Delta t), v_n\left(t + \frac{\Delta t}{2}\right), t + \Delta t\right)
+\end{align*}
+Malgré une erreur locale en $\mathcal{O}(\Delta t^3)$ imposant un pas temporel $\Delta t$ fin, ce schéma explicite offre un coût de calcul très faible comparé à un algorithme de Runge-Kutta. Sa stabilité est régie par le critère de Courant-Friedrichs-Lewy (CFL), qui limite la vitesse de propagation de l'information numérique à celle des ondes physiques. Le nombre de Courant $C$ doit ainsi vérifier :
+\begin{equation*}
+    C = \frac{V_{g,\max} \, \Delta t}{a} < 1
+\end{equation*}
+où $a$ est le pas spatial et $V_{g,\max} = a \sqrt{K_0/m_0}$ la vitesse de groupe maximale. Cela impose la condition $\Delta t < \sqrt{m_0/K_0}$, révélant que la borne de stabilité coïncide avec l'unité de temps caractéristique du système adimensionné.
+\paragraph{2. Conditions initiales et forçage de source :}
+Pour simuler la propagation d'un phonon de fréquence $\omega_0$ dans la chaîne, celle-ci est initialement au repos ($u_n(0) = 0$ et $v_n(0) = 0$). L'excitation est introduite sous la forme d'un déplacement forcé appliqué uniquement sur la masse centrale $n_0 = N/2$ :
+\begin{equation*}
+    u_{n_0}(t) = U_0 \exp\left( -2\sigma (t-t_0)^2 \right) \sin\left( \omega_0 (t - t_0) \right)
+\end{equation*}
+avec sa vitesse imposée à $v_{n_0}(t) = 0$. Ce choix de conditions initiales au repos et de forçage temporel localisé offre un triple avantage pour la simulation physique des phonons :
+\begin{itemize}
+    \item Il injecte l'énergie uniquement à la fréquence ciblée $\omega_0$, évitant les excitations transitoires multi-fréquences qui apparaîtraient avec une déformation spatiale initiale.
+    \item La position centrale de la source retarde la rencontre du paquet d'ondes avec les frontières, permettant d'observer la propagation libre sur une distance maximale.
+    \item Il reproduit la dynamique d'une source physique de phonons à bande spectrale étroite se propageant de manière symétrique à travers le milieu.
+\end{itemize}
+
+\paragraph{3. Conditions aux limites :}
+Simuler une chaîne infinie sur un domaine numérique de taille finie nécessite d'éviter les réflexions de l'onde aux extrémités :
+\begin{itemize}
+    \item \textbf{En régime stationnaire (fréquentiel)} : Le système matriciel est résolu directement par inversion algébrique. Aux frontières, nous appliquons une condition de radiation exacte (RBC, pour \textit{Radiation Boundary Condition}) sous la forme d'une impédance complexe non locale $Z = K_0(1-z)$ avec $z=e^{i q_0 a}$, ce qui simule une chaîne semi-infinie sans nécessiter de mailles additionnelles.
+    \item \textbf{En régime transitoire (temporel)} : La condition RBC étant dispersive en temps, elle est modélisée par une couche absorbante (ABC, pour \textit{Absorbing Boundary Condition}) de largeur $L_{\text{ABC}}$. Les forces dissipatrices y sont de type visqueux, $f^{\text{ABC}}_n(t) = -\gamma_n v_n(t)$, où le coefficient d'amortissement $\gamma_n$ augmente de manière quadratique à l'approche des bords pour atténuer l'onde incidente.
+\end{itemize}
+
+\paragraph{4. Extraction de l'enveloppe vibratoire}
+Pour analyser l'atténuation spatiale des paquets d'ondes en s'affranchissant des oscillations rapides, nous extrayons l'enveloppe spatiale du déplacement $\mathcal{E}_n$ en retenant l'amplitude maximale absolue atteinte par chaque site $n$ sur toute la durée de la simulation :
+\begin{equation*}
+    \mathcal{E}_n = \max_{t} |u_n(t)|
+\end{equation*}
+Cette méthode élimine l'arbitraire lié au choix d'une fenêtre de lissage glissante et décrit précisément l'extension spatiale du paquet d'ondes.
+
+\subsection{Analyse modale et diagonalisation de la matrice dynamique}
+
+L'étude des modes propres de vibration d'une chaîne désordonnée de taille finie $N$ s'effectue en recherchant les solutions de l'équation du mouvement sous forme harmonique $u_n(t) = \tilde{u}_n e^{i\omega t}$. Le système matriciel couplé s'écrit alors :
+\begin{equation*}
+    \mathbf{K} \tilde{\mathbf{u}} = \omega^2 \mathbf{M} \tilde{\mathbf{u}}
+\end{equation*}
+où $\mathbf{K}$ est la matrice tridiagonale des raideurs (symétrique et définie positive), et $\mathbf{M} = \text{diag}(m_1, \dots, m_N)$ désigne la matrice diagonale des masses.
+
+\paragraph{Diagonalisation et symétrisation de la matrice dynamique}
+Pour résoudre ce problème aux valeurs propres généralisé tout en préservant la symétrie de la matrice, nous introduisons le changement de variable $v_n = \sqrt{m_n} \tilde{u}_n$. Cette transformation conduit au problème aux valeurs propres standard associé à la matrice dynamique symétrisée $\mathbf{D}$ :
+\begin{equation*}
+    \mathbf{D} \mathbf{v} = \omega^2 \mathbf{v}
+\end{equation*}
+Les coefficients de cette matrice tridiagonale symétrique s'expriment par :
+\begin{align*}
+    D_{n, n} &= \frac{K_n + K_{n-1}}{m_n} \\
+    D_{n, n+1} = D_{n+1, n} &= -\frac{K_n}{\sqrt{m_n m_{n+1}}}
+\end{align*}
+Aux limites du domaine, les conditions aux limites libres se traduisent par $K_0 = 0$ et $K_N = 0$, ce qui préserve la structure tridiagonale stricte de $\mathbf{D}$.
+La diagonalisation numérique exacte de la matrice $\mathbf{D}$ fournit $N$ valeurs propres réelles et positives $\lambda_k = \omega_k^2$ associées à des vecteurs propres orthonormés $\mathbf{v}^{(k)}$ ($k \in [1, N]$). Les pulsations propres du système s'en déduisent par $\omega_k = \sqrt{\lambda_k}$.
+
+Dans un réseau périodique ordonné, les modes propres sont des ondes de Bloch dont la transformée de Fourier spatiale se réduit à une fonction de Dirac dans l'espace des vecteurs d'onde $q$ :
+\begin{equation*}
+    \tilde{u}^{(k)}(q) = \frac{1}{\sqrt{N}} \sum_{n=1}^N u_n^{(k)} e^{-i q n a} \propto \delta(q - q_0)
+\end{equation*}
+En présence de désordre, la localisation d'Anderson confine spatialement les modes propres selon une enveloppe à décroissance exponentielle centrée autour d'un site $n_c$ : $u_n^{(k)} \propto e^{-\gamma |n - n_c|}$. Par produit de convolution, ce confinement spatial induit un élargissement spectral dans le domaine réciproque. La densité spectrale dans l'espace de Fourier prend alors la forme d'une lorentzienne :
+\begin{equation*}
+    \left| \tilde{u}^{(k)}(q) \right|^2 \propto \frac{1}{(q - q_0)^2 + \gamma^2}
+\end{equation*}
+où $\gamma = 1/\xi$ correspond à l'exposant de Lyapunov. Cet élargissement brise la relation de dispersion univoque du réseau parfait : la branche de dispersion dans le plan $(\omega, q)$ s'élargit, car le vecteur d'onde $q$ perd sa cohérence spatiale globale (voir la Figure~\ref{fig:spectral_broadening}).
+
+\subsubsection{La singularité de Van Hove et queues de Lifshitz}
+
+Le spectre des fréquences propres permet de construire la densité d'états vibrationnels (DOS) normalisée $g(\omega)$, qui quantifie le nombre de modes disponibles par unité de pulsation. Numériquement, dans cette première simulation de nature stationnaire et fermée ($N \sim 4000$), elle est extraite par partitionnement fréquentiel (histogramme) :
+\begin{equation*}
+    g(\omega) = \frac{1}{N \, \Delta \omega} \sum_{k=1}^N \mathbf{1}_{\omega_k \in [\omega, \omega + \Delta \omega]}
+\end{equation*}
+Dans le cas d'une chaîne monoatomique ordonnée nominale ($m_n = m_0, K_n = K_0$), la relation de dispersion de Brillouin impose une limite physique stricte sur les fréquences de propagation. La pulsation de coupure maximale théorique vaut :
+\begin{equation*}
+    \omega_{\max} = 2 \sqrt{\frac{K_0}{m_0}}
+\end{equation*}
+Au-delà de cette frontière spectrale ($\omega > \omega_{\max}$), le cristal parfait ne peut supporter que des modes évanescents de transmission nulle. 
+
+En présence de désordre, cette limite nette est rompue. Les fluctuations stochastiques provoquent l'apparition de modes localisés à des fréquences supérieures à $\omega_{\max}$, associés à des regroupements locaux d'atomes léger ou de ressorts rigides. Ces modes apparaissent dans la bande interdite sous forme d'états fortement confinés, constituant la queue de Lifshitz. La comparaison entre le désordre de masse (diagonal) et de raideur (hors-diagonal) présentée sur la Figure~\ref{fig:spectral_duality} montre que, bien que les deux types de désordre conduisent à une atténuation similaire de la singularité de Van Hove, le désordre de raideur présente une décroissance plus rapide du nombre d'états dans la queue de Lifshitz à haute fréquence.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{05_spectral_asymmetry.pdf}
+    \caption{Asymétrie spectrale ($N=4000, \varepsilon=0.5$) : comparaison de l'influence du désordre de masse (diagonal) et de raideur (hors-diagonal) sur la densité d'états globale (a) et la queue de Lifshitz au-delà de la coupure théorique (b).}
+    \label{fig:spectral_duality}
+\end{figure}
+
+Nous distinguons deux approches complémentaires pour le calcul numérique de la densité d'états :
+\begin{itemize}
+    \item \textbf{La diagonalisation modale exacte} (présentée ici, $N \sim 4000$) : cette approche résout le problème aux valeurs propres de la chaîne finie. Elle fournit à la fois le spectre complet et la forme spatiale des modes propres, mais reste limitée par son coût de calcul en $\mathcal{O}(N^2)$ et les effets de taille finie.
+    \item \textbf{La marche de phase de Riccati} (\textit{cf.}~\ref{sec:riccati_node}) : cette approche intègre une relation de phase locale unidimensionnelle de complexité linéaire $\mathcal{O}(N)$. Elle permet d'extraire la densité cumulée d'états de chaînes de grande taille ($N \ge 10^5$) sans diagonalisation matricielle.
+\end{itemize}
+Ces deux méthodes sont complémentaires : la diagonalisation modale permet d'accéder au profil spatial des modes propres, tandis que la relation de récurrence stochastique permet d'atteindre la limite thermodynamique pour l'évaluation de l'exposant de Lyapunov.
+
+\subsection{Formalisme de la matrice de transfert}
+
+Le formalisme de la matrice de transfert constitue une méthode robuste pour étudier la propagation des ondes dans ce système unidimensionnel, et se prête particulièrement bien aux simulations numériques. 
+
+Dans le cas d'une fluctuation des masses $m_n$ formulé par \textcite{matsuda1970localization}, l'équation de la dynamique harmonique $-m_n \omega^2 u_n = K(u_{n+1} + u_{n-1} - 2u_n)$ s'écrit sous forme matricielle :
+\[ \begin{pmatrix} u_{n+1} \\ u_n \end{pmatrix} = \mathbf{T}_n \begin{pmatrix} u_n \\ u_{n-1} \end{pmatrix}, \quad \text{avec } \mathbf{T}_n = \begin{pmatrix} 2 - \frac{m_n \omega^2}{K} & -1 \\ 1 & 0 \end{pmatrix} \]
+Le déplacement est ainsi propagé de proche en proche par l'application successive de ces opérateurs matriciels (voir la Figure~\ref{fig:transfer_flow}).
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{06_transfer_flowchart}
+    \caption{Représentation schématique du formalisme de la matrice de transfert. L'état vibratoire $\mathbf{u}_n$ est généré récursivement par l'opérateur $\mathbf{T}_n$, dont les propriétés sont modulées par la fluctuation stochastique de la raideur $K_n$ (ou de la masse $m_n$). Cette structure multiplicative conduit à la localisation exponentielle.}
+    \label{fig:transfer_flow}
+\end{figure}
+
+L'introduction du désordre brise l'invariance par translation du réseau : la structure tridiagonale uniforme du cas périodique est rompue par les fluctuations stochastiques. Cette brisure de symétrie se traduit par une répulsion des niveaux d'énergie, caractéristique de la localisation d'Anderson.
+
+\subsubsection{Indicateurs modaux de localisation}
+
+Pour quantifier le confinement spatial des modes propres $\mathbf{\psi}$ obtenus par diagonalisation, nous utilisons le taux de participation (\textit{Participation Ratio}, $PR$), défini par l'équation~\eqref{eq:participation_ratio}. Pour un mode normalisé ($\sum_{n=1}^N |\psi_n|^2 = 1$), cet indicateur mesure le nombre effectif de sites sur lesquels l'énergie est répartie, avec $PR \in [1, N]$. À basse fréquence, les modes de grande longueur d'onde restent étendus sur l'ensemble de la chaîne ($PR \sim N$), tandis qu'à haute fréquence, ils se localisent sur un petit nombre de sites ($PR \to 1$).
+
+L'analyse statistique met en évidence l'effet du niveau de désordre $\sigma_\varepsilon$ sur la densité d'états (DOS) et sur le $PR$. À faible désordre ($\sigma_\varepsilon = 0.1$), la singularité de Van Hove à la fréquence de coupure $\omega_{\max} = 2.0$ est préservée. Lorsque le désordre augmente ($\sigma_\varepsilon = 0.7$ et $1.4$), la singularité s'érode au profit de queues de Lifshitz au-delà de la coupure théorique, tandis que le $PR$ décroît fortement à haute fréquence, ce qui traduit le confinement spatial des états propres.

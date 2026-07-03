@@ -1,0 +1,100 @@
+\section{Résultats de Simulation}
+
+\subsection{Profil spatial des modes propres}
+\label{subsec:eigenmodes_profiles}
+
+À titre d'introduction visuelle à la localisation dans les chaînes désordonnées, la Figure~\ref{fig:eigenmodes_waterfall} présente la forme spatiale de modes propres sélectionnés en fonction de leur fréquence. Cette représentation graphique permet d'observer de manière qualitative comment l'extension spatiale des modes évolue avec la fréquence. Les modes de basse fréquence conservent un profil étendu sur l'ensemble de la chaîne, cohérent avec le régime acoustique faiblement localisé. En revanche, les modes de plus haute fréquence présentent un confinement spatial marqué, se concentrant sur un très petit nombre de sites.
+
+\subsection{Profils spatiaux asymptotiques et régimes de décroissance}
+\label{subsec:wp_asymptotic_envelopes}
+
+Pour caractériser de manière quantitative la transition de régime et mesurer la longueur de localisation, nous analysons l'enveloppe énergétique asymptotique de paquets d'ondes de différentes fréquences centrales $\omega$ se propageant dans des chaînes désordonnées. Le profil moyen de la log-enveloppe $\langle\ln|u_n/u_0|\rangle_M$ est calculé sur $M=10$ réalisations indépendantes de désordre pour chaque configuration.
+
+La Figure~\ref{fig:wp_attenuation} présente ces profils spatiaux normalisés sous deux représentations complémentaires : semi-logarithmique (colonne de gauche) et log-log (colonne de droite). Cette double échelle permet d'identifier précisément les différents régimes spatiaux d'atténuation.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth,height=0.35\textheight,keepaspectratio]{07_eigenmodes_waterfall.pdf}
+\caption{\textbf{Anatomie de la localisation spatiale des modes propres ($N = 100$, $\sigma_\varepsilon = 0{,}9$).} Profil spatial de modes propres sélectionnés pour un système fini soumis au désordre. Les modes de basse fréquence demeurent étendus, tandis que les modes de haute fréquence présentent une localisation spatiale prononcée.}
+\label{fig:eigenmodes_waterfall}
+\end{figure}
+
+Les modes de basse fréquence conservent un profil étendu sur l'ensemble de la chaîne, cohérent avec le régime acoustique faiblement localisé. En revanche, les modes de plus haute fréquence présentent un confinement spatial marqué, se concentrant sur un très petit nombre de sites.
+
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=1.0\textwidth,height=0.78\textheight,keepaspectratio]{08_wavepacket_envelopes.pdf}
+\caption{\textbf{Enveloppes spatiales asymptotiques et régimes de décroissance des paquets d'ondes.} Profil de l'enveloppe asymptotique d'un paquet d'ondes pour cinq fréquences d'excitation et trois intensités de désordre de raideur ($N = 6000$, $M = 10$ réalisations indépendantes). Chaque ligne correspond à un niveau de désordre $\varepsilon \in \{0{,}1;\, 0{,}7;\, 1{,}4\}$. Colonne de gauche : amplitude normalisée $\langle|u_n/u_0|\rangle_M$ en échelle semi-logarithmique, où la décroissance exponentielle à courte distance forme une ligne droite de pente $-1/\xi_E$. Colonne de droite : même amplitude en échelle log-log, où la décroissance à longue distance forme une droite de pente $-\alpha$. Les cercles identifient le point de transition vers une propagation dispersive $n_c$ séparant les deux régimes.}
+\label{fig:wp_attenuation}
+\end{figure}
+
+Pour chaque courbe de la Figure~\ref{fig:wp_attenuation}, un algorithme d'ajustement fait varier le point de transition $n_c$ (représenté par un cercle de couleur) pour minimiser l'erreur quadratique globale d'un double ajustement linéaire :
+\begin{itemize}
+    \item \textbf{Régime exponentiel à courte distance ($n - n_0 < n_c$)} : un ajustement linéaire sur la log-enveloppe (qui correspond à une décroissance exponentielle $|u_n| \propto e^{-(n-n_0)/\xi_E}$) est effectué pour extraire la longueur de localisation $\xi_E$. La droite d'ajustement correspond à l'expression :
+    \begin{equation}
+        \ln \left( \frac{\langle |u_n| \rangle_M}{|u_{n_0}|} \right) = C_1 - \frac{n - n_0}{\xi_E}
+        \label{eq:fit_exponential}
+    \end{equation}
+    où $C_1$ est une constante d'ajustement. Ce fit est tracé en lignes discontinues (tirets) sur la colonne de gauche pour $10 \le n - n_0 \le n_c$.
+    \item \textbf{Régime de loi de puissance à longue distance ($n - n_0 > n_c$)} : un ajustement linéaire en coordonnées double-logarithmiques (qui correspond à une loi de puissance $|u_n| \propto (n-n_0)^{-\alpha}$) est mené pour extraire l'exposant de décroissance $\alpha$. La droite d'ajustement correspond à l'expression :
+    \begin{equation}
+        \ln \left( \frac{\langle |u_n| \rangle_M}{|u_{n_0}|} \right) = C_2 - \alpha \ln(n - n_0)
+        \label{eq:fit_powerlaw}
+    \end{equation}
+    où $C_2$ est une constante d'ajustement. Ce fit est tracé en lignes pointillées sur la colonne de droite pour $n_c \le n - n_0 \le 2800$.
+\end{itemize}
+
+Ce double ajustement permet de mettre en évidence la transition entre deux régimes de propagation. L'objectif est notamment de confirmer l'existence d'un régime dispersif et dissipatif se maintenant au-delà de la longueur de localisation $\xi_E$. La transition vers une loi de puissance après $n_c$ démontre que de l'énergie continue de se propager et de se dissiper lentement dans les régions éloignées de la source, contrecarrant le confinement absolu induit par la localisation forte.
+
+Les valeurs numériques ajustées de la longueur de localisation $\xi_E$, de l'exposant de puissance $\alpha$ et du point de transition $n_c$ obtenues à partir des enveloppes de la Figure~\ref{fig:wp_attenuation} pour l'ensemble des fréquences simulées et différentes intensités de désordre sont tracées sur la Figure~\ref{fig:wp_fit_parameters}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{09_wavepacket_fit_parameters.pdf}
+    \caption{Évolution des paramètres d'ajustement de l'enveloppe asymptotique des paquets d'ondes en fonction de la fréquence d'excitation $\omega$ pour différentes intensités de désordre $\varepsilon$. \textbf{À gauche} : Longueur de localisation ajustée $\xi_E$ issue du régime exponentiel intermédiaire ($10 < n - n_0 \le n_c$). \textbf{Au centre} : Exposant de décroissance algébrique $\alpha$ caractérisant le régime dispersif lointain ($n - n_0 > n_c$). \textbf{À droite} : Point de transition spatiale $n_c$ marquant le croisement entre l'ajustement exponentiel et l'ajustement en loi de puissance.}
+    \label{fig:wp_fit_parameters}
+\end{figure}
+
+\subsection{Évolution spatio-temporelle du paquet d'ondes}
+\label{subsec:wp_spatiotemporal_evolution}
+
+La propagation transitoire d'un paquet d'ondes gaussien permet également d'observer directement le phénomène de piégeage de l'énergie dans le domaine temporel. La Figure~\ref{fig:wp_comparison} présente l'évolution spatio-temporelle du paquet pour trois niveaux de désordre croissants à vecteur d'onde central $q_0 = 0{,}50\pi$ :
+\begin{itemize}
+    \item \textbf{Faible désordre ($\varepsilon = 0{,}1$)} : le paquet d'ondes conserve une structure cohérente et se propage sur de longues distances avant d'être atténué.
+    \item \textbf{Désordre modéré ($\varepsilon = 0{,}3$)} : la rétrodiffusion devient notable. L'enveloppe se fragmente rapidement et l'énergie commence à se figer spatialement.
+    \item \textbf{Fort désordre ($\varepsilon = 1{,}4$)} : la localisation est immédiate. L'énergie reste confinée au voisinage du point d'émission, sur une distance de l'ordre de quelques distances interatomiques.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{09_wp_vs_impact.pdf}
+\caption{\textbf{Évolution spatio-temporelle du paquet d'ondes sous différents désordres.} Profils temporels de propagation d'un paquet d'ondes ($\omega_0 = 1{,}41$, $N=6000$, $T=1000$, région affichée $[-1200 \text{ ; } 1200]$) pour trois intensités de désordre de raideur croissantes.}
+\label{fig:wp_comparison}
+\end{figure}
+
+\subsection{Densité d'états et taux de participation}
+\label{subsec:dos_and_pr}
+
+La résolution modale du système fini permet d'observer la signature de la localisation sur la distribution spectrale et sur l'extension spatiale des modes propres (Figure~\ref{fig:participation_ratio}).
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=1.0\textwidth,height=0.82\textheight,keepaspectratio]{10_participation_ratio.pdf}
+\caption{\textbf{Densité d'états vibratoires et taux de participation pour trois intensités de désordre.} Densité d'états $g(\omega)$ (DOS, gauche) et taux de participation (PR, droite, échelle log) pour un système de taille $N=500$ et trois intensités de désordre $\sigma_\varepsilon = 0{,}1, \, 0{,}7, \, 1{,}4$. Le PR est affiché dans sa convention absolue en sites (Éq.~\ref{eq:participation_ratio}), directement comparable à une longueur de localisation ($\xi_{PR} = PR$ en unités réduites). La coupure théorique $\omega_{\max}=2{,}0$ est indiquée en tirets noirs. L'augmentation du désordre érode la singularité de Van Hove (apparition de queues de Lifshitz) et fait chuter le PR à haute fréquence vers la limite unitaire ($\text{PR} \to 1$), caractéristique de la localisation forte.}
+\label{fig:participation_ratio}
+\end{figure}
+
+L'intensification du désordre érode progressivement la singularité de Van Hove au bord de bande, générant des queues d'états à haute fréquence (queues de Lifshitz). Ces états, issus de configurations locales atypiques du désordre, présentent une extension spatiale très réduite. Cette tendance se traduit directement dans le taux de participation (PR) : à haute fréquence, le PR s'effondre vers 1, indiquant que l'énergie du mode est concentrée sur un très petit nombre de sites.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{11_spectral_broadening.pdf}
+\caption{Élargissement spectral des modes de réseau par désordre. À désordre nul (bleu), la réponse est piquée autour de la valeur nominale de $q$. L'augmentation du désordre induit un élargissement de cette distribution en espace réciproque, dont la largeur est reliée à la décroissance exponentielle du mode dans l'espace réel.}
+\label{fig:spectral_broadening}
+\end{figure}
+
+\subsection{Élargissement spectral}
+\label{subsec:spectral_broadening}
+
+L'impact du désordre se manifeste également dans l'espace réciproque par un élargissement des modes, illustré en Figure~\ref{fig:spectral_broadening}. Dans un réseau parfaitement ordonné, chaque mode correspond à un vecteur d'onde $q$ parfaitement défini au sens de Bloch. Le désordre brise cette périodicité et induit une dispersion autour de la valeur nominale de $q$. Cet élargissement en espace réciproque est la contrepartie directe, par transformation de Fourier, de la localisation spatiale observée dans l'espace réel.

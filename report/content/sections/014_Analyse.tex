@@ -1,0 +1,61 @@
+\section{Analyse Modale et Confrontations}
+
+\subsection{Limite acoustique et Loi de Matsuda-Ishii}
+
+Dans la limite macroscopique des grandes longueurs d'onde, la longueur de localisation $\xi(\omega) = 1/\gamma(\omega)$ obéit à la loi d'échelle quadratique de Matsuda-Ishii dans le régime acoustique basse fréquence. La confrontation entre cette théorie analytique et nos simulations numériques par matrice de transfert pour différentes intensités de désordre ($\varepsilon = 0.1$, $0.3$ et $1.4$) est présentée sur la Figure~\ref{fig:matsuda_ishii_scaling}. 
+
+Pour un faible désordre ($\varepsilon = 0.1$), l'accord est excellent à moyenne fréquence mais sature aux très basses fréquences en raison d'effets de taille finie : la longueur de localisation $\xi$ théorique dépasse la taille de la chaîne simulée ($N = 50000$), provoquant un plancher statistique. Pour un désordre modéré ($\varepsilon = 0.3$), la zone d'accord s'étend sur plusieurs décades de fréquence. Enfin, pour un désordre fort ($\varepsilon = 1.4$), on observe un écart systématique (décalage vertical) entre la simulation et la théorie, ce qui illustre la limite de validité du développement perturbatif de faible désordre de Matsuda-Ishii, bien que la pente en $\omega^{-2}$ reste qualitativement conservée à basse fréquence.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=1.0\textwidth]{12_matsuda_ishii.pdf}
+\caption{Validation de la loi d'échelle de Matsuda-Ishii pour différentes intensités de désordre de raideur ($\varepsilon = 0.1$, $0.3$ et $1.4$ avec $N = 50000, M = 10$ réalisations). La longueur de localisation $\xi(\omega) = 1/\gamma(\omega)$ est représentée en fonction de la fréquence $\omega$ en échelle double logarithmique. Les points bleus correspondent aux simulations TMM exactes et les tirets rouges à la théorie analytique de Matsuda-Ishii (Eq.~\ref{eq:matsuda_ishii_localization}).}
+\label{fig:matsuda_ishii_scaling}
+\end{figure}
+
+Le désordre opère une restructuration complète du paysage vibratoire. À l'échelle macroscopique, il induit un assouplissement effectif (bornes de Reuss). À l'échelle mésoscopique, il brise la topologie de Brillouin au profit de queues de Lifshitz. Enfin, à l'échelle microscopique, il génère des états localisés qui érodent les symétries de gap. Cette analyse multi-échelle prépare le cadre formel de l'atténuation spatiale via le formalisme de Lyapunov.
+
+\subsection{Confrontation des Méthodes de Calcul de l'Atténuation}
+Afin de quantifier de manière absolue l'atténuation spatiale, il est nécessaire de confronter différentes approches d'analyse, et ce pour les différents types de désordre (diagonal sur les masses, hors-diagonal sur les raideurs, ou combiné). La méthode numérique de la matrice de transfert (TMM) permet d'obtenir l'exposant de Lyapunov exact $\gamma$ (et donc $\xi=1/\gamma$). Parallèlement, le développement perturbatif formalisé par l'équation de Riccati (basé sur la récurrence du ratio d'amplitude complexe Eq.~\eqref{eq:riccati_recurrence}) permet d'isoler la dynamique de phase, conduisant à une prédiction numérique par l'intégration de la distribution stationnaire de la phase. Le taux de participation absolu, défini dans Eq.~\eqref{eq:participation_ratio}, est censé fournir une estimation de la longueur de localisation indépendamment des vecteurs d'onde.~\cite{bell1970atomic,bell1972dynamics}
+
+Dans la limite du faible désordre (développement de Matsuda-Ishii ou limite de Derrida), cette approche converge vers une solution purement analytique reliant l'atténuation à la variance effective du désordre $\sigma_{\text{eff}}^2$ et à la fréquence $\omega$ :
+\begin{equation}
+    \xi_{\text{analytique}}(\omega) = \frac{8}{\sigma_{\text{eff}}^2 \omega^2} \left( 1 - \frac{\omega^2}{4} \right)
+    \label{eq:matsuda_ishii_localization}
+\end{equation}
+
+L'arrêt spatial du transport, qui s'établit une fois franchi le temps de \textit{cross-over} $t_{\text{cross}} \approx \xi / v_g(\omega)$ (l'instant marquant la transition du régime balistique au régime localisé), est également quantifié par les simulations directes de dynamique de paquets d'ondes. Pour chaque configuration de désordre, les longueurs d'atténuation correspondantes sont extraites de l'enveloppe asymptotique du paquet par projection modale : $\langle u_n^2 \rangle = \frac{1}{2} \sum_k c_k^2 \Psi_{n,k}^2$. En 1D, la longueur de localisation est directement égale au taux de participation : $\xi_{WP} = PR(\langle u_n^2 \rangle)$. Ces résultats d'atténuation dynamique (étoiles orange) sont superposés aux méthodes stationnaires sur la Figure~\ref{fig:attenuation_methods}.
+
+Comme l'illustre la Figure~\ref{fig:attenuation_methods}, ces différents modèles concordent dans le régime acoustique basse fréquence, indépendamment du type de désordre considéré. À basse fréquence, l'onde moyenne les fluctuations locales et le système est peu perturbé. Toutefois, à l'approche de la limite de bande ($\omega \to 2$), les hypothèses perturbatives de l'équation de Riccati et de la solution analytique échouent à décrire l'anomalie de bord de bande, divergeant des résultats exacts TMM et modaux. Ce comportement justifie le recours à l'approche matricielle exacte pour évaluer la longueur de localisation dans le régime dispersif.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.95\textwidth,height=0.8\textheight,keepaspectratio]{13_attenuation_methods_comparison.pdf}
+\caption{\textbf{Comparaison des longueurs de localisation $\xi(\omega)$ pour les trois configurations de désordre (désordre sur les masses, sur les ressorts, et combiné).} Les prédictions sont confrontées à la méthode numérique exacte de la matrice de transfert (ligne bleue continue). Les modèles de perturbation en désordre faible incluent l'intégration numérique de la récurrence de phase de Riccati (Eq.~\ref{eq:riccati_lyapunov}, tirets rouges) et la limite analytique acoustique de Matsuda-Ishii (Eq.~\ref{eq:matsuda_ishii_localization}, pointillés noirs). Ces approches dynamiques sont comparées à l'étendue spatiale des modes propres quantifiée par le taux de participation $\xi_{PR} = PR$ (points verts), relation exacte en 1D où la longueur de localisation est directement le nombre de sites sur lesquels le mode est significativement étendu.}
+\label{fig:attenuation_methods}
+\end{figure}
+
+L'ajustement systématique d'une loi de puissance de la forme $\xi(\omega) \propto \omega^{-\alpha}$ dans le régime de validité acoustique ($\omega \in [0.4 \text{ ; } 1.2]$) permet d'extraire les exposants de proportionnalité pour chaque modèle. Les paramètres $\alpha$ et $\sigma_{\text{eff}}^2$ sont obtenus par une régression linéaire par moindres carrés appliquée aux données en coordonnées logarithmiques $\ln(\xi)$ en fonction de $\ln(\omega)$. La pente de la régression fournit $-\alpha$. La Figure~\ref{fig:scaling_fits_illustration} illustre cette procédure d'ajustement pour la méthode TMM dans la fenêtre acoustique.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=1.0\textwidth]{14_scaling_fits_illustration.pdf}
+\caption{Illustration de la procédure d'ajustement en loi de puissance pour l'extraction des paramètres d'atténuation (méthode TMM). La régression linéaire en échelle Log-Log sur la plage $\omega \in [0.4 \text{ ; } 1.2]$ (zone grisée) détermine l'exposant $\alpha$ (pente) et la variance effective $\sigma_{\text{eff}}^2$ (issue de l'ordonnée à l'origine).}
+\label{fig:scaling_fits_illustration}
+\end{figure}
+
+L'analyse des paramètres ajustés (Figure~\ref{fig:attenuation_parameters}) confirme que les exposants d'atténuation $\alpha_{TMM}$ et $\alpha_{Riccati}$ restent confinés autour de la valeur universelle théorique de $2.0$, soulignant la convergence asymptotique de tous les types de désordre vers le modèle de Matsuda-Ishii. Plus fondamentalement, pour un désordre combiné impliquant simultanément les masses et les ressorts, la variance effective ajustée de la force de diffusion est additive pour ces méthodes dynamiques : $\sigma_{\text{eff}}^2 \approx \sigma_{\text{masses}}^2 + \sigma_{\text{ressorts}}^2$, vérifiant que les processus de diffusion diagonaux et hors-diagonaux agissent comme des centres diffuseurs décorrélés à basse fréquence.
+
+L'application de la récurrence de Riccati au cas du désordre de raideur a nécessité une précaution physique particulière qui mérite d'être soulignée. La fluctuation de compliance $\epsilon_n = 1/K_n - 1$ étant asymétrique, son injection naïve génère un biais d'ordre 1 (une moyenne non nulle) qui fausse totalement l'extraction de $\sigma_{\mathrm{eff}}^2$. En recentrant mathématiquement cette compliance --- ce qui équivaut physiquement à adopter la borne de Reuss comme milieu homogène de référence --- l'algorithme annule cette dérive et retrouve un accord spectaculaire avec la méthode TMM (comme l'illustrent les superpositions des Figures~\ref{fig:attenuation_methods} et~\ref{fig:attenuation_parameters}), démontrant l'universalité de la loi d'Anderson quel que soit le type de désordre.
+
+Néanmoins, une divergence majeure apparaît à basse fréquence ($\omega \to 0$) concernant le taux de participation $\xi_{PR} = PR$ (points verts de la Figure~\ref{fig:attenuation_methods}). Alors que la longueur de localisation exacte $\xi_{TMM}$ et le modèle analytique de Matsuda-Ishii croissent indéfiniment en $\omega^{-2}$ pour dépasser la taille du système ($10^4$ à $10^5$ sites), $\xi_{PR}$ sature brutalement aux alentours de $N$ sites (soit la taille totale de la chaîne de $N=6000$ sites). Cette divergence constitue un effet de taille finie incontournable. En 1D, le taux de participation d'un mode propre est directement borné par la taille du réseau ($PR \le N$) : lorsque la longueur de localisation physique théorique excède la taille du système ($\xi(\omega) \gg N$), l'enveloppe de localisation est tronquée par les limites physiques du domaine, et le mode propre se délocalise sur l'ensemble de la chaîne, forçant la saturation de $\xi_{PR} \to N$. À l'inverse, les méthodes dynamiques (TMM et Riccati) évaluent l'exposant de Lyapunov $\gamma$ le long d'une trajectoire de transfert sans conditions aux limites de confinement modal, permettant d'extraire des longueurs de localisation théoriques bien supérieures à la taille physique de l'échantillon simulé.
+
+Il existe ainsi un domaine de similarité intermédiaire ($\omega \in [0.4 \text{ ; } 1.2]$) où les longueurs de localisation sont à la fois suffisamment petites devant $N$ pour ne pas subir cet effet de troncature par les bords, et suffisamment grandes devant la distance interatomique $a$. Dans cette fenêtre d'échelle, le taux de participation $\xi_{PR}$ coïncide remarquablement avec $\xi_{TMM}$ et $\xi_{Riccati}$ (Figure~\ref{fig:attenuation_methods}), validant l'utilisation de l'indicateur modal $\xi_{PR} = PR$ comme une estimation fidèle et directe de la longueur de localisation dans le régime faiblement localisé en 1D.
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.95\textwidth]{15_parameters_comparison.pdf}
+\caption{Paramètres d'ajustement ($\alpha$ et $\sigma_{\text{eff}}^2$) pour chaque désordre et méthode. Les méthodes dynamiques (TMM et Riccati) convergent parfaitement vers les valeurs théoriques ($\alpha \approx 2$ et $\sigma_{\text{eff}}^2 \approx \sigma_{\text{theo}}^2$). En revanche, le taux de participation (PR) sous-estime l'exposant ($\alpha \approx 1{,}7$) en raison de la saturation par effet de taille finie à basse fréquence. L'additivité des forces de désordre en régime combiné est confirmée pour les méthodes dynamiques.}
+\label{fig:attenuation_parameters}
+\end{figure}

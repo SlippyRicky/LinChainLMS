@@ -1,0 +1,119 @@
+\chapter{Calculs Formels et Développements}\label{annexe:A}
+
+\section{Développements Formels}\label{annexe:math}
+Cette section regroupe les développements formels effectués à l'aide de calcul symbolique (SymPy).
+
+\subsection{Matrice Dynamique}
+La matrice dynamique du système 1D pondérée par les masses est donnée par:
+\label{eq:dynamical-matrix}
+\begin{equation}
+    \left[
+    \begin{matrix}
+        \frac{K_{01} + K_{12}}{M_{1}} & - \frac{K_{12}}{\sqrt{M_{1}} \sqrt{M_{2}}} \\
+        - \frac{K_{12}}{\sqrt{M_{1}} \sqrt{M_{2}}} & \frac{K_{12} + K_{23}}{M_{2}}
+    \end{matrix}
+    \right]
+\end{equation}
+
+\subsection{Limites d'Homogénéisation}
+Les bornes de Voigt et de Reuss pour la raideur effective du milieu désordonné sont:
+\label{eq:voigt-bound}
+\begin{equation}
+    K_{\text{eff, Voigt}} = \frac{\sum_{i=1}^{N} K_{i}}{N}
+\end{equation}
+\label{eq:reuss-bound}
+\begin{equation}
+    K_{\text{eff, Reuss}} = \frac{N}{\sum_{i=1}^{N} \frac{1}{K_{i}}}
+\end{equation}
+
+\subsection{Statistiques de Valeurs Extrêmes}
+La densité de probabilité (PDF) de la fréquence maximale dans une chaîne de taille $N$ est:
+\label{eq:evs-pdf}
+\begin{equation}
+    P(\omega_{\max}) = 2 M N \omega_{\max} {\left(\frac{1}{4 \varepsilon}\right)}^{N} {\left(M \omega_{\max}^{2} + 2\varepsilon - 4\right)}^{N - 1}
+\end{equation}
+
+
+\section{Intégration Temporelle : Schéma Symplectique de Velocity-Verlet JIT et ABC}
+
+Pour simuler la propagation dynamique d'ondes et caractériser le transport d'énergie, les équations différentielles couplées du mouvement sont intégrées par un moteur temporel optimisé, compilé JIT avec \texttt{Numba}. 
+
+\paragraph{1. Algorithme de Velocity-Verlet :}
+Le moteur résout le système dynamique à l'aide de l'algorithme Velocity-Verlet, qui est un intégrateur symplectique d'ordre 2 garantissant la conservation de l'énergie à long terme. Pour un pas de temps $\Delta t$, les variables d'état spatiales (déplacement $u_j$ et vitesse $v_j$ pour la masse $j$) sont mises à jour de l'instant $t$ à l'instant $t + \Delta t$ en cinq étapes successives :
+\begin{enumerate}
+    \item \textbf{Demi-pas en vitesse :}
+    \begin{equation}
+        v_j\left(t + \frac{\Delta t}{2}\right) = v_j(t) + \frac{\Delta t}{2} a_j(t)
+    \end{equation}
+    \item \textbf{Pas complet en position :}
+    \begin{equation}
+        u_j(t + \Delta t) = u_j(t) + \Delta t v_j\left(t + \frac{\Delta t}{2}\right)
+    \end{equation}
+    \item \textbf{Mise à jour de l'enveloppe absolue maximum :}
+    Le déplacement maximal absolu de chaque atome est enregistré en continu :
+    \begin{equation}
+        E_j(t + \Delta t) = \max\left( E_j(t), |u_j(t + \Delta t)| \right)
+    \end{equation}
+    \item \textbf{Calcul de l'accélération suivante (avec amortissement et excitation) :}
+    L'accélération $a_j(t + \Delta t)$ est calculée en sommant les forces de rappel élastiques, l'amortissement linéaire aux bords, et la force externe :
+    \begin{equation}
+        a_j(t + \Delta t) = \frac{1}{m_0} \left[ F_j^{\text{ressort}}\big(\mathbf{u}(t + \Delta t)\big) - g_j v_j\left(t + \frac{\Delta t}{2}\right) + F_j^{\text{ext}}(t + \Delta t) \right]
+    \end{equation}
+    \item \textbf{Second demi-pas en vitesse :}
+    \begin{equation}
+        v_j(t + \Delta t) = v_j\left(t + \frac{\Delta t}{2}\right) + \frac{\Delta t}{2} a_j(t + \Delta t)
+    \end{equation}
+\end{enumerate}
+\textit{Stabilité numérique :} Le terme d'amortissement visqueux de l'accélération à l'étape 4 est évalué à l'aide de la vitesse à demi-pas $v_j(t + \Delta t/2)$ plutôt qu'à pas complet, éliminant ainsi toute instabilité numérique sans nécessiter de boucle d'inversion implicite.
+
+\paragraph{2. Couches Absorbantes aux Limites (ABC) :}
+Pour modéliser un milieu infini sans réflexions d'ondes parasites aux frontières du réseau encastré, une condition de bord absorbante (ABC) de largeur $L_{\text{ABC}} = 100$ sites est implémentée aux deux extrémités. Le profil de coefficient d'amortissement $g_j$ est de nature quadratique pour assurer une adaptation d'impédance acoustique progressive :
+\begin{equation}
+    g_j = \begin{cases}
+        \gamma_{\max} \left( \frac{L_{\text{ABC}} - j}{L_{\text{ABC}}} \right)^2 & \text{pour } 0 \le j < L_{\text{ABC}} \\
+        \gamma_{\max} \left( \frac{j - (N - 1 - L_{\text{ABC}})}{L_{\text{ABC}}} \right)^2 & \text{pour } N - 1 - L_{\text{ABC}} < j \le N-1 \\
+        0 & \text{sinon}
+    \end{cases}
+\end{equation}
+avec un amortissement maximal $\gamma_{\max} = 0{,}1$.
+
+\paragraph{3. Excitation Gaussienne de Paquet d'Ondes :}
+L'excitation externe appliquée au site central $j_c = N // 2$ est un paquet d'ondes gaussien modulé harmoniquement :
+\begin{equation}
+    F_j^{\text{ext}}(t) = \delta_{j, j_c} \cdot A_0 \cdot \exp\left( -\frac{(t - T_{\text{pulse}})^2}{2 \sigma_{\text{pulse}}^2} \right) \sin(\omega_{\text{ext}} t)
+\end{equation}
+où la modulation gaussienne s'étend sur $T_{\text{pulse}} = \min(8\pi/\omega_{\text{ext}}, 300)$ et sa largeur d'impulsion vaut $\sigma_{\text{pulse}} = T_{\text{pulse}}/6$. L'excitation est coupée de façon nette ($F^{\text{ext}} = 0$) pour $t \ge 2 T_{\text{pulse}}$ afin de laisser le paquet d'ondes s'étaler librement dans le réseau désordonné.
+
+\section{Analyse de l'Écart Matriciel de Raideur (Modèle Physique vs Code)}
+
+Lors de la résolution modale des fréquences propres du système désordonné, une étude analytique rigoureuse révèle une divergence de modélisation entre la formulation physique théorique et la matrice effectivement assemblée par l'algorithme informatique du script d'enveloppes.
+
+\paragraph{1. Matrice de Raideur Physique Théorique :}
+Dans le cas d'une chaîne harmonique unidimensionnelle encastrée aux deux extrémités ($u_{-1} = 0$ et $u_N = 0$), le système est relié par $N+1$ ressorts. La matrice de rapport raideur-masse tridiagonale symétrique $\tilde{K}_{\text{physique}} = K / m_0$ est caractérisée par :
+\begin{align}
+    \text{Diagonale : } & \left(\tilde{K}_{\text{physique}}\right)_{j,j} = \frac{k_j + k_{j+1}}{m_0} \quad \text{pour } j \in \{0, \dots, N-1\} \\
+    \text{Extra-diagonale : } & \left(\tilde{K}_{\text{physique}}\right)_{j, j+1} = \left(\tilde{K}_{\text{physique}}\right)_{j+1, j} = -\frac{k_{j+1}}{m_0} \quad \text{pour } j \in \{0, \dots, N-2\}
+\end{align}
+
+\paragraph{2. Matrice Implémentée dans le Code :}
+La boucle de construction du script assemble la matrice $\tilde{K}_{\text{code}}$ selon la structure suivante :
+\begin{align}
+    \left(\tilde{K}_{\text{code}}\right)_{0,0} &= \frac{k_0}{m_0} \\
+    \left(\tilde{K}_{\text{code}}\right)_{N-1,N-1} &= \frac{k_{N-1}}{m_0} \\
+    \left(\tilde{K}_{\text{code}}\right)_{j,j} &= \frac{k_{j-1} + k_j}{m_0} \quad \text{pour } j \in \{1, \dots, N-2\} \\
+    \left(\tilde{K}_{\text{code}}\right)_{j, j+1} &= -\frac{k_j}{m_0} \quad \text{pour } j \in \{0, \dots, N-2\}
+\end{align}
+
+\paragraph{3. Synthèse des Écarts :}
+Cette confrontation met en évidence trois écarts mathématiques majeurs :
+\begin{itemize}
+    \item \textbf{Décalage global d'indice :} Les indices des constantes élastiques $k$ intervenant dans la matrice du code sont tous décalés de $-1$ par rapport aux constantes de couplage physiques réelles. Le ressort physique $k_{j+1}$ couplant la masse $j$ à $j+1$ est substitué par le ressort $k_j$ dans la matrice informatique.
+    \item \textbf{Divergence d'encastrement aux limites :} Les conditions aux extrémités de la chaîne sont altérées. En effet, au lieu d'intégrer les contributions des deux ressorts d'ancrage (mur + premier lien voisin), la diagonale du code ne prend en compte qu'une unique contribution :
+    \begin{align}
+        \text{Bord gauche : } & \left(\tilde{K}_{\text{code}}\right)_{0,0} = \frac{k_0}{m_0} \quad \text{vs} \quad \left(\tilde{K}_{\text{physique}}\right)_{0,0} = \frac{k_0 + k_1}{m_0} \\
+        \text{Bord droit : } & \left(\tilde{K}_{\text{code}}\right)_{N-1,N-1} = \frac{k_{N-1}}{m_0} \quad \text{vs} \quad \left(\tilde{K}_{\text{physique}}\right)_{N-1,N-1} = \frac{k_{N-1} + k_N}{m_0}
+    \end{align}
+    Cela équivaut physiquement à supprimer l'un des ressorts d'encastrement aux extrémités, affaiblissant localement la raideur apparente aux limites.
+    \item \textbf{Ressort inutilisé :} Le dernier ressort physique $k_N$ (pourtant généré dans le vecteur de désordre) est exclu de la matrice informatique, laissant le bord droit de la chaîne partiellement libre.
+\end{itemize}
+Cette analyse métrologique de l'écart code-physique s'avère indispensable pour justifier les légères déviations de fréquences propres individuelles observées lors des confrontations haute résolution numériques et théoriques.
