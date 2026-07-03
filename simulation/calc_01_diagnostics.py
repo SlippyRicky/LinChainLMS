@@ -60,7 +60,7 @@ def compute_mass_audit():
             print(f"  -> Progress: {i + 1}/{total_steps} epsilon values processed.")
             
     path = os.path.join(data_dir, "mass_disorder_audit_data.npz")
-    np.savez(path, eps_vals=eps_vals, omega_vals=omega_vals, mean_gamma=mean_gamma, std_gamma=std_gamma)
+    np.savez_compressed(path, eps_vals=eps_vals, omega_vals=omega_vals, mean_gamma=mean_gamma, std_gamma=std_gamma)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: mass_disorder_audit_data.npz")
 
 def compute_stiffness_audit():
@@ -107,7 +107,7 @@ def compute_stiffness_audit():
             print(f"  -> Progress: {i + 1}/{total_steps} epsilon values processed.")
             
     path = os.path.join(data_dir, "stiffness_disorder_audit_data.npz")
-    np.savez(path, eps_vals=eps_vals, omega_vals=omega_vals, mean_gamma=mean_gamma, std_gamma=std_gamma)
+    np.savez_compressed(path, eps_vals=eps_vals, omega_vals=omega_vals, mean_gamma=mean_gamma, std_gamma=std_gamma)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: stiffness_disorder_audit_data.npz")
 
 if __name__ == "__main__":

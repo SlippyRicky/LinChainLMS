@@ -62,7 +62,7 @@ def compute_wavepacket_exact_diag():
         data[i, :] = np.convolve(energy, np.ones(5)/5, mode='same')
         
     filename = "wavepacket_arrest_N400.npz"
-    np.savez(os.path.join(data_dir, filename), data=data, times=times, N=N, T_max=T_max)
+    np.savez_compressed(os.path.join(data_dir, filename), data=data, times=times, N=N, T_max=T_max)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: {filename}")
 
 def compute_comparative_dynamics_verlet():
@@ -145,7 +145,7 @@ def compute_comparative_dynamics_verlet():
         results[f"eps_{eps}"] = data
 
     filename = "wp_vs_impact_comparison.npz"
-    np.savez(os.path.join(data_dir, filename), 
+    np.savez_compressed(os.path.join(data_dir, filename), 
              eps_0_1=results["eps_0.1"], eps_0_3=results["eps_0.3"], 
              eps_1_4=results["eps_1.4"], times=times, N=N, T_max=T_max)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: {filename}")

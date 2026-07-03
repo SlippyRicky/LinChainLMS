@@ -127,7 +127,7 @@ def compute_matsuda_ishii():
         print(f"    -> eps={eps} done")
         
     filename = "matsuda_ishii_scaling_multi.npz"
-    np.savez(os.path.join(data_dir, filename), 
+    np.savez_compressed(os.path.join(data_dir, filename), 
              omega=omega_vals, eps_values=np.array(eps_values), **results)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: {filename}")
 
@@ -176,7 +176,7 @@ def compute_localization_decay():
 #         phase_disordered_all.append(phase_disordered)
         
 #     filename = "phase_diffusion_N200.npz"
-#     np.savez(os.path.join(data_dir, filename), 
+#     np.savez_compressed(os.path.join(data_dir, filename), 
 #              phases=np.array(phase_disordered_all),
 #              q0=q0, sigma_noise=sigma_noise)
 #     print(f"  -> Saved {filename}")
@@ -211,7 +211,7 @@ def compute_riccati_walk():
     eta_walk = np.cumsum(delta_eta)
     
     filename = "riccati_walk_N1000.npz"
-    np.savez(os.path.join(data_dir, filename), eta_walk=eta_walk, R=R, q0=q0 * a)
+    np.savez_compressed(os.path.join(data_dir, filename), eta_walk=eta_walk, R=R, q0=q0 * a)
     print(f"  -> Saved {filename}")
 
 def compute_harmonic_envelope():
@@ -270,7 +270,7 @@ def compute_harmonic_envelope():
     u_peaks = envelope
     
     filename = "harmonic_envelope_N300.npz"
-    np.savez(os.path.join(data_dir, filename), 
+    np.savez_compressed(os.path.join(data_dir, filename), 
              nodes=nodes, u_max=envelope, 
              node_peaks=node_peaks, u_peaks=u_peaks, 
              theory_env=theory_env, gamma=gamma, N=N)
@@ -376,7 +376,7 @@ def compute_attenuation_methods():
 
     filename = "attenuation_methods_comparison.npz"
     output_path = os.path.join(data_dir, filename)
-    np.savez(output_path, 
+    np.savez_compressed(output_path, 
              omega=omega_vals, xi_tmm=xi_tmm, xi_riccati=xi_riccati,
              xi_analytical=xi_analytical, epsilon=eps_val,
              omega_pr=omega_pr, xi_pr=xi_pr)

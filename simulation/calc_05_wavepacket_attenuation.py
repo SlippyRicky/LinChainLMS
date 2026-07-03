@@ -84,7 +84,7 @@ def compute_wp_attenuation():
                 print(f"    -> Freq {w:.2f} ({i+1}/{len(omega_vals)}) -> xi_wp = {xi_wp:.2f}")
 
     output_path = os.path.join(data_dir, "wavepacket_attenuation.npz")
-    np.savez(output_path, 
+    np.savez_compressed(output_path, 
              omega=omega_vals, 
              xi_wp_mass=results["mass"]["xi_wp"],
              xi_wp_spring=results["spring"]["xi_wp"],

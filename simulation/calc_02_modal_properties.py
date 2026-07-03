@@ -72,9 +72,9 @@ def compute_modes(N, eps, is_diatomic=False):
     prefix = "diatomic_" if is_diatomic else ""
     filename = f"{prefix}disordered_modes_N{N}_eps{eps}.npz"
     if is_diatomic:
-        np.savez(os.path.join(data_dir, filename), omega=omega, eigvecs=eigvecs, masses=masses, w_perf=w_perf)
+        np.savez_compressed(os.path.join(data_dir, filename), omega=omega, eigvecs=eigvecs, masses=masses, w_perf=w_perf)
     else:
-        np.savez(os.path.join(data_dir, filename), omega=omega, eigvecs=eigvecs, masses=masses)
+        np.savez_compressed(os.path.join(data_dir, filename), omega=omega, eigvecs=eigvecs, masses=masses)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: {filename}")
 
 def compute_dos_asymmetry():
@@ -119,7 +119,7 @@ def compute_dos_asymmetry():
     w_m = np.sqrt(np.clip(eigvals_m, 1e-9, None))
     
     filename = "dos_asymmetry_N4000.npz"
-    np.savez(os.path.join(data_dir, filename), w_K=w_K, w_m=w_m)
+    np.savez_compressed(os.path.join(data_dir, filename), w_K=w_K, w_m=w_m)
     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: {filename}")
 
 # def compute_heatmap():
@@ -158,7 +158,7 @@ def compute_dos_asymmetry():
 #             D_dis[i+1, i] = off
     
 #     filename = "matrix_heatmap_N12.npz"
-#     np.savez(os.path.join(data_dir, filename), D_perf=D_perf, D_dis=D_dis)
+#     np.savez_compressed(os.path.join(data_dir, filename), D_perf=D_perf, D_dis=D_dis)
 #     print(f"  -> Done in {time.time()-t0:.2f}s. Saved: {filename}")
 
 def compute_diatomic_modes_csv():
