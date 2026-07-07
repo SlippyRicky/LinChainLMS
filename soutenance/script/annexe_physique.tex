@@ -1,0 +1,192 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage{hyperref}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\title{\textbf{Annexe Physique : Régimes de Localisation d'Anderson et Fuite Spectrale dans les Chaînes Harmoniques}}
+\author{\textbf{Emeric Mellet} \\ Master 1 Sciences et Génie des Matériaux (SGM) \\ Université Paris-Saclay}
+\date{29 Juin 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Cette annexe technique fournit une double explication (intuitive puis mathématique rigoureuse) des phénomènes physiques observés dans la figure de décroissance spatio-temporelle des paquets d'ondes dans les réseaux 1D désordonnés. Elle sert de support conceptuel pour la préparation de la soutenance de stage et de base pour la rédaction du script de présentation.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% =========================================================================
+\section{Explication Simple : L'Intuition Physique}
+% =====================================================================˝====
+
+Pour expliquer les comportements observés sur la figure de propagation du paquet d'ondes, nous pouvons diviser le problème en trois concepts simples : l'influence de la fréquence, l'influence du désordre, et l'origine de la queue de propagation (la \og  fuite spectrale \fg{}).
+
+\subsection{L'Effet de la Fréquence (Au sein d'une même ligne)}
+La fréquence de l'onde dicte sa longueur d'onde ($\lambda$), c'est-à-dire sa taille spatiale.
+\begin{itemize}
+    \item \textbf{Basses Fréquences ($\omega = 0.16$ - Courbe Bleue) : \og  L'effet camion-monstre \fg{}.} \\
+    Une basse fréquence correspond à une très grande longueur d'onde. L'onde est géante par rapport aux défauts individuels du réseau (les variations des ressorts). Elle \og  survole \fg{} le désordre sans le ressentir individuellement ; elle voit un milieu moyen homogène. L'onde se propage donc presque sans atténuation sur toute la longueur de la chaîne.
+    
+    \item \textbf{Fréquences Intermédiaires ($\omega = 0.77, 1.41$ - Vert et Orange) : \og  L'effet voiture standard \fg{}.} \\
+    La longueur d'onde est comparable à l'échelle du désordre. L'onde subit des chocs successifs sur les défauts. À chaque choc, une partie de l'onde est réfléchie. Rapidement, toutes ces réflexions interfèrent de manière destructive, ce qui piège l'onde et l'empêche d'aller plus loin. C'est la \textbf{localisation d'Anderson}, caractérisée par une décroissance exponentielle rapide de l'amplitude.
+    
+    \item \textbf{Hautes Fréquences ($\omega = 1.85, 1.99$ - Rouge et Violet) : \og  L'effet skateboard sur gravier \fg{}.} \\
+    L'onde est extrêmement courte et oscille très rapidement. Elle bute violemment contre le moindre désordre. De plus, elle s'approche de la fréquence maximale autorisée par le réseau ($\omega_{\text{max}} = 2.0$, la limite de Bragg). L'onde est réfléchie presque instantanément à sa source, ce qui donne une décroissance extrêmement brutale, tombant au niveau du bruit numérique en quelques dizaines de sites seulement.
+\end{itemize}
+
+\subsection{L'Effet du Désordre (En comparant les lignes verticalement)}
+Le niveau de désordre $\varepsilon$ représente la hauteur des obstacles sur la route de l'onde.
+\begin{itemize}
+    \item \textbf{Désordre Faible ($\varepsilon = 0.1$ - Ligne du haut) : \og  Route légèrement bosselée \fg{}.} \\
+    Les obstacles sont très bas. L'onde doit voyager sur des milliers de sites avant que les petites réflexions successives ne finissent par la localiser. Toutes les courbes descendent très lentement.
+    
+    \item \textbf{Désordre Fort ($\varepsilon = 1.4$ - Ligne du bas) : \og  Éboulement de pierres \fg{}.} \\
+    Le réseau est chaotique, les ressorts varient énormément d'un site à l'autre. Le piégeage est presque immédiat pour toutes les fréquences. Même l'onde moyenne ($\omega = 0.77$) est complètement stoppée à courte distance.
+\end{itemize}
+
+\subsection{La Queue de la Courbe : Qu'est-ce que la \og  Fuite Spectrale \fg{} ?}
+Sur les courbes intermédiaires (comme $\omega = 0.77$ ou $1.41$ pour $\varepsilon = 0.7$), on remarque que la décroissance est d'abord une ligne droite (décroissance exponentielle en échelle semi-log), puis qu'elle s'adoucit pour former une \og  queue \fg{} plate ou incurvée à longue distance. 
+
+\textbf{L'analogie du filtre :} \\
+Pour envoyer le paquet d'ondes, on secoue le premier atome pendant un temps court. Or, secouer brièvement un objet crée inévitablement un mélange de fréquences (principe d'incertitude temps-fréquence). Même si l'excitation est centrée sur une fréquence $\omega_{\text{ext}} = 1.41$, elle contient une petite fraction de basses fréquences ($\omega \to 0$).
+\begin{enumerate}
+    \item Près de la source, la fréquence principale ($\omega = 1.41$) domine largement. L'onde décroît exponentiellement.
+    \item Cependant, les composantes de basses fréquences, qui ne sont pas localisées (leur longueur de localisation est immense), voyagent très loin sans s'atténuer.
+    \item À grande distance, la composante principale a été complètement étouffée. Ce qu'il reste de l'onde est uniquement composé des \og  fuites \fg{} de basse fréquence qui se sont propagées librement. C'est cette fuite spectrale qui crée la queue algébrique de l'enveloppe.
+\end{enumerate}
+
+\newpage
+% =========================================================================
+\section{Explication Technique et Formalisme Mathématique}
+% =========================================================================
+
+\subsection{Modèle Physique et Équations du Mouvement}
+Nous considérons une chaîne harmonique unidimensionnelle composée de $N$ masses identiques $m=1$ couplées par des ressorts dont les raideurs $K_n$ sont aléatoires :
+\begin{equation}
+    \ddot{u}_n = K_n (u_{n+1} - u_n) - K_{n-1} (u_n - u_{n-1})
+\end{equation}
+Le désordre sur les raideurs est modélisé par :
+\begin{equation}
+    K_n = K_0 (1 + \varepsilon \eta_n)
+\end{equation}
+où $K_0 = 1$ est la raideur nominale, $\varepsilon$ est le paramètre d'intensité du désordre, et $\eta_n$ sont des variables aléatoires indépendantes et identiquement distribuées (i.i.d.) de moyenne nulle $\langle \eta_n \rangle = 0$ et de variance unitaire $\langle \eta_n^2 \rangle = 1$, distribuées uniformément sur $[-\sqrt{3}, \sqrt{3}]$.
+
+\subsection{Localisation d'Anderson et Longueur de Localisation $\xi(\omega)$}
+En vertu du théorème de Furstenberg et de la théorie de la localisation d'Anderson en dimension 1, tous les états propres stationnaires d'un système désordonné infini sont presque sûrement localisés exponentiellement. L'enveloppe spatiale d'un mode propre à la fréquence $\omega$ décroît comme :
+\begin{equation}
+    |\phi_\omega(n)| \sim e^{-|n - n_0|/\xi(\omega)}
+\end{equation}
+où $\xi(\omega) = 1/\gamma(\omega)$ est la \textbf{longueur de localisation} et $\gamma(\omega) > 0$ est l'exposant de Lyapunov.
+
+\subsubsection{Comportement asymptotique en basse fréquence ($\omega \to 0$)}
+Par un calcul de perturbation au second ordre (théorie de perturbation des produits de matrices de transfert de Oseledec), on montre que dans la limite des grandes longueurs d'onde ($\omega \ll 1$), la longueur de localisation diverge selon la loi de puissance suivante :
+\begin{equation}
+    \xi(\omega) \simeq \frac{8 K_0^2}{\sigma_K^2 \omega^2} = \frac{8}{\varepsilon^2 \omega^2}
+    \label{eq:scaling_low_freq}
+\end{equation}
+où $\sigma_K^2 = \varepsilon^2$ est la variance du désordre de raideur. 
+
+\textbf{Implications physiques :}
+\begin{itemize}
+    \item \textbf{Dépendance en fréquence :} La dépendance en $\omega^{-2}$ montre que plus la fréquence est basse, plus la longueur de localisation est grande. Pour $\omega \to 0$, $\xi(\omega) \to \infty$. Dans un réseau fini de taille $N$, dès que $\xi(\omega) > N$, l'onde subit des effets de taille finie et se délocalise artificiellement sur tout le réseau (régime balistique/diffusif).
+    \item \textbf{Dépendance en désordre :} La dépendance en $\varepsilon^{-2}$ explique pourquoi, pour un désordre très faible ($\varepsilon = 0.1$), les longueurs de localisation sont gigantesques, tandis que pour un désordre fort ($\varepsilon = 1.4$), elles chutent drastiquement de plusieurs ordres de grandeur.
+\end{itemize}
+
+\subsubsection{Comportement près du bord de bande ($\omega \to \omega_{\text{max}} = 2.0$)}
+La fréquence de coupure du réseau homogène est $\omega_{\text{max}} = 2\sqrt{K_0/m} = 2.0$. Près de cette limite supérieure :
+\begin{equation}
+    \xi(\omega) \to \mathcal{O}(1)
+\end{equation}
+La longueur de localisation devient de l'ordre de la distance interatomique (quelques sites). La diffusion multiple cohérente est extrêmement efficace et détruit toute propagation dès la source.
+
+\subsection{Dynamique du Paquet d'Ondes et Fuite Spectrale}
+Lors de l'excitation dynamique du paquet d'ondes, la source située à $n_0=0$ impose un déplacement temporel de type enveloppe gaussienne :
+\begin{equation}
+    u_0(t) = e^{-t^2 / (2\tau^2)} \cos(\omega_{\text{ext}} t)
+\end{equation}
+où $\omega_{\text{ext}}$ est la fréquence centrale d'excitation et $\tau$ est la durée caractéristique de l'impulsion.
+
+Le spectre en fréquence de cette excitation, obtenu par transformée de Fourier, est :
+\begin{equation}
+    \hat{u}_0(\omega) = \sqrt{2\pi}\tau \left[ e^{-\tau^2(\omega - \omega_{\text{ext}})^2/2} + e^{-\tau^2(\omega + \omega_{\text{ext}})^2/2} \right]
+\end{equation}
+Ce spectre possède une largeur de bande finie $\Delta \omega \sim 1/\tau$. 
+
+Le déplacement en tout point $n$ et à tout instant $t$ s'exprime par projection sur les modes propres $\phi_\omega(n)$ du système :
+\begin{equation}
+    u_n(t) = \int_{0}^{\omega_{\text{max}}} \hat{u}_0(\omega) \phi_\omega(n) e^{-i\omega t} d\omega
+\end{equation}
+L'enveloppe moyenne de l'amplitude $\langle |u_n/u_0| \rangle_M$ à grande distance $x = |n - n_0|$ est donc régie par l'intégrale :
+\begin{equation}
+    \langle |u(x)| \rangle \approx \int_{0}^{\omega_{\text{max}}} \hat{u}_0(\omega) e^{-x/\xi(\omega)} d\omega
+\end{equation}
+
+\subsubsection{Crossover entre Décroissance Exponentielle et Queue Algébrique}
+\begin{enumerate}
+    \item \textbf{Régime Proche (Domination de la fréquence centrale) :} \\
+    Pour des distances modérées $x < \xi(\omega_{\text{ext}})$, l'intégrale est dominée par la fréquence centrale d'excitation $\omega \approx \omega_{\text{ext}}$, car c'est là que l'amplitude spectrale $\hat{u}_0(\omega)$ est maximale. L'atténuation est donc purement exponentielle :
+    \begin{equation}
+        \langle |u(x)| \rangle \sim e^{-x/\xi(\omega_{\text{ext}})}
+    \end{equation}
+    C'est la partie linéaire descendante visible en échelle semi-log.
+    
+    \item \textbf{Régime Lointain (Domination de la fuite basse fréquence) :} \\
+    À très grande distance $x \gg \xi(\omega_{\text{ext}})$, la composante à $\omega_{\text{ext}}$ a été totalement atténuée par le facteur exponentiel $e^{-x/\xi(\omega_{\text{ext}})} \to 0$. \\
+    Cependant, la queue de distribution gaussienne de la source a excité des modes de basse fréquence $\omega \to 0$ dont la longueur de localisation diverge ($\xi(\omega) \to \infty$). Pour ces fréquences, le terme d'atténuation $e^{-x/\xi(\omega)} \approx 1$. \\
+    L'intégrale est alors dominée par le comportement asymptotique de l'intégrande près de $\omega = 0$. En injectant la loi de comportement $\xi(\omega) \simeq 8/(\varepsilon^2\omega^2)$ (Éq.~\ref{eq:scaling_low_freq}), l'intégrale se simplifie sous la forme :
+    \begin{equation}
+        \langle |u(x)| \rangle \approx \int_{0}^{\delta} \hat{u}_0(\omega) e^{-x \varepsilon^2 \omega^2 / 8} d\omega
+    \end{equation}
+    Comme $\hat{u}_0(\omega)$ tend vers une constante non nulle pour $\omega \to 0$ (valeur $\hat{u}_0(0) > 0$ due à la bande passante finie), nous pouvons effectuer le changement de variable $u^2 = x \varepsilon^2 \omega^2 / 8$, ce qui donne $d\omega \propto x^{-1/2} du$. L'évaluation de l'intégrale de Gauss donne alors :
+    \begin{equation}
+        \langle |u(x)| \rangle \propto \frac{1}{\varepsilon \sqrt{x}} \int_0^\infty e^{-u^2/8} du \propto \frac{1}{\varepsilon x^{1/2}}
+    \end{equation}
+    En considérant la densité d'états à basse fréquence et les conditions aux limites spécifiques de la source, une analyse asymptotique plus fine (par la méthode de la plus grande pente) montre que l'enveloppe moyenne décroît selon une loi de puissance algébrique :
+    \begin{equation}
+        \langle |u(x)| \rangle \propto x^{-\beta}
+    \end{equation}
+    avec $\beta = 2$ ou $3$ (selon le couplage de la source).
+    
+    C'est cette décroissance en loi de puissance $x^{-\beta}$, beaucoup plus lente que la décroissance exponentielle, qui explique la remontée et l'aplanissement des courbes enveloppes à longue distance (les queues algébriques observées).
+\end{enumerate}
+
+\subsection{Analyse Physique de la Figure Dynamique (Slide 4bis)}
+Cette section répond à deux observations spécifiques faites sur la figure de simulation temporelle comparant les chaînes ordonnée et désordonnée.
+
+\subsubsection{Décroissance de l'amplitude dans la chaîne ordonnée (système conservatif)}
+Dans la chaîne ordonnée (sans désordre $\varepsilon = 0$), on constate que l'enveloppe du paquet d'ondes s'aplatit et que son amplitude maximale diminue à mesure qu'il se propage. Pourtant, le système est conservatif (Verlet Vélocité symplectique, aucune dissipation d'énergie mécanique $\gamma_i = 0$ au cœur de la chaîne).
+
+Ce phénomène est dû à l'\textbf{étalement dispersif} (dispersion spectrale) du paquet d'ondes :
+\begin{itemize}
+    \item Le paquet d'ondes initial possède une largeur spectrale finie $\Delta\omega \sim 1/\tau$.
+    \item La chaîne discrète est un milieu dispersif. La vitesse de groupe $v_g(\omega) = d\omega/dq = \sqrt{1 - (\omega/2)^2}$ dépend de la fréquence.
+    \item Les différentes composantes fréquentielles du paquet se propagent donc à des vitesses différentes. Au cours du temps, elles se déphasent et se séparent spatialement : les fréquences les plus basses (vitesse $v_g \approx 1.0$) devancent les composantes proches de la fréquence d'excitation ($\omega_{\text{ext}} = 1.4$, vitesse $v_g \approx 0.71$).
+    \item Le paquet d'ondes s'étire et s'étale spatialement (\textit{stretching}). Par conservation de l'énergie mécanique totale, puisque l'énergie se répartit sur un nombre d'atomes de plus en plus grand, l'amplitude maximale de déplacement individuel de chaque atome doit nécessairement décroître (en $t^{-1/2}$).
+\end{itemize}
+
+\subsubsection{Asymétrie spatiale de l'enveloppe localisée dans la chaîne désordonnée}
+Dans la chaîne désordonnée ($\varepsilon = 1.4$), l'enveloppe du déplacement maximum présente une asymétrie nette entre le côté gauche ($j - j_c < 0$) et le côté droit ($j - j_c > 0$) autour du site d'excitation.
+
+Cette asymétrie est la conséquence directe de la \textbf{nature stochastique du désordre} :
+\begin{itemize}
+    \item La simulation résout le mouvement sur une configuration particulière de désordre (un unique tirage aléatoire des masses $M_j$).
+    \item Les masses stochastiques à gauche et à droite de la source d'excitation ne sont pas symétriques. La barrière de diffusion multiple créée par les fluctuations locales de masse est donc structurellement différente de chaque côté du centre.
+    \item Les interférences cohérentes destructives de la localisation d'Anderson se produisent ainsi sur des échelles de longueur locales différentes selon le motif de masses rencontré.
+    \item L'enveloppe $U_j^{\max}$ pour ce tirage individuel est donc asymétrique. Pour retrouver une enveloppe moyenne parfaitement symétrique, il faudrait effectuer une moyenne d'ensemble (moyenne arithmétique sur un grand nombre de simulations avec des tirages de désordre indépendants).
+\end{itemize}
+
+\end{document}

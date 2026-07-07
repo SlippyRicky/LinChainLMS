@@ -10,6 +10,7 @@ The code is compartmentalized into four root-level directories to ensure modular
 * **`data/`**: The central dataset store. Contains static metadata, literature benchmark files (e.g. Hu et al. 2008), and physical datasets computed by the simulation engine (NPZ and CSV formats).
 * **`plotting/`**: The graphics compilation pipeline. Loads physical data from `data/` to compile report figures and presentation slides.
 * **`report/`**: The LaTeX report workspace. Contains chapters, bibliography, and compiled PDF/PNG figures in `report/figures/`.
+* **`soutenance/`**: The LaTeX presentation (slides) workspace for the final defense.
 
 ---
 
@@ -49,12 +50,18 @@ make figs
 ```
 This runs `plotting/plot_all.py` which compiles all figures and saves them in `report/figures/02_linear_disorder/`.
 
-### 3. Build the Report
+### 3. Build the Report and Slides
 Compiles the LaTeX report:
 ```bash
 make report
 ```
 This runs `latexmk` inside the `report/` workspace and places the compiled document at `report/build/main.pdf`.
+
+Compiles the Soutenance presentation slides:
+```bash
+make soutenance
+```
+This runs `make` inside the `soutenance/` workspace.
 
 ### 4. Build Everything (End-to-End)
 To clean previous datasets/figures and run the entire pipeline end-to-end:

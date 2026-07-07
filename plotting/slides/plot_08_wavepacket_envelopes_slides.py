@@ -1,12 +1,22 @@
+"""
+Purpose: Generates the slides-adapted version of the wavepacket envelope profile figure.
+Inputs: Read ensemble-averaged wavepacket envelope CSV files (wp_envelopes_eps={eps}_N=*.csv) from `data/`.
+Outputs: Produces 08_wavepacket_envelopes_slides.pdf and 08_wavepacket_envelopes_slides.png in `report/figures/slides/`.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import plot_config
+import glob
+import re
 import json
 
-# --- STYLE CONFIGURATION (Optimized for Presentation Slides, High Contrast & Large Text) ---
+# Ensure we can import plot_config
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import plot_config
+
+# --- STYLE CONFIGURATION (Optimized for Presentation Slides) ---
 plt.rcParams.update({
     "text.usetex": False,
     "font.family": "sans-serif",
@@ -14,7 +24,7 @@ plt.rcParams.update({
     "font.size": 18,
     "axes.labelsize": 20,
     "axes.titlesize": 20,
-    "legend.fontsize": 14,
+    "legend.fontsize": 12,
     "lines.linewidth": 2.5,  # Thicker lines for readability from afar
     "axes.grid": True,
     "grid.alpha": 0.25,
@@ -23,37 +33,29 @@ plt.rcParams.update({
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, "../../../../"))
-slides_fig_dir = os.path.join(plot_config.FIGURES_ROOT, '02_linear_disorder/slides')
-# Directory creation handled by plot_config
+slides_fig_dir = os.path.join(plot_config.FIGURES_ROOT, 'slides')
 
-def find_data_file(eps, N):
+def find_data_file(eps):
+    """Dynamically finds the data file matching the disorder level, selecting the one with largest N."""
     data_dir = plot_config.DATA_DIR
-    for suffix in ["", "_test"]:
-        filename = f"wp_envelopes_eps={eps}_N={N}{suffix}.csv"
-        path = os.path.join(data_dir, filename)
-        if os.path.exists(path):
-            return path
-    filename = f"wp_envelopes_eps={eps}_N={N}.csv"
-    paths_to_check = [
-        os.path.join(project_root, "code", "parametric_sweep", "data", filename),
-        os.path.join(project_root, "code", "scratch", "data", filename),
-        os.path.join(project_root, "parametric_sweep", "data", filename),
-        os.path.join(project_root, "scratch", "data", filename),
-    ]
-    for path in paths_to_check:
-        if os.path.exists(path):
-            return path
+    pattern = os.path.join(data_dir, f"wp_envelopes_eps={eps}_N=*.csv")
+    files = glob.glob(pattern)
+    if files:
+        def get_n_val(f):
+            m = re.search(r"N=(\d+)", f)
+            return int(m.group(1)) if m else 0
+        files.sort(key=get_n_val, reverse=True)
+        return files[0]
     return None
 
 def plot_slides_envelopes_vertical():
-    N = 6000
-    disorder_levels = [0.1, 0.7, 1.4]  # Revert to all 3 disorder levels
-    freq_indices = [1, 5, 10, 15, 19]  # Keep all 5 frequencies for completeness
+    disorder_levels = [0.1, 0.7, 1.4]
+    freq_indices = [1, 5, 10, 15, 19]
 
     colors = ['#1f77b4', '#33a02c', '#ff7f0e', '#e31a1c', '#6a3d9a']
     
-    # 3-row, 1-column layout, but narrower to fit slide column layout nicely
-    fig, axes = plt.subplots(3, 1, figsize=(7.2, 8.2), sharex=True)
+    # 3-row, 1-column layout, wider aspect ratio to prevent overlapping labels and squishing
+    fig, axes = plt.subplots(3, 1, figsize=(8.0, 6.5), sharex=True)
     
     manual_ranges_path = os.path.join(script_dir, "manual_fit_ranges.json")
     if os.path.exists(manual_ranges_path):
@@ -63,21 +65,24 @@ def plot_slides_envelopes_vertical():
         manual_ranges = None
 
     for row_idx, eps in enumerate(disorder_levels):
-        data_path = find_data_file(eps, N)
+        data_path = find_data_file(eps)
         if data_path is None:
             print(f"Error: Data file for eps={eps} not found.")
             return
 
         data = np.loadtxt(data_path, delimiter=',', skiprows=1, ndmin=2)
         omegas = data[:, 0]
-
+        
+        # Dynamically determine N from file columns count
+        N = data.shape[1] - 1
         current_freq_indices = [i for i in freq_indices if i < data.shape[0]]
         if not current_freq_indices:
             current_freq_indices = [0]
 
         col_start = 1 + N // 2
-        col_end   = col_start + 2900
-        X = np.arange(0, 2900)
+        l_abc = 100 if N >= 200 else N // 2
+        col_end   = data.shape[1] - l_abc
+        X = np.arange(0, col_end - col_start)
 
         ax_log = axes[row_idx]
 
@@ -93,6 +98,11 @@ def plot_slides_envelopes_vertical():
                 key = f"{eps}_{omega:.2f}"
                 if key in manual_ranges:
                     x_start, x_end = manual_ranges[key]
+                    # Boundary protection
+                    if x_start >= len(X):
+                        x_start = 5
+                    if x_end >= len(X):
+                        x_end = len(X) - 5
                     mask_exp = (X >= x_start) & (X <= x_end) & (amp > 1e-10)
                     if np.sum(mask_exp) > 5:
                         p_exp = np.polyfit(X[mask_exp], np.log(amp[mask_exp]), 1)
@@ -101,7 +111,7 @@ def plot_slides_envelopes_vertical():
 
             label = rf"$\omega = {omega:.2f}$"
 
-            # Data curves (thicker)
+            # Data curves
             ax_log.semilogy(X, np.maximum(amp, 1e-12), color=colors[idx], linewidth=2.5, alpha=0.9, label=label)
 
             # Fit lines and crossover markers (only drawn if manual fit was performed)
@@ -113,32 +123,39 @@ def plot_slides_envelopes_vertical():
                 # Draw crossover point markers (larger)
                 if x_start > 5:
                     ax_log.plot(x_start, amp[x_start], '+', color=colors[idx], markersize=14, markeredgewidth=2.5, zorder=10)
-                if x_end < 2850:
+                if x_end < len(X) - 5:
                     ax_log.plot(x_end, amp[x_end], '+', color=colors[idx], markersize=14, markeredgewidth=2.5, zorder=10)
 
         # Semilogy properties
         ax_log.set_ylim(2e-13, 2.0)
-        ax_log.set_xlim(0, 2900)
-        ax_log.set_yticks([1e-12, 1e-9, 1e-6, 1e-3, 1.0])
+        ax_log.set_xlim(0, X[-1])
+        ax_log.set_yticks([1e-12, 1e-6, 1.0])
+        ax_log.set_yticklabels([r"$10^{-12}$", r"$10^{-6}$", r"$10^{0}$"])
         ax_log.grid(True, which="both", alpha=0.25, linestyle='--')
         
-        # Abbreviated y-labels to avoid text truncation and overlaps
-        ax_log.set_ylabel(rf"Amp. ($\varepsilon = {eps}$)", fontweight='bold')
-
         if row_idx == 0:
-            ax_log.set_title("Amplitude normalisée (semi-log)", fontweight='bold', pad=10)
+            ax_log.set_ylabel(r"$\varepsilon = 0.1$", fontweight='bold', labelpad=15)
+            ax_log.set_title("Amplitude normalisée", fontweight='bold', y=1.02)
             ax_log.plot([], [], color='black', linestyle='--', linewidth=2.0, label='Ajustement')
             ax_log.plot([], [], '+', color='gray', markersize=12, markeredgewidth=2.5, label='Limites')
-            ax_log.legend(loc='lower left', frameon=True, facecolor='white', framealpha=0.92, ncol=2, fontsize=11)
+            ax_log.legend(bbox_to_anchor=(0.0, 1.35), loc="lower left", frameon=True, facecolor='white', framealpha=0.92, ncol=4, fontsize=11, borderaxespad=0.0)
+        elif row_idx == 1:
+            ax_log.set_ylabel("Amplitude de désordre\n" + r"$\varepsilon = 0.7$", fontweight='bold', labelpad=15)
+        elif row_idx == 2:
+            ax_log.set_ylabel(r"$\varepsilon = 1.4$", fontweight='bold', labelpad=15)
 
         if row_idx == 2:
             ax_log.set_xlabel(r"Distance relative $n - n_0$")
         else:
             ax_log.tick_params(labelbottom=False)
 
+    fig.align_ylabels(axes)
+
     plt.tight_layout()
     save_path = os.path.join(slides_fig_dir, "08_wavepacket_envelopes_slides.pdf")
     save_path_png = os.path.join(slides_fig_dir, "08_wavepacket_envelopes_slides.png")
+    
+    # Save the figure
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.savefig(save_path_png, dpi=150, bbox_inches='tight')
     print(f"--> Generated 3-panel slides-optimized figure: {save_path} and {save_path_png}")

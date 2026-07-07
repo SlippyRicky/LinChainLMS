@@ -1,0 +1,77 @@
+[Slide 1]
+Bonjour à tous. Merci d'être venus pour ma soutenance de stage. J'ai effectué mon travail de recherche au LMS à l'École Polytechnique, sous la direction d'Anne Tanguy. Mon sujet porte sur la propagation d'ondes dans les chaînes 1D désordonnées. C'est un travail à la fois théorique et numérique. Je vais vous présenter l'étude physique dans un premier temps, puis mon projet professionnel.
+
+[Slide 2]
+Voici le plan de ma présentation. Nous commencerons par la partie scientifique. Je rappellerai les régimes de transport ondulatoire, puis je décrirai notre modèle 1D et son intégrateur. Nous comparerons ensuite les quatre méthodes numériques développées. Enfin, je ferai le bilan de mon stage au LMS et mes perspectives d'orientation.
+
+[Slide 2bis]
+Avant d'aborder les modèles analytiques, il est important de comprendre la genèse de ce projet. Pour cela, nous sommes partis de simulations 3D d'un matériau désordonné, le CuZr amorphe, réalisées par mon encadrante Anne Tanguy. Les animations à droite illustrent la propagation d'un paquet d'ondes sous trois conditions : un désordre faible et moyen pour des ondes longitudinales, et un désordre fort pour des ondes transverses. On constate que la propagation est fortement affectée par la nature de l'onde et le niveau de désordre. Ces travaux laissaient une incertitude : quelle est la part due aux non-linéarités géométriques ou d'interaction, et quelle est celle due uniquement au désordre harmonique de masse ou de raideur ? C'est pour lever ce doute et isoler proprement le désordre linéaire que nous avons choisi d'étudier un modèle 1D.
+
+[Slide 3]
+Commençons par le contexte physique. Dans un cristal parfait périodique, la propagation est balistique : l'onde avance sans atténuation, et sa variance spatiale croît de façon quadratique avec le temps. Si on introduit du désordre stochastique, la symétrie est brisée. Pour un désordre faible, on passe en régime diffusif où la variance croît linéairement. Et pour un désordre fort, les interférences cohérentes destructives piègent l'onde spatialement : c'est la localisation d'Anderson. L'objectif de mon stage a été de simuler ce réseau 1D pour quantifier ces transitions et tester les limites des théories analytiques.
+
+[Slide 4]
+Pour caractériser ces régimes, on mesure la variance spatiale de l'enveloppe temporelle, dont la formule est affichée en bas à gauche. Sur le graphique à droite tiré de la littérature, on voit clairement comment la forme de l'onde évolue. En vert, la propagation balistique sans atténuation. En bleu, l'étalement diffusif. Et en rouge, la localisation d'Anderson où l'onde reste confinée avec une enveloppe qui décroît exponentiellement. Nous allons voir comment cela dépend de la fréquence et du désordre.
+
+[Slide 4bis]
+Voici une simulation dynamique. Les masses sont représentées par des sphères dont la taille varie avec le désordre, et les ressorts changent de couleur : rouge pour la tension, bleu pour la compression. En haut, sans désordre, le paquet d'ondes se sépare proprement en deux fronts symétriques qui se propagent de manière balistique. En bas, avec désordre, on observe le piégeage d'Anderson : l'onde reste localisée au centre de la chaîne, et l'enveloppe devient stochastiquement asymétrique. Si vous avez des questions sur la dispersion ou l'asymétrie, j'y répondrai volontiers.
+
+[Slide 5]
+Pour modéliser le réseau, on utilise une chaîne masses-ressorts 1D régie par l'équation dynamique classique en haut. Le désordre est injecté sur les masses de façon uniforme avec une amplitude epsilon. Pour intégrer ce système dans le temps sans introduire de dissipation numérique artificielle, le choix de l'algorithme est crucial. Nous avons choisi le schéma de Leapfrog (Verlet), présenté ici. C'est un intégrateur symplectique : il conserve le volume de l'espace des phases, ce qui garantit que l'énergie mécanique totale est conservée sur de très longues simulations.
+
+[Slide 6]
+En régime de vibrations harmoniques, on résout le problème aux valeurs propres généralisé issu de l'équation dynamique matricielle. Bien que la matrice de raideur K soit symétrique par définition, le désordre de masse nous amène à formuler un problème standard équivalent avec un opérateur symétrique K-tilde pour obtenir des modes propres orthonormés au sens euclidien standard. À partir de ces modes, on évalue le Participation Ratio (PR). Ce ratio, variant de 1/N à 1, quantifie la fraction ou proportion de sites actifs : il vaut 1 pour un mode totalement étendu, et 1/N pour un mode confiné sur un seul site.
+
+[Slide 7]
+La troisième méthode est la matrice de transfert à fréquence fixe. On écrit l'équation de récurrence spatiale sous forme matricielle à gauche. Le produit de ces matrices aléatoires nous donne l'exposant de Lyapunov gamma, qui est simplement l'inverse de la longueur de localisation xi. Cependant, multiplier directement les matrices conduit à des divergences exponentielles sur ordinateur. Pour stabiliser le calcul sur de très longues chaînes, on utilise la carte de Riccati à droite, qui travaille sur les rapports d'amplitude Rn et reste stable.
+
+[Slide 8]
+Passons aux résultats de la dynamique temporelle. Ce graphique à droite montre l'enveloppe du déplacement à différents temps. On observe un comportement intéressant en deux temps : à courte distance, la décroissance est exponentielle, ce qui montre bien la localisation d'Anderson. Mais à longue distance, l'enveloppe suit une loi de puissance algébrique. L'explication physique est la fuite spectrale : comme l'excitation est de durée finie, elle contient inévitablement des composantes basse fréquence qui ne se localisent pas et se propagent loin.
+
+[Slide 9]
+Nous confrontons nos résultats aux théories de faible désordre de Derrida-Gardner et Matsuda-Ishii. La première formule montre la loi théorique de l'exposant de Lyapunov. La TMM valide parfaitement ce scaling en omega carré epsilon carré. Par contre, la méthode de Riccati dévie à basse fréquence, donnant une pente de 2.5 au lieu de 2. La seconde formule montre la fluctuation de phase complexe eta_n, qui est à l'origine de ce problème. À basse fréquence, les termes B_k au dénominateur sont extrêmement proches de 1, ce qui entraîne une accumulation dramatique d'erreurs d'arrondi de précision machine.
+
+[Slide 10]
+Pour comprendre la physique, nous analysons la densité d'états et le rapport de participation sur la figure de gauche. Quand le désordre augmente, la limite de Bragg à omega = 2 s'érode et des états de queue apparaissent. Le PR en bas montre que ces états de queue de haute fréquence sont extrêmement localisés, chutant vers un unique atome. À basse fréquence, la longueur de localisation diverge et dépasse la taille du système fermé. Le PR sature alors artificiellement à la limite théorique de N sur 3.
+
+[Slide 11]
+Ce tableau synthétise nos quatre approches numériques. Chaque méthode a ses avantages et ses limites : la méthode modale et la dynamique subissent des effets de taille finie à basse fréquence, tandis que Riccati y est instable. Les matrices de transfert restent les plus robustes pour caractériser le système infini. Le point essentiel est que toutes ces méthodes convergent quantitativement sur la plage de fréquences intermédiaires entre 0.8 et 1.8, ce qui valide la cohérence de nos codes.
+
+[Slide 12]
+Dans cette seconde partie, je présente le bilan de mon stage au LMS. J'ai été pleinement intégré à la vie du laboratoire en participant aux séminaires scientifiques hebdomadaires. Sur le plan technique, j'ai développé mes compétences en calcul scientifique avec Python, et j'ai appris à structurer un projet avec Git, LaTeX et des Makefiles. J'ai aussi appris à collaborer avec des outils d'IA générative pour le prototypage et le débogage de code.
+
+[Slide 13]
+Mes contributions au laboratoire ont été concrètes : j'ai livré un pipeline de code Python propre, modulaire et documenté pour l'équipe, ainsi qu'une base de données de validation. Ce stage de recherche fondamentale m'a donné le goût de la simulation numérique, mais j'ai choisi de m'orienter vers la R&D industrielle. C'est pourquoi je postule pour le Master 2 MAMI en apprentissage, afin de lier simulation et applications industrielles.
+
+[Slide 14]
+En conclusion, ce stage a permis de valider quantitativement le transport vibratoire en milieu désordonné. Nous avons montré l'équivalence des méthodes de calcul et mis en évidence le rôle de la fuite spectrale sur l'enveloppe dynamique. Pour la suite, les perspectives intéressantes sont l'extension à des réseaux 2D et 3D pour étudier la transition d'Anderson des phonons, et l'introduction de non-linéarités comme le modèle FPUT.
+
+[Slide 15]
+Voici les références bibliographiques citées tout au long des planches de cette présentation.
+
+[Slide 15bis]
+Et voici les références supplémentaires qui ont servi de base théorique à ce travail de stage.
+
+[Slide 16]
+Je tiens à remercier chaleureusement ma tutrice de stage, Anne Tanguy, pour son encadrement et sa bienveillance, ainsi que toute l'équipe du LMS pour son accueil. Merci pour votre attention, je suis maintenant ouvert à vos questions.
+
+[Slide 18]
+Cette annexe détaille l'effet de la fréquence et du désordre. À basse fréquence, la longueur d'onde est très grande devant les fluctuations : c'est l'analogie du camion-monstre qui roule sans sentir les petits obstacles. À haute fréquence proche de Bragg, les petites variations suffisent à bloquer l'onde instantanément, comme un skateboard sur une fissure. De même, un désordre faible demande une très longue chaîne pour observer l'atténuation.
+
+[Slide 19]
+Ici est présenté le formalisme de la longueur de localisation dans la limite basse fréquence. Par théorie des perturbations au second ordre sur le produit des matrices de transfert, on obtient ce résultat analytique en un sur omega carré epsilon carré. Cela justifie mathématiquement pourquoi les basses fréquences ne se localisent pas à l'échelle du réseau et pourquoi xi s'effondre quand le désordre augmente.
+
+[Slide 20]
+Cette planche montre le calcul analytique du paquet d'ondes par intégration. Près de la source, c'est la fréquence centrale qui domine, d'où la décroissance exponentielle. Mais à grande distance, la fréquence centrale est complètement filtrée par le désordre, et ce sont les modes basse fréquence très proches de zéro qui dominent l'intégrale. C'est cette intégration de la queue spectrale qui génère mathématiquement la loi de puissance en x puissance moins beta.
+
+[Slide 21]
+Nous détaillons ici la carte de Riccati. Bien qu'elle soit stable, elle présente un biais à basse fréquence. Comme la phase de l'onde varie très lentement quand omega tend vers zéro, le rapport Rn est extrêmement proche de 1. Numériquement, faire la somme de logarithmes de termes proches de 1 accumule des erreurs d'arrondi de précision machine, ce qui fausse le calcul de la pente et donne un scaling apparent de 2.5.
+
+[Slide 22]
+Cette planche détaille le passage du problème aux valeurs propres généralisé au problème standard symétrique. La matrice de raideur K est symétrique par définition, mais le désordre de masse rend l'opérateur du problème standard équivalent non symétrique (ses modes ne sont pas orthogonaux au sens standard). En posant la matrice K-tilde symétrique via le changement de variable sur phi, on retrouve des modes propres orthonormés au sens de la métrique euclidienne standard. Cela garantit que le Participation Ratio (PR) est proprement défini comme la fraction ou proportion de sites participants, et que la normalisation correspond à la conservation de l'énergie physique.
+
+[Slide 23]
+Voici les étapes de l'algorithme de Verlet Vélocité. Il calcule la vitesse au demi-pas, met à jour la position, calcule la nouvelle force, puis met à jour la vitesse finale. Comme c'est un intégrateur symplectique, il conserve le volume de l'espace des phases. L'énergie totale oscille légèrement mais ne dérive pas, ce qui évite d'ajouter un amortissement artificiel dans nos simulations de paquets d'ondes.
+
+[Slide 24]
+Enfin, cette annexe montre la validation croisée de nos codes. Nous avons utilisé des outils d'IA générative pour coder rapidement les solveurs et les optimiser avec Numba. Pour valider les résultats, nous avons comparé les quatre approches sur le cas ordonné sans désordre, puis recoupé les longueurs de localisation sur la plage de fréquences intermédiaire, ce qui montre un accord quantitatif parfait entre nos codes.

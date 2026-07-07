@@ -1,0 +1,273 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+\geometry{top=2.2cm, bottom=2.2cm, left=2.2cm, right=2.2cm}
+
+\title{\textbf{Script Oral \& Guide de Soutenance \\ de Stage de Master 1 SGM}}
+\author{\textbf{Emeric Mellet} \\ Laboratoire de Mécanique des Solides (LMS), École Polytechnique \\ Encadrante : Madame Anne Tanguy}
+\date{Soutenance du 29 Juin 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Ce document contient le script de présentation orale complet (durée ciblée : 15 minutes) pour vos planches de soutenance de stage. Il détaille le discours à tenir diapositive par diapositive, propose des repères temporels stricts pour gérer votre temps et inclut un guide de questions-réponses ciblé par profil de membre du jury.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% =========================================================================
+\section{Conseils Généraux pour l'Oral}
+% =========================================================================
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Gestion du Temps (15 min) :} Ne dépassez pas les 15 minutes. Ce script compte environ \num{1750} mots, ce qui correspond à un débit calme et posé de \num{120} à \num{130} mots par minute. Vous disposez d'environ \num{30} secondes de marge de sécurité.
+    \item \textbf{Respiration :} Marquez des pauses claires d'une seconde après les transitions importantes (par exemple, entre la partie physique et la partie bilan professionnel).
+    \item \textbf{Le pointeur :} Utilisez le pointeur laser de manière ciblée, uniquement pour désigner des courbes spécifiques (les lignes $\varepsilon$ ou les fréquences $\omega$) et évitez de le faire bouger continuellement.
+    \item \textbf{Les annexes :} Les slides 18 à 20 sont vos \og  boucliers \fg{}. Ne les présentez pas de vous-même. Conservez-les pour répondre aux questions pointues du jury en fin de présentation.
+\end{itemize}
+
+\newpage
+
+% =========================================================================
+\section{Script Oral Slide par Slide (15 Minutes)}
+% =========================================================================
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 1 : Page de Garde --- 0:00 à 0:45]
+\textbf{Texte à dire :} \\
+\og  Bonjour à tous, et merci d'être présents aujourd'hui pour ma soutenance de stage de Master 1 Sciences et Génie des Matériaux. 
+
+J'ai effectué ce stage de recherche au sein du Laboratoire de Mécanique des Solides de l'École Polytechnique, sous la direction de Madame Anne Tanguy. Mon travail a porté sur l'étude théorique et numérique de la propagation d'ondes dans les chaînes harmoniques unidimensionnelles désordonnées. 
+
+Ce sujet se situe à l'interface entre la physique fondamentale de la localisation et le développement méthodologique d'algorithmes de simulation. Ce stage a également représenté une étape clé dans l'affirmation de mon projet professionnel, que je vous présenterai en seconde partie. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 2 : Table des Matières --- 0:45 à 1:15]
+\textbf{Texte à dire :} \\
+\og  Ma présentation s'articulera autour de deux axes principaux. 
+
+Dans un premier temps, nous aborderons l'étude scientifique. Je rappellerai le contexte physique de la localisation d'Anderson, puis je décrirai la modélisation du réseau masse-ressort 1D et le choix de l'intégrateur symplectique. Nous comparerons ensuite les quatre approches théoriques et numériques mises en œuvre pour caractériser le transport d'énergie.
+
+Dans un second temps, je dresserai le bilan de mon immersion professionnelle au LMS. Je détaillerai les compétences techniques et transversales acquises, mes contributions concrètes au laboratoire, et la manière dont cette expérience a consolidé mon choix d'orientation vers l'alternance en Master 2. \fg{}
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 2bis : Origine du Projet : Des simulations 3D à la chaîne 1D --- 1:15 à 2:00]
+\textbf{Texte à dire :} \\
+\og Avant d'aborder les modèles analytiques, il est important de comprendre la genèse de ce projet. Pour cela, nous sommes partis de simulations 3D d'un matériau désordonné, le CuZr amorphe, réalisées par mon encadrante Anne Tanguy.
+
+Les animations à droite illustrent la propagation d'un paquet d'ondes sous trois conditions : un désordre faible et moyen pour des ondes longitudinales, et un désordre fort pour des ondes transverses. On constate que la propagation est fortement affectée par la nature de l'onde et le niveau de désordre.
+
+Ces travaux laissaient une incertitude : quelle est la part due aux non-linéarités géométriques ou d'interaction, et quelle est celle due uniquement au désordre harmonique de masse ou de raideur ? C'est pour lever ce doute et isoler proprement le désordre linéaire que nous avons choisi d'étudier un modèle 1D. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 3 : Introduction : Phénomènes de transport vibratoire --- 2:00 à 3:00]
+\textbf{Texte à dire :} \\
+\og  Entrons dans le vif du sujet scientifique avec les régimes de transport vibratoire. Dans un cristal parfait, périodique, la propagation d'une onde est balistique : l'énergie se déplace sans atténuation et la variance spatiale de l'enveloppe croît de façon quadratique avec le temps.
+
+Dès que l'on introduit des fluctuations stochastiques sur les masses ou les raideurs, la symétrie de translation est brisée. Pour un désordre faible, les ondes subissent des diffusions élastiques successives menant à un régime diffusif classique, où la variance croît linéairement avec le temps. 
+
+Cependant, pour un désordre suffisant, les interférences cohérentes destructives entre ondes multiplement diffusées piègent l'onde spatialement. C'est la \textit{localisation d'Anderson}. L'amplitude décroît exponentiellement avec la distance à la source et la variance sature à long terme. L'enjeu de mon stage a été de quantifier précisément ces transitions. \fg{}
+\end{tcolorbox}
+
+\newpage
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 4 : Les trois régimes de transport ondulatoire --- 2:15 à 3:15]
+\textbf{Texte à dire :} \\
+\og  Pour visualiser ces régimes, nous suivons l'évolution temporelle de la variance spatiale, définie par l'équation à gauche de la planche. 
+
+Sur le graphique, la courbe verte représente la propagation balistique sans désordre, caractérisée par une croissance parabolique. En bleu, nous observons le régime diffusif où la variance augmente linéairement. Enfin, en rouge, le régime localisé montre une saturation rapide de la variance au cours du temps, ce qui traduit le confinement spatial de l'énergie. 
+
+Nous verrons que la transition entre ces trois comportements dépend de deux paramètres clés : la fréquence de l'onde injectée et l'intensité du désordre structural. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 5 : Réseau 1D Masse-Ressort \& Schéma Symplectique --- 3:15 à 4:15]
+\textbf{Texte à dire :} \\
+\og  Pour simuler ce solide désordonné, nous utilisons une chaîne linéaire harmonique de $N$ masses reliées par des ressorts. Les fluctuations stochastiques sont introduites sur les masses ou sur les raideurs selon une distribution uniforme de largeur $\varepsilon$.
+
+Afin de simuler la dynamique temporelle sans introduire d'amortissement artificiel, le choix de l'intégrateur numérique est critique. Nous présentons ici le schéma de Leapfrog (Verlet), équivalent à Velocity-Verlet mais formulé avec des sauts de temps demi-entiers pour les vitesses. 
+
+Il s'agit d'un intégrateur symplectique : il conserve le volume dans l'espace des phases et garantit une conservation stricte de l'énergie mécanique sur de très longs temps de simulation. C'est ce qui nous permet d'isoler la localisation physique pure sans biais de dissipation numérique. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 6 : Analyse Modale : Équation Matricielle et Valeurs Propres --- 4:15 à 5:15]
+\textbf{Texte à dire :} \\
+\og En parallèle des simulations temporelles, nous menons une analyse modale. L'équation dynamique se présente sous forme matricielle $M \ddot{u} + K u = 0$. En recherchant des solutions harmoniques, on obtient le problème aux valeurs propres généralisé $K \phi = \omega^2 M \phi$. La matrice de raideur $K$ est symétrique par définition, mais le désordre de masse rend l'opérateur du problème standard équivalent non symétrique.
+
+Pour se ramener à un problème standard avec un opérateur symétrique réel $\tilde{K} = M^{-1/2} K M^{-1/2}$, on effectue le changement de variable $\tilde{\phi} = M^{1/2} \phi$. Les modes propres $\tilde{\phi}$ sont alors orthonormés au sens de la métrique euclidienne standard.
+
+Pour mesurer l'extension spatiale de ces modes, nous calculons le Rapport de Participation, ou Participation Ratio $P_R$, défini à droite. Ce ratio, variant de $1/N$ à $1$, quantifie le pourcentage (ou la fraction) de sites participants au mode. Un mode totalement étendu présentera un $P_R$ proche de $1$, tandis qu'un mode localisé sur un seul site aura un $P_R$ de $1/N$. \fg{}
+\end{tcolorbox}
+
+\newpage
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 7 : Matrices de Transfert \& Carte de Riccati --- 5:15 à 6:30]
+\textbf{Texte à dire :} \\
+\og  La troisième méthode consiste à analyser le transport à fréquence fixe via les matrices de transfert. En écrivant l'équation de récurrence spatiale, on exprime l'amplitude d'un site à l'autre par un produit de matrices aléatoires. D'après le théorème d'Oseledec, le taux de croissance exponentielle de ce produit converge vers l'exposant de Lyapunov $\gamma$, qui est l'inverse de la longueur de localisation physique $\xi$.
+
+Cependant, le produit direct de ces matrices pose des problèmes d'instabilité numérique dus à l'explosion exponentielle des termes. 
+
+Pour stabiliser le calcul, nous introduisons la variable de Riccati $R_n$, qui représente la force de réaction locale. Cela transforme le système en une carte non-linéaire stable de dimension 1, permettant d'intégrer des chaînes semi-infinies sans dépassement de capacité numérique. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 8 : Dynamique Temporelle \& Décroissance Algébrique --- 6:30 à 7:30]
+\textbf{Texte à dire :} \\
+\og Abordons maintenant la partie résultats. Commençons par la dynamique temporelle en simulant directement la propagation d'un paquet d'ondes par l'algorithme de Leapfrog (Verlet), méthode présentée en planche 5. Ce réseau de courbes montre l'enveloppe spatiale du déplacement pour différentes fréquences d'excitation et intensités de désordre. 
+
+On observe un crossover fascinant. À courte distance, l'enveloppe décroît de façon exponentielle, caractérisant la localisation d'Anderson. À grande distance, la décroissance s'adoucit pour suivre une loi de puissance algébrique. 
+
+Ce phénomène s'explique par la \textit{fuite spectrale}. L'excitation gaussienne de durée finie contient inévitablement des basses fréquences qui se propagent loin sans atténuation et finissent par dominer le signal à grande distance. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 9 : Validation de la Théorie Perturbative (Derrida \& Gardner) --- 7:30 à 8:45]
+\textbf{Texte à dire :} \\
+\og Pour caractériser cette localisation à fréquence fixe, nous confrontons nos simulations aux théories de faible désordre de Derrida-Gardner et Matsuda-Ishii. Les deux formules en haut de la planche présentent le scaling théorique de l'atténuation $\gamma(q)$ et la relation de récurrence de la fluctuation de phase complexe $\eta_n$.
+
+La méthode des matrices de transfert (TMM) valide parfaitement la loi de puissance théorique en $\omega^2 \varepsilon^2$ sur presque tout le spectre. 
+
+En revanche, la carte de Riccati dévie systématiquement à très basse fréquence, donnant un exposant apparent de $2{,}5$ au lieu de $2$. L'équation de phase montre pourquoi : elle fait intervenir une somme de rapports divisés par des produits de $B_k(qa)$ qui tendent vers $1$ à basse fréquence. Cela engendre une accumulation dramatique d'erreurs d'arrondi numérique en précision machine, faussant la pente. \fg{}
+\end{tcolorbox}
+
+\newpage
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 10 : Densité d'États (DOS) \& Rapport de Participation (PR) --- 8:45 à 10:00]
+\textbf{Texte à dire :} \\
+\og Enfin, pour comprendre l'origine physique de cette sélectivité spectrale de la localisation, nous analysons le spectre du système via l'analyse modale. Cette planche présente la densité d'états $g(\omega)$ en haut, et le rapport de participation $P_R$ en bas, pour trois niveaux de désordre. 
+
+Pour un désordre faible, la DOS présente une divergence claire à la limite de Bragg $\omega = 2$, et les modes sont délocalisés avec un $P_R$ proche de $2/3$. Lorsque le désordre augmente, la limite de Bragg est érodée et des états de queue de haute fréquence apparaissent au-delà de $\omega = 2$. 
+
+Le $P_R$ en bas montre que ces états de queue de haute fréquence sont extrêmement localisés, chutant vers le site unique, ce qui explique le piégeage d'Anderson. À basse fréquence, la divergence physique de la longueur de localisation est limitée par la taille finie du système fermé, ce qui sature le $P_R$ à la valeur théorique de $N/3$. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 11 : Synthèse des Méthodes Numériques --- 10:00 à 11:00]
+\textbf{Texte à dire :} \\
+\og  Ce tableau synthétise les performances et les limites des quatre approches étudiées. Bien qu'elles reposent sur des représentations physiques différentes (statique, modale ou temporelle), nous démontrons qu'elles convergent quantitativement sur une large plage de fréquences moyennes, allant de $0.8$ à $1.8$. 
+
+Dans cette gamme, la longueur de localisation est une grandeur intrinsèque robuste. 
+
+En dehors de cette plage, chaque méthode révèle ses limites numériques ou physiques (effets de bords pour l'analyse modale, erreurs de phase pour Riccati, ou fuite spectrale pour la dynamique). Cette étude comparative fournit ainsi un guide méthodologique clair pour le choix des solveurs en mécanique des milieux désordonnés. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 12 : Immersion au LMS et Compétences Développées --- 11:00 à 12:00]
+\textbf{Texte à dire :} \\
+\og  J'entame à présent la seconde partie de mon exposé consacrée au bilan de mon stage. Mon immersion au Laboratoire de Mécanique des Solides m'a permis de découvrir le fonctionnement quotidien de la recherche académique, en participant activement aux séminaires d'équipe. 
+
+Sur le plan technique, j'ai consolidé mes compétences en programmation scientifique sous Python, en développant des codes d'intégration et de traitement statistique. 
+
+J'ai également intégré à mon flux de travail des outils professionnels essentiels comme Git pour la gestion de version, et LaTeX pour la rédaction de rapports scientifiques. Enfin, j'ai appris à utiliser l'IA générative comme un assistant pour accélérer le débogage de mes codes. \fg{}
+\end{tcolorbox}
+
+\newpage
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 13 : Contributions au LMS \& Choix d'Orientation --- 12:00 à 13:00]
+\textbf{Texte à dire :} \\
+\og  Au-delà de ma formation, j'ai apporté des contributions concrètes au LMS. J'ai livré un pipeline de code structuré et documenté, permettant à l'équipe de poursuivre ces travaux de simulation. J'ai également généré une base de données de validation statistique et produit des figures prêtes à être publiées dans de futurs articles.
+
+Ce stage a également joué un rôle décisif dans la construction de mon projet professionnel. 
+
+Travailler sur ces modèles numériques m'a conforté dans mon choix de m'orienter vers la simulation en mécanique des structures. Souhaitant appliquer ces outils dans un cadre industriel concret, j'ai choisi de postuler au Master 2 MAMI en apprentissage, afin de lier la rigueur de la recherche à la réalité industrielle. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 14 : Conclusion et Perspectives --- 13:00 à 14:15]
+\textbf{Texte à dire :} \\
+\og  En conclusion, ce stage a permis de caractériser l'inhibition du transport vibratoire par le désordre et de cartographier les régimes de la localisation d'Anderson en 1D. Nous avons validé la théorie analytique de Matsuda-Ishii et mis en lumière le phénomène de fuite spectrale.
+
+Sur le plan scientifique, la suite naturelle de ce travail consisterait à étudier des réseaux en dimensions supérieures et à introduire des non-linéarités, par exemple de type FPUT, pour analyser la thermalisation. 
+
+Sur le plan pratique, ces résultats ouvrent des perspectives intéressantes pour la conception de métamatériaux acoustiques isolants, où le désordre peut être exploité pour confiner les vibrations indésirables. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slides 15-16 : Références --- 14:15 à 14:45]
+\textbf{Texte à dire :} \\
+\og  Les planches 15 et 16 recensent les références bibliographiques qui ont soutenu ce travail. 
+
+Vous y trouverez les articles scientifiques cités tout au long des diapositives, notamment l'article de Hu et al. sur la localisation des ondes élastiques, ainsi que les références majeures utilisées pendant mon immersion, incluant les travaux de ma tutrice, Madame Anne Tanguy. \fg{}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title=Slide 17 : Page de Remerciements \& Q\&A --- 14:45 à 15:00]
+\textbf{Texte à dire :} \\
+\og  Je tiens à exprimer ma profonde gratitude à ma tutrice de stage, Anne Tanguy, pour son encadrement, sa confiance et sa disponibilité. Je remercie également toute l'équipe du LMS pour son accueil chaleureux. 
+
+Je vous remercie pour votre attention et je suis maintenant à votre entière disposition pour répondre à vos questions. \fg{}
+\end{tcolorbox}
+
+\newpage
+
+% =========================================================================
+\section{Guide de Préparation au Questions-Réponses (Q\&A)}
+% =========================================================================
+
+\subsection{1. L'Expert du Domaine (Anne Tanguy)}
+\textit{Ce profil s'attache à la rigueur physique et à la précision des interprétations théoriques.}
+
+\begin{enumerate}[label=\textbf{Q\arabic* :}]
+    \item \textbf{Pourquoi la carte de Riccati dévie-t-elle à basse fréquence ?} \\
+    \textbf{Réponse :} \og  La carte de Riccati repose sur la variable $R_n = K_n u_{n+1}/u_n$. À basse fréquence ($\omega \to 0$), la phase de l'onde varie extrêmement lentement d'un site à l'autre, ce qui rend le rapport $u_{n+1}/u_n$ très proche de $1$. Numériquement, le calcul du logarithme de cette quantité ou des rapports non-linéaires accumule des erreurs d'arrondi. Cette perte de précision se propage le long de la chaîne et biaise l'estimation de l'exposant de Lyapunov, conduisant à un exposant apparent de $2.5$ au lieu de $2.0$. \fg{}
+    
+    \item \textbf{En quoi la formulation standard symétrique de la matrice dynamique est-elle importante ?} \\
+    \textbf{Réponse :} \og Dans le problème d'analyse modale $K \phi = \omega^2 M \phi$, la matrice de raideur $K$ est symétrique par définition. Le désordre de masse introduit une matrice de masse $M$ diagonale aléatoire, ce qui rend l'opérateur du problème standard équivalent $M^{-1}K$ non symétrique. Par conséquent, ses vecteurs propres ne sont pas orthogonaux au sens de la métrique euclidienne standard. En effectuant le changement de variable $\tilde{\phi} = M^{1/2} \phi$, on formule un problème aux valeurs propres standard avec l'opérateur symétrique réel $\tilde{K} = M^{-1/2} K M^{-1/2}$. Ses vecteurs propres $\tilde{\phi}$ sont alors orthonormés dans la base euclidienne standard ($\sum_i \tilde{\phi}_i^2 = 1$). Physiquement, cette orthonormalité intègre la répartition des masses (produit scalaire pondéré par la masse traduisant la conservation de l'énergie), ce qui est indispensable pour définir proprement le Participation Ratio comme une fraction ou proportion de sites actifs. \fg{}
+\end{enumerate}
+
+\subsection{2. Le Responsable de Formation}
+\textit{Ce profil s'intéresse à la cohérence de votre projet professionnel et à l'acquisition de vos compétences.}
+
+\begin{enumerate}[label=\textbf{Q\arabic* :}]
+    \item \textbf{Comment ce stage en recherche fondamentale s'articule-t-il avec votre M2 MAMI axé sur l'industrie et la fabrication ?} \\
+    \textbf{Réponse :} \og  Bien que le sujet soit fondamental, les outils développés (la modélisation de réseaux et le traitement statistique du désordre) sont directement transférables à la fabrication additive. En impression 3D, les microstructures comportent intrinsèquement des défauts géométriques et matériels aléatoires, assimilables à du désordre structural. Savoir simuler et quantifier comment ces défauts affectent la propagation des contraintes mécaniques ou des vibrations est un atout majeur pour concevoir des pièces fiables dans l'industrie. \fg{}
+    
+    \item \textbf{Comment avez-vous validé la fiabilité des codes développés avec l'IA ?} \\
+    \textbf{Réponse :} \og  L'IA a servi d'accélérateur d'écriture, mais chaque module a été soumis à deux contrôles stricts. Premièrement, une validation sur des cas limites connus analytiquement (par exemple, le réseau ordonné $\varepsilon = 0$, où les modes sont des ondes de Bragg pures). Deuxièmement, une méthode de recoupement croisé : en comparant quatre codes indépendants (TMM, Riccati, PR, et dynamique temporelle de Verlet) sur une même bande fréquentielle, leur convergence quantitative a fait office de validation mutuelle. \fg{}
+\end{enumerate}
+
+\subsection{3. Le Professeur Référent (Généraliste)}
+\textit{Ce profil évalue votre recul et votre capacité de vulgarisation.}
+
+\begin{enumerate}[label=\textbf{Q\arabic* :}]
+    \item \textbf{Pourquoi utiliser un intégrateur symplectique comme Verlet Vélocité ?} \\
+    \textbf{Réponse :} \og  Dans l'étude de la localisation d'Anderson, nous cherchons à isoler une atténuation de l'onde causée uniquement par des interférences de diffusion cohérente (un effet purement élastique). Si nous avions utilisé un intégrateur classique de type Runge-Kutta, l'erreur de troncature numérique aurait introduit une dissipation d'énergie artificielle. Nous n'aurions pas pu distinguer si l'atténuation de l'amplitude était physique ou due aux pertes numériques. L'intégrateur symplectique conserve l'énergie sur de longs temps, garantissant la validité physique des résultats. \fg{}
+\end{enumerate}
+
+\newpage
+
+% =========================================================================
+\section{Utilisation Stratégique des Slides d'Annexes}
+% =========================================================================
+Pendant les questions, vous pouvez à tout moment projeter les diapositives d'annexe (Slides 18 à 20) pour appuyer vos explications scientifiques :
+
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Si on vous interroge sur la décroissance physique des paquets d'ondes :} \\
+    Affichez la \textbf{Slide 18 (Annexe I : Régimes de Localisation \& Désordre)}. Elle montre visuellement l'influence de la fréquence et du désordre à l'aide de l'analogie intuitive (le camion-monstre, la voiture, le skateboard) et permet d'illustrer la transition en un coup d'œil.
+    
+    \item \textbf{Si on vous demande de détailler le calcul mathématique de $\xi(\omega)$ :} \\
+    Affichez la \textbf{Slide 19 (Annexe II : Formalisme Mathématique)}. Elle présente la théorie perturbative au second ordre en matrices de transfert et montre la formule asymptotique $\xi(\omega) \propto \varepsilon^{-2} \omega^{-2}$, ce qui valide mathématiquement la loi de Matsuda-Ishii.
+    
+    \item \textbf{Si on conteste l'origine physique de la queue algébrique :} \\
+    Affichez la \textbf{Slide 20 (Annexe III : Fuite Spectrale et Queue Algébrique)}. Elle détaille mathématiquement l'intégrale de Fourier du paquet d'ondes, son crossover spatial, et démontre l'apparition de la queue en $x^{-1/2}$ ou $x^{-\beta}$ due à la contribution dominante des très basses fréquences à grande distance.
+\end{itemize}
+
+\newpage
+
+% =========================================================================
+\section{Questions-Réponses sur la Figure de Propagation (Slide 4bis)}
+% =========================================================================
+Cette section rassemble les explications physiques détaillées relatives aux observations de la Slide 4bis (figure de propagation comparée).
+
+\begin{enumerate}[label=\textbf{Q\arabic* :}]
+    \item \textbf{Pourquoi l'enveloppe du paquet d'ondes décroît-elle en amplitude dans le cas ordonné alors que le système est conservatif (sans dissipation) ?} \\
+    \textbf{Réponse :} \og  C'est un effet d'étalement dispersif. Le paquet d'ondes initial possède une largeur de bande finie. Dans le réseau discret, la vitesse de groupe dépend de la fréquence ($v_g(\omega) = \sqrt{1 - (\omega/2)^2}$). Les composantes se déphasent et se propagent à des vitesses différentes, étirant spatialement le paquet d'ondes (stretching). Par conservation de l'énergie mécanique totale, si l'énergie se répartit sur davantage d'atomes, l'amplitude maximale de déplacement individuel doit nécessairement décroître (en $t^{-1/2}$). \fg{}
+    
+    \item \textbf{Pourquoi l'enveloppe du cas désordonné présente-t-elle une asymétrie gauche-droite marquée autour du site d'excitation ?} \\
+    \textbf{Réponse :} \og  L'asymétrie résulte de la nature stochastique du désordre pour cette réalisation particulière (désordre gelé). Les masses à gauche et à droite de la source d'excitation sont issues d'un unique tirage aléatoire des masses $M_j$. Cette réalisation spécifique crée des barrières locales de diffusion stochastiques différentes de chaque côté. Les interférences destructives qui causent la localisation d'Anderson se produisent ainsi sur des échelles locales asymétriques. Pour obtenir un profil parfaitement symétrique, il faudrait moyenner le déplacement sur un grand nombre de configurations de désordre indépendantes (moyenne d'ensemble). \fg{}
+\end{enumerate}
+
+\end{document}

@@ -333,11 +333,7 @@ def run_calculation_and_plot():
     
     plt.tight_layout()
     
-    fig1_filename = os.path.join(fig_dir, "13_attenuation_methods_comparison.pdf")
-    fig1.savefig(fig1_filename, dpi=300, bbox_inches='tight')
-    fig1_png = os.path.join(fig_dir, "13_attenuation_methods_comparison.png")
-    fig1.savefig(fig1_png, dpi=150, bbox_inches='tight')
-    print(f"--> Figure 1 saved as '{fig1_filename}' and '{fig1_png}'")
+    fig1.savefig("13_attenuation_methods_comparison.pdf", dpi=300, bbox_inches='tight')
     plt.close(fig1)
 
     print("\n--> Success! All calculations completed, data exported, and figures generated.")

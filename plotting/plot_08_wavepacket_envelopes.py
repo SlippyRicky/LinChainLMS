@@ -24,27 +24,17 @@ import plot_config
 fig_dir = os.path.join(plot_config.FIGURES_ROOT, '02_linear_disorder')
 # Directory creation handled by plot_config
 
-def find_data_file(eps, N):
+import glob
+
+def find_data_file(eps):
     data_dir = plot_config.DATA_DIR
-    for suffix in ["", "_test"]:
-        filename = f"wp_envelopes_eps={eps}_N={N}{suffix}.csv"
-        path = os.path.join(data_dir, filename)
-        if os.path.exists(path):
-            return path
-    filename = f"wp_envelopes_eps={eps}_N={N}.csv"
-    paths_to_check = [
-        os.path.join(project_root, "code", "parametric_sweep", "data", filename),
-        os.path.join(project_root, "code", "scratch", "data", filename),
-        os.path.join(project_root, "parametric_sweep", "data", filename),
-        os.path.join(project_root, "scratch", "data", filename),
-    ]
-    for path in paths_to_check:
-        if os.path.exists(path):
-            return path
+    pattern = os.path.join(data_dir, f"wp_envelopes_eps={eps}_N=*.csv")
+    files = glob.glob(pattern)
+    if files:
+        return files[0]
     return None
 
 def plot_all_envelopes():
-    N = 6000
     disorder_levels = [0.1, 0.7, 1.4]
     freq_indices = [1, 5, 10, 15, 19]
 
@@ -59,21 +49,24 @@ def plot_all_envelopes():
         manual_ranges = None
 
     for row_idx, eps in enumerate(disorder_levels):
-        data_path = find_data_file(eps, N)
+        data_path = find_data_file(eps)
         if data_path is None:
             print(f"Error: Data file for eps={eps} not found.")
             return
 
         data = np.loadtxt(data_path, delimiter=',', skiprows=1, ndmin=2)
         omegas = data[:, 0]
-
+        
+        # Dynamically determine N from file columns count
+        N = data.shape[1] - 1
         current_freq_indices = [i for i in freq_indices if i < data.shape[0]]
         if not current_freq_indices:
             current_freq_indices = [0]
 
         col_start = 1 + N // 2
-        col_end   = col_start + 2900
-        X = np.arange(0, 2900)
+        l_abc = 100 if N >= 200 else N // 2
+        col_end   = data.shape[1] - l_abc
+        X = np.arange(0, col_end - col_start)
 
         ax_log = axes[row_idx]
 
@@ -114,7 +107,7 @@ def plot_all_envelopes():
 
         # Semilogy properties
         ax_log.set_ylim(1e-12, 2.0)
-        ax_log.set_xlim(0, 2900)
+        ax_log.set_xlim(0, X[-1])
         ax_log.grid(True, which="both", alpha=0.2, linestyle='--')
         ax_log.set_ylabel(rf"Amplitude $\langle|u_n/u_0|\rangle_M$  ($\varepsilon = {eps}$)", fontweight='bold')
 

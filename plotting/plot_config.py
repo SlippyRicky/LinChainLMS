@@ -33,6 +33,9 @@ def apply_style(font_size=18, linewidth=2.0, use_grid=False, grid_alpha=0.2):
 # Apply default style on import (scripts can override afterward)
 apply_style()
 
+import matplotlib.figure
+original_figure_savefig = matplotlib.figure.Figure.savefig
+
 def save_figure(name, fig=None, category=None, **kwargs):
     """
     Saves the matplotlib figure to the appropriate destination directory
@@ -56,8 +59,8 @@ def save_figure(name, fig=None, category=None, **kwargs):
     if fmt in ("pdf", "both"):
         save_path = os.path.join(target_dir, f"{name}.pdf")
         pdf_kwargs = kwargs.copy()
-        # Avoid duplicate dpi settings if not needed, or pass it on
-        fig.savefig(save_path, **pdf_kwargs)
+        # Call original unpatched savefig to avoid infinite recursion
+        original_figure_savefig(fig, save_path, **pdf_kwargs)
         saved_paths.append(save_path)
         
     # 4. Save as PNG if requested or if 'both' is selected
@@ -67,27 +70,33 @@ def save_figure(name, fig=None, category=None, **kwargs):
         # Default PNG to 300 dpi if not provided
         if "dpi" not in png_kwargs:
             png_kwargs["dpi"] = 300
-        fig.savefig(save_path, **png_kwargs)
+        # Call original unpatched savefig to avoid infinite recursion
+        original_figure_savefig(fig, save_path, **png_kwargs)
         saved_paths.append(save_path)
         
     # Print status message
     rel_paths = [os.path.relpath(p, REPO_ROOT) for p in saved_paths]
     print(f"--> Figure saved to: {', '.join(rel_paths)}")
 
-# --- Monkey-patching matplotlib.pyplot.savefig ---
-def custom_savefig(fname, *args, **kwargs):
+# --- Monkey-patching matplotlib.figure.Figure.savefig ---
+def custom_figure_savefig(self, fname, *args, **kwargs):
     """
-    Intercepts all calls to plt.savefig, extracts the figure name,
+    Intercepts all calls to fig.savefig, extracts the figure name,
     and reroutes it through our central save_figure method.
     """
-    basename = os.path.splitext(os.path.basename(fname))[0]
-    
-    # Check if this is a slides figure
-    if "slides" in fname or "slides" in basename:
-        category = "02_linear_disorder/slides"
-    else:
-        category = "02_linear_disorder"
+    if isinstance(fname, str):
+        basename = os.path.splitext(os.path.basename(fname))[0]
         
-    save_figure(basename, category=category, **kwargs)
+        # Check if this is a slides figure
+        if "slides" in fname or "slides" in basename:
+            category = "slides"
+        else:
+            category = "02_linear_disorder"
+            
+        save_figure(basename, fig=self, category=category, **kwargs)
+    else:
+        # Fallback to original savefig if fname is a file-like object
+        original_figure_savefig(self, fname, *args, **kwargs)
 
-plt.savefig = custom_savefig
+matplotlib.figure.Figure.savefig = custom_figure_savefig
+plt.savefig = lambda fname, *args, **kwargs: plt.gcf().savefig(fname, *args, **kwargs)

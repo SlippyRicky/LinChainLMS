@@ -1,0 +1,109 @@
+{
+  "pdfpcFormat": 2,
+  "pages": [
+    {
+      "idx": 0,
+      "note": "Bonjour à tous. Merci d'être venus pour ma soutenance de stage. J'ai effectué mon travail de recherche au LMS à l'École Polytechnique, sous la direction d'Anne Tanguy. Mon sujet porte sur la propagation d'ondes dans les chaînes 1D désordonnées. C'est un travail à la fois théorique et numérique."
+    },
+    {
+      "idx": 1,
+      "note": "Voici le plan de ma présentation. Nous commencerons par la partie scientifique. Je rappellerai les régimes de transport ondulatoire, puis je décrirai la modélisation dynamique par l'intégration d'un paquet d'ondes. Nous verrons ensuite comment l'analyse modale de la matrice dynamique se compare au formalisme matriciel à fréquence fixe avec les matrices de transfert et la carte de Riccati. Enfin, nous confronterons les résultats de ces trois approches avant de passer au bilan professionnel de mon stage."
+    },
+    {
+      "idx": 2,
+      "note": "Avant d'aborder les modèles analytiques, il est important de comprendre la genèse de ce projet. Pour cela, nous sommes partis de simulations 3D d'un matériau désordonné (le CuZr amorphe) réalisées par mon encadrante, Anne Tanguy. Les animations à droite illustrent la propagation d'un paquet d'ondes sous trois conditions : un désordre faible et moyen pour des ondes longitudinales, et un désordre fort pour des ondes transverses. On constate que la propagation est fortement affectée par la nature de l'onde et le niveau de désordre. Ces travaux laissaient une incertitude : quelle est la part due aux non-linéarités et quelle est celle due uniquement au désordre de masse ou de raideur ? C'est pour lever ce doute et isoler le désordre harmonique linéaire que nous étudions un modèle 1D."
+    },
+    {
+      "idx": 3,
+      "note": "Dans un cristal parfait, la propagation est balistique. Dès qu'on introduit du désordre, la symétrie de translation est brisée. Pour étudier ce problème, nous choisissons un modèle 1D. Ce n'est pas uniquement parce que tous les états y sont localisés (ce qui est une propriété physique intéressante, un « accident heureux »), mais surtout parce que la dimension 1 offre des modèles analytiques exacts (comme Derrida-Gardner ou Matsuda-Ishii) qui sont mathématiquement insolubles en 2D et 3D. L'objectif de mon stage est de caractériser cette localisation par quatre méthodes numériques et de les confronter à ces théories exactes."
+    },
+    {
+      "idx": 4,
+      "note": "Voici la simulation dynamique en 1D. En haut, dans un réseau parfaitement ordonné, l'onde se propage librement à vitesse constante. En bas, en présence de désordre, on observe un piégeage rapide de l'énergie : le paquet d'ondes s'arrête et reste confiné au centre. C'est l'illustration visuelle directe de la localisation d'Anderson."
+    },
+    {
+      "idx": 5,
+      "note": "Pour quantifier cela, on suit l'étalement de l'onde par sa variance. Ce graphique montre les trois régimes types : en vert, le régime balistique sans obstacle ; en bleu, le régime diffusif comparable à une marche aléatoire ; et en rouge, la localisation forte où l'onde cesse de s'étaler après un certain temps, formant une enveloppe stationnaire et figée."
+    },
+    {
+      "idx": 6,
+      "note": "L'analyse modale repose sur l'équation dynamique sous forme matricielle M ddot {u} + K u = 0. En cherchant des solutions harmoniques, on obtient le problème aux valeurs propres généralisé K phi = omega ^2 M phi . Bien que la matrice de raideur K soit symétrique par définition, on se ramène à un problème aux valeurs propres standard symétrique tilde {K} tilde {phi } = omega ^2 tilde {phi } (où tilde {K} = M^{-1/2} K M^{-1/2} est symétrique) afin d'obtenir des modes propres orthonormalisés au sens usuel. Enfin, le taux de participation (PR) quantifie la proportion de sites actifs pour chaque mode, variant entre 1/N et 1."
+    },
+    {
+      "idx": 7,
+      "note": "La méthode des matrices de transfert permet de calculer la propagation à une fréquence fixe de proche en proche. En multipliant ces matrices, on extrait l'exposant de Lyapunov et donc la longueur de localisation. Pour éviter les divergences numériques de ce produit, on utilise la carte de Riccati en étudiant le rapport des déplacements consécutifs. Cela stabilise la récurrence et sert de base aux modèles analytiques."
+    },
+    {
+      "idx": 8,
+      "note": "Avant de passer aux simulations temporelles, voici comment se situent ces modèles analytiques. À gauche, l'analyse modale donne une vision globale du spectre mais souffre de la taille finie. À droite, les méthodes à fréquence fixe : les matrices de transfert et la carte de Riccati. Elles calculent toutes deux la même observable : l'inverse de la longueur de localisation. Riccati dérive directement de la méthode matricielle pour stabiliser ses divergences numériques, et ces deux approches permettent de retrouver le comportement analytique perturbatif aux basses fréquences."
+    },
+    {
+      "idx": 9,
+      "note": "Pour modéliser le réseau, on utilise une chaîne 1D de masses et de ressorts. Le désordre est introduit sur les masses ou sur les raideurs. Pour simuler la propagation dans le temps, on utilise l'algorithme de Leapfrog (Verlet). Ce schéma a la particularité d'être symplectique, c'est-à-dire qu'il conserve parfaitement l'énergie globale sans ajouter de frottement numérique artificiel, ce qui garantit la fiabilité des simulations à très long terme."
+    },
+    {
+      "idx": 10,
+      "note": "Sur ces graphiques, nous étudions les modes de vibration de la chaîne. Quand le désordre augmente, de nouveaux modes apparaissent à haute fréquence. Le graphique du bas montre que ces modes de haute fréquence sont très localisés, parfois confinés sur un seul atome. À basse fréquence, la taille finie de notre chaîne fermée sature le taux de participation car les modes tendent à dépasser la longueur de la chaîne."
+    },
+    {
+      "idx": 11,
+      "note": "Ici, nous validons nos méthodes face à la théorie de Derrida et Gardner. Nos calculs par matrices de transfert confirment le scaling en omega carré fois epsilon carré. En revanche, la méthode de Riccati dévie à basse fréquence avec une pente de 2.5 au lieu de 2. Cela provient de l'expression de la phase eta_n, qui fait intervenir des produits de B_k proches de 1 au dénominateur, accumulant ainsi les erreurs de précision numérique."
+    },
+    {
+      "idx": 12,
+      "note": "Passons aux résultats de la dynamique temporelle. Le système démarre au repos et subit un forçage temporel sur le site central. Le graphique à droite montre l'enveloppe spatiale du déplacement maximal."
+    },
+    {
+      "idx": 13,
+      "note": "Cette diapositive synthétise nos approches. Il est important de noter que le formalisme matriciel et Riccati ne sont pas des méthodes distinctes physiquement : elles calculent la même observable, l'exposant de Lyapunov. Nous avons donc trois approches indépendantes : dynamique, modale et stationnaire. Le graphique de droite montre qu'elles convergent parfaitement sur la plage de fréquences intermédiaires, validant la cohérence de nos simulations."
+    },
+    {
+      "idx": 14,
+      "note": "En conclusion, ce stage a permis de valider la cohérence de trois approches indépendantes pour mesurer la longueur de localisation dans les chaînes désordonnées. En perspective, mon travail s'ouvre sur deux axes : l'extension à des dimensions supérieures comme les réseaux 3D, et l'introduction de non-linéarités dans les interactions, qui peuvent agir comme un facteur de délocalisation et modifier le transport d'énergie."
+    },
+    {
+      "idx": 15,
+      "note": "Dans cette seconde partie, je présente le bilan de mon stage. J'ai pu m'immerger au sein du LMS en participant aux séminaires scientifiques hebdomadaires. Côté technique, j'ai développé mes compétences en calcul scientifique sous Python et j'ai appris à structurer un projet de recherche avec Git, LaTeX et des outils d'IA générative pour accélérer le prototypage."
+    },
+    {
+      "idx": 16,
+      "note": "Mes livrables consistent en un code Python propre, modulaire et documenté, ainsi qu'une base de données de validation. Ce stage a été très formateur car il m'a permis de comprendre les algorithmes fondamentaux cachés derrière les logiciels de simulation. Néanmoins, il m'a aussi fait réaliser que le développement de code Python et l'approche très théorique de la physique ne sont pas ce que je souhaite faire. Je préfère m'orienter vers la modélisation 3D de pièces et l'utilisation de logiciels industriels comme Abaqus. C'est pourquoi je poursuis l'an prochain en Master 2 en alternance, pour appliquer ces outils de modélisation à des problématiques concrètes de conception."
+    },
+    {
+      "idx": 17,
+      "note": "Voici les références bibliographiques citées tout au long des planches de cette présentation."
+    },
+    {
+      "idx": 19,
+      "note": "Et voici les références supplémentaires qui ont servi de base théorique à ce travail de stage."
+    },
+    {
+      "idx": 20,
+      "note": "Je tiens à remercier chaleureusement ma tutrice de stage, Anne Tanguy, pour son encadrement et sa bienveillance, ainsi que toute l'équipe du LMS pour son accueil. Merci pour votre attention, je suis maintenant ouvert à vos questions."
+    },
+    {
+      "idx": 21,
+      "note": "Cette annexe détaille l'effet de la fréquence et du désordre. À basse fréquence, la longueur d'onde est très grande devant les fluctuations : c'est l'analogie du camion-monstre qui roule sans sentir les petits obstacles. À haute fréquence proche de Bragg, les petites variations suffisent à bloquer l'onde instantanément, comme un skateboard sur une fissure. De même, un désordre faible demande une très longue chaîne pour observer l'atténuation."
+    },
+    {
+      "idx": 22,
+      "note": "Ici est présenté le formalisme de la longueur de localisation dans la limite basse fréquence. Par théorie des perturbations au second ordre sur le produit des matrices de transfert, on obtient ce résultat analytique en un sur omega carré epsilon carré. Cela justifie mathématiquement pourquoi les basses fréquences ne se localisent pas à l'échelle du réseau et pourquoi xi s'effondre quand le désordre augmente."
+    },
+    {
+      "idx": 23,
+      "note": "Nous détaillons ici la carte de Riccati. Bien qu'elle soit stable, elle présente un biais à basse fréquence. Comme la phase de l'onde varie très lentement quand omega tend vers zéro, le rapport Rn est extrêmement proche de 1. Numériquement, faire la somme de logarithmes de termes proches de 1 accumule des erreurs d'arrondi de précision machine, ce qui fausse le calcul de la pente et donne un scaling apparent de 2.5."
+    },
+    {
+      "idx": 24,
+      "note": "Cette planche détaille le passage du problème aux valeurs propres généralisé au problème standard symétrique. La matrice de raideur K est symétrique par définition, mais pour utiliser des modes orthonormés au sens standard de l'espace euclidien (tilde {phi }_p^T tilde {phi }_q = delta _{pq}) et ainsi définir rigoureusement le PR comme une fraction de sites, on applique la transformation tilde {K} = M^{-1/2} K M^{-1/2}. Cela garantit la cohérence physique de la normalisation et du PR."
+    },
+    {
+      "idx": 25,
+      "note": "Voici les étapes de l'algorithme de Verlet Vélocité. Il calcule la vitesse au demi-pas, met à jour la position, calcule la nouvelle force, puis met à jour la vitesse finale. Comme c'est un intégrateur symplectique, il conserve le volume de l'espace des phases. L'énergie totale oscille légèrement mais ne dérive pas, ce qui évite d'ajouter un amortissement artificiel dans nos simulations de paquets d'ondes."
+    },
+    {
+      "idx": 26,
+      "note": "Enfin, cette annexe montre la validation croisée de nos codes. Nous avons utilisé des outils d'IA générative pour coder rapidement les solveurs et les optimiser avec Numba. Pour valider les résultats, nous avons comparé les quatre approches sur le cas ordonné sans désordre, puis recoupé les longueurs de localisation sur la plage de fréquences intermédiaire, ce qui montre un accord quantitatif parfait entre nos codes."
+    }
+  ]
+}

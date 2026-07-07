@@ -11,12 +11,12 @@ import glob
 import time
 
 scripts = [
-    'calc_01_diagnostics.py',
-    'calc_02_modal_properties.py',
-    'calc_03_attenuation_theory.py',
-    'calc_04_wavepacket_dynamics.py',
-    'calc_05_wavepacket_attenuation.py',
-    'calc_06_spatial_envelopes.py'
+    'sim_01_disorder_baselines_audit.py',
+    'sim_02_eigenmodes_dos_calculations.py',
+    'sim_03_attenuation_theory_numerical_verification.py',
+    'sim_04_wavepacket_spatiotemporal_propagation.py',
+    'sim_05_wavepacket_localization_length_extraction.py',
+    'sim_06_wavepacket_envelope_profiles.py'
 ]
 
 if __name__ == '__main__':

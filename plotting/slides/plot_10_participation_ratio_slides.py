@@ -23,7 +23,7 @@ plt.rcParams.update({
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, "../../../../"))
-slides_fig_dir = os.path.join(plot_config.FIGURES_ROOT, '02_linear_disorder/slides')
+slides_fig_dir = os.path.join(plot_config.FIGURES_ROOT, 'slides')
 # Directory creation handled by plot_config
 data_dir = plot_config.DATA_DIR
 

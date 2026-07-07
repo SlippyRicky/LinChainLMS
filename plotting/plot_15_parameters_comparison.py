@@ -317,11 +317,7 @@ def run_calculation_and_plot():
     
     plt.tight_layout()
     
-    fig2_filename = os.path.join(fig_dir, "15_parameters_comparison.pdf")
-    fig2.savefig(fig2_filename, dpi=300, bbox_inches='tight')
-    fig2_png = os.path.join(fig_dir, "15_parameters_comparison.png")
-    fig2.savefig(fig2_png, dpi=150, bbox_inches='tight')
-    print(f"--> Figure 2 saved as '{fig2_filename}' and '{fig2_png}'")
+    fig2.savefig("15_parameters_comparison.pdf", dpi=300, bbox_inches='tight')
     plt.close(fig2)
     
     print("\n--> Success! All calculations completed, data exported, and figures generated.")
