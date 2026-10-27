@@ -4,13 +4,17 @@ This repository contains the standalone simulation engine, plotting scripts, and
 
 ## Repository Structure
 
-The code is compartmentalized into four root-level directories to ensure modularity and ease of reuse:
+The code is compartmentalized into modular directories to ensure clarity and ease of reuse:
 
-* **`simulation/`**: The standalone simulation engine. These scripts perform exact diagonalization and time evolution simulations of 1D mass/stiffness disordered chains.
-* **`data/`**: The central dataset store. Contains static metadata, literature benchmark files (e.g. Hu et al. 2008), and physical datasets computed by the simulation engine (NPZ and CSV formats).
-* **`plotting/`**: The graphics compilation pipeline. Loads physical data from `data/` to compile report figures and presentation slides.
-* **`report/`**: The LaTeX report workspace. Contains chapters, bibliography, and compiled PDF/PNG figures in `report/figures/`.
-* **`soutenance/`**: The LaTeX presentation (slides) workspace for the final defense.
+* **`simulation/`**: The standalone simulation engine. Standalone scripts performing exact diagonalization, transfer matrix calculations (TMM), Riccati walks, and molecular dynamics time evolution of 1D mass/stiffness disordered chains.
+* **`data/`**: The central dataset store. Contains static literature benchmark files (e.g., Hu et al. 2008), physical metadata, and datasets computed by the simulation engine (NPZ and CSV formats).
+* **`plotting/`**: The graphics compilation pipeline. Pure plotting scripts that load physical datasets from `data/` to compile manuscript-ready figures in `report/figures/02_linear_disorder/`.
+* **`report/`**: The LaTeX report workspace. Contains the complete manuscript (`main.tex`), mathematical annexes (`annexes/`), bibliography (`bib/references.bib`), and compiled PDF deliverables.
+* **`soutenance/`**: The LaTeX presentation (Beamer slides) workspace for oral defense, including slide-specific figure generators and speaker notes.
+* **`misc/`**: Archived and supplementary utilities:
+  - `parametric_sweep/`: Large parameter grid search and convergence exploration scripts.
+  - `helpers/`: Interactive diagnostics, audit scripts, and validation notebooks.
+  - `scratch/`: Experimental sandboxes and temporary test scripts.
 
 ---
 

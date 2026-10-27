@@ -21,13 +21,14 @@ scripts = [
     "plot_15_parameters_comparison.py",
     "plot_16_localization_phase_diagram.py",
     "plot_17_intermediate_scattering.py",
-    "plot_09_wavepacket_fit_parameters.py",
+    "plot_20_wavepacket_fit_parameters.py",
 ]
 
 if __name__ == '__main__':
+    import plot_config
     # --- CLEANING STEP ---
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.abspath(os.path.join(script_dir, "../.."))
+    output_dir = os.path.join(plot_config.FIGURES_ROOT, '02_linear_disorder')
     print(f"Cleaning PDF and PNG outputs in: {output_dir}")
     if os.path.exists(output_dir):
         files = glob.glob(os.path.join(output_dir, "[0-9][0-9]_*.pdf")) + \

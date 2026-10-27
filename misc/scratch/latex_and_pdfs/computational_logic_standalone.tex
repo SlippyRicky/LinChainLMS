@@ -1,0 +1,19 @@
+% !TEX TS-program = lualatex
+\documentclass[11pt, a4paper]{report}
+
+\newcommand{\mychapter}[1]{%
+    \chapter*{#1}%
+    \addcontentsline{toc}{chapter}{#1}%
+}
+
+% Reuse the project preamble
+\input{config/preamble.tex}
+\input{config/macros.tex}
+
+\geometry{margin=2cm}
+
+\begin{document}
+
+\input{content/computational_logic.tex}
+
+\end{document}

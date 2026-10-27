@@ -26,8 +26,8 @@
 % --- Figures Search Path ---
 \graphicspath{
   {assets/}
+  {figures/}
   {/Users/emericmellet/Desktop/Emeric/School/UPS/M1 SGM/Stage/Repo/report/figures/}
-  {/Users/emericmellet/Desktop/Emeric/School/UPS/M1 SGM/Stage/Repo/report/figures/slides/}
 }
 
 % --- Bibliography ---
@@ -86,8 +86,8 @@
 
 % --- Fallback University and Lab Logos ---
 \newcommand{\universitylogo}[1][0.5cm]{%
-  \IfFileExists{logo-ups.pdf}{%
-    \includegraphics[height=#1,keepaspectratio]{logo-ups.pdf}%
+  \IfFileExists{assets/logo-ups.png}{%
+    \includegraphics[height=#1,keepaspectratio]{logo-ups.png}%
   }{%
     \begin{tikzpicture}[baseline=(char.base)]
       \node[draw=figureblue!60, fill=figureblue!5, rounded corners=2pt, inner sep=3pt] (char) {\tiny\bfseries\sffamily\color{figureblue}UPSaclay};
@@ -96,8 +96,8 @@
 }
 
 \newcommand{\lablogo}[1][0.5cm]{%
-  \IfFileExists{lms-logo.pdf}{%
-    \includegraphics[height=#1,keepaspectratio]{lms-logo.pdf}%
+  \IfFileExists{assets/lms-logo.png}{%
+    \includegraphics[height=#1,keepaspectratio]{lms-logo.png}%
   }{%
     \begin{tikzpicture}[baseline=(char.base)]
       \node[draw=figureteal!60, fill=figureteal!5, rounded corners=2pt, inner sep=3pt] (char) {\tiny\bfseries\sffamily\color{figureteal}LMS};
@@ -180,7 +180,7 @@
     % \fill[figureblue!5] (current page.south west) rectangle (current page.north east);
     % \fill[figureblue, opacity=0.08] (current page.south west) rectangle (current page.north east);
     % \fill[figureblue, opacity=0.08] (current page.south west) -- (current page.north east) -- (current page.south east) -- cycle;
-    \node[anchor=center, inner sep=0pt, outer sep=0pt] at (current page.center) {\includegraphics[width=\paperwidth,height=\paperheight]{bg_title.pdf}};
+    \node[anchor=center, inner sep=0pt, outer sep=0pt] at (current page.center) {\includegraphics[width=\paperwidth,height=\paperheight]{bg_title.png}};
 
     % Logos at top
     \node[anchor=north west, xshift=0.8cm, yshift=-0.6cm] at (current page.north west) {\universitylogo[1.1cm]};
@@ -262,7 +262,7 @@
 
       \textbf{Faible} (Longitudinal, $A = 0{,}1\text{ eV/\AA}$) \\
       \vspace*{0.2ex}
-      \IfFileExists{CuZr-Low_snapshot.png}{%
+      \IfFileExists{assets/CuZr-Low_snapshot.png}{%
         \href{run:assets/CuZr-Low.mp4?autostart\string&noprogress}{\includegraphics[width=0.70\textwidth]{CuZr-Low_snapshot.png}}%
       }{%
         \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
@@ -274,7 +274,7 @@
 
       \textbf{Moyen} (Longitudinal, $A = 1\text{ eV/\AA}$) \\
       \vspace*{0.2ex}
-      \IfFileExists{CuZr-Med_snapshot.png}{%
+      \IfFileExists{assets/CuZr-Med_snapshot.png}{%
         \href{run:assets/CuZr-Med.mp4?autostart\string&noprogress}{\includegraphics[width=0.70\textwidth]{CuZr-Med_snapshot.png}}%
       }{%
         \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
@@ -286,7 +286,7 @@
 
       \textbf{Fort} (Transversal, $A = 1\text{ eV/\AA}$) \\
       \vspace*{0.2ex}
-      \IfFileExists{CuZr-Hi_snapshot.png}{%
+      \IfFileExists{assets/CuZr-Hi_snapshot.png}{%
         \href{run:assets/CuZr-Hi.mp4?autostart\string&noprogress}{\includegraphics[width=0.70\textwidth]{CuZr-Hi_snapshot.png}}%
       }{%
         \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
@@ -351,10 +351,10 @@
     \end{column}
     \begin{column}{0.5\textwidth}
       \centering
-      \IfFileExists{wave_propagation.mp4}{%
-        \href{run:assets/wave_propagation.mp4?autostart}{\includegraphics[width=\textwidth]{wave_propagation_snapshot.png}}%
+      \IfFileExists{assets/wave_propagation.mp4}{%
+        \href{run:assets/wave_propagation.mp4?autostart\string&noprogress}{\includegraphics[width=\textwidth]{wave_propagation_snapshot.png}}%
       }{%
-        \IfFileExists{wave_propagation_snapshot.png}{%
+        \IfFileExists{assets/wave_propagation_snapshot.png}{%
           \includegraphics[width=\textwidth]{wave_propagation_snapshot.png}%
         }{%
           \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
@@ -371,6 +371,7 @@
   \note{Voici la simulation dynamique en 1D. En haut, dans un réseau parfaitement ordonné, l'onde se propage librement à vitesse constante. En bas, en présence de désordre, on observe un piégeage rapide de l'énergie : le paquet d'ondes s'arrête et reste confiné au centre. C'est l'illustration visuelle directe de la localisation d'Anderson.}
 \end{frame}
 
+\iffalse
 % --- Slide 6: Les trois régimes de transport ondulatoire ---
 \begin{frame}{Les trois régimes de transport ondulatoire}
   \begin{columns}[c]
@@ -387,8 +388,8 @@
     \end{column}
     \begin{column}{0.48\textwidth}
       \centering
-      \IfFileExists{/Users/emericmellet/Desktop/Emeric/School/UPS/M1 SGM/Stage/Repo/report/figures/01_historical_context.pdf}{%
-        \includegraphics[width=\textwidth,keepaspectratio]{01_historical_context.pdf}%
+      \IfFileExists{figures/01_historical_context.png}{%
+        \includegraphics[width=\textwidth,keepaspectratio]{01_historical_context.png}%
       }{%
         \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
           \draw[rounded corners=4pt, fill=lightbg] (0,0) rectangle (5,3.5);
@@ -408,11 +409,9 @@
   \source{Hu et al. (2008) \cite{hu2008localization}}
 
 
-
-
-
   \note{Pour quantifier cela, on suit l'étalement de l'onde par sa variance. Ce graphique montre les trois régimes types : en vert, le régime balistique sans obstacle ; en bleu, le régime diffusif comparable à une marche aléatoire ; et en rouge, la localisation forte où l'onde cesse de s'étaler après un certain temps, formant une enveloppe stationnaire et figée.}
 \end{frame}
+\fi
 
 
 % --- Section 2: Modèles Analytiques ---
@@ -460,7 +459,7 @@
   \end{equation}
 
   \begin{alertblock}{Stabilisation par Carte de Riccati}
-    Évite la divergence numérique du produit de matrices. Variable $R_n = u_{n+1} / u_n$ :
+    Évite la divergence du produit de matrices. $R_n = u_{n+1} / u_n$ suit une récurrence non-linéaire :
     \begin{equation}
       R_n = 2 - \frac{m_n\omega^2}{K} - \frac{1}{R_{n-1}} \qquad (\text{raideurs uniformes } K_n = K)
     \end{equation}
@@ -569,8 +568,8 @@
   \begin{columns}[c]
     \begin{column}{0.58\textwidth}
       \centering
-      \IfFileExists{/Users/emericmellet/Desktop/Emeric/School/UPS/M1 SGM/Stage/Repo/report/figures/slides/10_participation_ratio_slides.pdf}{%
-        \includegraphics[width=\textwidth,height=0.70\textheight,keepaspectratio]{10_participation_ratio_slides.pdf}%
+      \IfFileExists{figures/01_participation_ratio.png}{%
+        \includegraphics[width=\textwidth,height=0.70\textheight,keepaspectratio]{01_participation_ratio.png}%
       }{%
         \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
           \draw[rounded corners=4pt, fill=lightbg] (0,0) rectangle (7,4.5);
@@ -579,7 +578,7 @@
           };
         \end{tikzpicture}
       }%
-      \captionof{figure}{DOS et PR pour $\sigma_\varepsilon = 0.1,\, 0.7,\, 1.4$}
+      \captionof{figure}{DOS et PR pour $\varepsilon_m = 0.1,\, 0.7,\, 1.4$}
     \end{column}
     \begin{column}{0.38\textwidth}
       \footnotesize
@@ -594,7 +593,7 @@
       \begin{block}{Taux de Participation $PR$}
         \begin{itemize}
           \item Modes $\omega > 2$ confinés.
-          \item Saturation par taille finie à basse fréquence.
+          \item Saturation par taille finie à basse fréquence (limite $2N/3$).
         \end{itemize}
       \end{block}
     \end{column}
@@ -630,6 +629,7 @@
     \begin{column}{0.48\textwidth}
       \begin{block}{Limites de Riccati}
         \begin{itemize}
+          \item Modèle linéarisé à basse fréquence.
           \item Accumulation d'erreurs de phase sur $\eta_n$.
           \item Biais du scaling ($\alpha \approx 2{,}5$ au lieu de $2{,}0$).
         \end{itemize}
@@ -661,8 +661,8 @@
     \end{column}
     \begin{column}{0.48\textwidth}
       \centering
-      \IfFileExists{/Users/emericmellet/Desktop/Emeric/School/UPS/M1 SGM/Stage/Repo/report/figures/slides/08_wavepacket_envelopes_slides.pdf}{%
-        \includegraphics[height=0.65\textheight,keepaspectratio]{08_wavepacket_envelopes_slides.pdf}%
+      \IfFileExists{figures/02_wavepacket_envelopes.png}{%
+        \includegraphics[height=0.65\textheight,keepaspectratio]{02_wavepacket_envelopes.png}%
       }{%
         \begin{tikzpicture}[draw=figureblue!50, fill=figureblue!5, thick]
           \draw[rounded corners=4pt, fill=lightbg] (0,0) rectangle (5,3.5);
@@ -711,10 +711,10 @@
     \end{column}
     \begin{column}{0.50\textwidth}
       \centering
-      \IfFileExists{/Users/emericmellet/Desktop/Emeric/School/UPS/M1 SGM/Stage/Repo/report/figures/slides/13_attenuation_methods_comparison_slides.pdf}{%
-        \includegraphics[height=0.70\textheight,keepaspectratio]{13_attenuation_methods_comparison_slides.pdf}%
+      \IfFileExists{figures/03_attenuation_methods_comparison.png}{%
+        \includegraphics[height=0.70\textheight,keepaspectratio]{03_attenuation_methods_comparison.png}%
       }{%
-        \includegraphics[height=0.70\textheight,keepaspectratio]{13_attenuation_methods_comparison.pdf}%
+        \includegraphics[height=0.70\textheight,keepaspectratio]{13_attenuation_methods_comparison.png}%
       }%
       \captionof{figure}{Comparaison des méthodes : $\xi(\omega)$}
     \end{column}
@@ -853,7 +853,7 @@
     % Visual background
     % \fill[figureteal!5] (current page.south west) rectangle (current page.north east);
     % \fill[figureteal, opacity=0.08] (current page.south west) -- (current page.north east) -- (current page.south east) -- cycle;
-    \node[anchor=center, inner sep=0pt, outer sep=0pt] at (current page.center) {\includegraphics[width=\paperwidth,height=\paperheight]{bg_questions.pdf}};
+    \node[anchor=center, inner sep=0pt, outer sep=0pt] at (current page.center) {\includegraphics[width=\paperwidth,height=\paperheight]{bg_questions.png}};
 
     % Logos at top
     \node[anchor=north west, xshift=0.8cm, yshift=-0.6cm] at (current page.north west) {\universitylogo[1.1cm]};

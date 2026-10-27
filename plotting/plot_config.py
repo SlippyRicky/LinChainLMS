@@ -41,6 +41,10 @@ def save_figure(name, fig=None, category=None, **kwargs):
     Saves the matplotlib figure to the appropriate destination directory
     based on the globally selected format ('pdf', 'png', or 'both').
     """
+    # Gracefully handle swapped arguments (fig, name)
+    if not isinstance(name, str) and isinstance(fig, str):
+        name, fig = fig, name
+
     if fig is None:
         fig = plt.gcf()
         
@@ -77,6 +81,7 @@ def save_figure(name, fig=None, category=None, **kwargs):
     # Print status message
     rel_paths = [os.path.relpath(p, REPO_ROOT) for p in saved_paths]
     print(f"--> Figure saved to: {', '.join(rel_paths)}")
+    return saved_paths[0] if saved_paths else None
 
 # --- Monkey-patching matplotlib.figure.Figure.savefig ---
 def custom_figure_savefig(self, fname, *args, **kwargs):

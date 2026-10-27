@@ -1,0 +1,27 @@
+L’étude de la propagation ondulatoire en milieu désordonné se situe à la frontière entre la mécanique des milieux continus et la dynamique des réseaux discrets. Classiquement, le transport est modélisé par des équations d’onde macroscopiques basées sur une hypothèse d’homogénéisation.
+
+Cependant, dès que le désordre structurel rompt l’invariance par translation, ce modèle effectif devient invalide et laisse place à des phénomènes d’interférences multiples qui, en une dimension, conduisent à la localisation d’Anderson.
+
+L’objectif de mon stage a été de confronter ces prédictions théoriques à la réalité de la simulation numérique. En m’appuyant sur le modèle de la chaîne harmonique unidimensionnelle, j’ai développé sous Python des outils permettant de manipuler les fluctuations stochastiques des masses et des raideurs. La simulation n’est pas ici un simple outil d’illustration, mais une méthode d’investigation permettant de sonder des régimes physiques où les solutions analytiques sont limitées.
+
+Dans une première partie, j’ai caractérisé le régime de localisation linéaire via le formalisme des matrices de transfert et l’analyse de l’exposant de Lyapunov. Avec une méthode Monte Carlo, j’ai pu quantifier la longueur de localisation et valider les lois d’échelle de Matsuda et Ishii [1]. Ce travail m’a permis de décrire la transition entre transport balistique et confinement exponentiel.
+
+Enfin, j’ai étendu cette étude à l’influence des potentiels anharmoniques. L’enjeu de cette seconde partie est de déterminer comment la non-linéarité entrave la diffusion de l’énergie par couplage de modes ou si elle engendre des structures dynamiques stables préservant la localisation. C’est dans ce passage du linéaire au non-linéaire que la puissance de la simulation numérique a été nécessaire pour vérifier ces hypothèses
+
+
+
+
+
+La propagation ondulatoire au sein de milieux désordonnés constitue un enjeu majeur de la physique contemporaine, à l’interface entre la mécanique des milieux continus et la dynamique des réseaux. Traditionnellement, le transport ondulatoire est modélisé par des équations d’onde macroscopiques dérivées d’une approche continue. Cependant, cette description repose sur une hypothèse d’homogénéisation valide seulement dans la limite des grandes longueurs d’onde, où le champ ondulatoire ne résout pas la microstructure du milieu.
+
+Dès lors que la longueur d’onde devient comparable à l’échelle caractéristique du milieu, ou qu’un désordre structurel vient rompre l’invariance par translation, le paradigme de l’homogénéisation s’effondre. La propagation subit des phénomènes d’interférences multiples qui, en dimension un, conduisent inexorablement à la localisation d’Anderson. Ce phénomène, caractérisé par un confinement spatial exponentiel des modes vibratoires, transforme la nature du transport énergétique : le milieu devient opaque à toute conduction stationnaire, indépendamment de toute dissipation d’énergie intrinsèque. L’étude de ces phénomènes remonte aux travaux fondamentaux de Philip W. Anderson en 1958 [1], qui a démontré que le désordre spatial peut stopper la diffusion des électrons, menant à une phase isolante. Bien que initialement formulée pour la mécanique quantique, cette notion de localisation d’Anderson s’applique à une vaste classe de phénomènesondulatoires [2].
+
+Malgré son caractère idéalisé, le cas unidimensionnel reste particulièrement pertinent. C’est en une dimension que les effets du désordre s’expriment avec la plus grande acuité : théoriquement, tous les états vibratoires sont localisés dès l’introduction d’une perturbation stochastique [3, 4].
+
+Dans ces systèmes, les ondes ne peuvent se propager sur de longues distances et se trouvent piégées dans des régions localisées, ce qui empêche le transport effectif de l’énergie à travers le milieu.
+
+Ce travail s’appuie sur le modèle de la chaîne harmonique unidimensionnelle. Ce paradigme, constitué de masses discrètes couplées par des potentiels élastiques, offre un cadre rigoureux pour l’étude de la dynamique des ondes. En manipulant précisément la distribution stochastique des masses et des raideurs, il est possible de relier, à partir des premiers principes, les lois régissant l’atténuation spatiale.
+
+Nous caractériserons d’abord le régime de localisation linéaire en nous appuyant sur le formalisme des matrices de transfert et l’analyse de l’exposant de Lyapunov. Nous chercherons à quantifier la longueur de localisation et à valider les lois d’échelle de Matsuda-Ishii par des approches de Monte Carlo.
+
+Puis, nous étendrons l’étude à l’influence des potentiels anharmoniques sur la dynamique du système afin d’étudier l’interaction entre les ondes et le désordre l'impact des non linearites sur la localisatoin.

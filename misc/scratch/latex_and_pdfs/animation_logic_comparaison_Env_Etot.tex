@@ -1,0 +1,195 @@
+\documentclass[11pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+% --- Syntax Highlighting for Python ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\begin{document}
+
+\section{Formalisme de la Simulation : Comparaison d'Enveloppes et Énergie Totale}
+
+Cette note détaille la structure physique et mathématique du script \texttt{sim\_paquet\_comparaison\_Env+Etot.py}. Contrairement aux approches par décomposition modale analytique, ce script résout l'équation du mouvement directement dans l'espace temporel via un schéma d'intégration symplectique. Il permet d'étudier la propagation de paquets d'ondes forcés, l'effet du désordre (localisation d'Anderson), ainsi que l'impact de conditions aux limites absorbantes.
+
+\subsection{Modèle Physique de la Chaîne Harmonique avec Désordre}
+
+Nous considérons une chaîne unidimensionnelle de $N$ masses identiques $m_n = m_0$ couplées par des ressorts harmoniques. Le déplacement de la masse $n$ à l'instant $t$ est noté $u_n(t)$. L'équation du mouvement pour chaque site s'écrit :
+\begin{equation}
+    m_0 \ddot{u}_n(t) = f_n^{\text{couplage}}(t) + f_n^{\text{ABC}}(t) + f_n^{\text{ext}}(t)
+\end{equation}
+
+\paragraph{1. Forces de couplage et conditions aux limites :}
+La chaîne est modélisée avec des conditions aux limites fixes aux extrémités virtuelles $n = -1$ et $n = N$ ($u_{-1} = u_N = 0$). Les forces de rappel élastique s'expriment par :
+\begin{align}
+    f_0^{\text{couplage}} &= -K_0 u_0 - K_1 (u_0 - u_1) \\
+    f_n^{\text{couplage}} &= -K_n (u_n - u_{n-1}) - K_{n+1} (u_n - u_{n+1}) \quad \text{pour } n \in [1, N-2] \\
+    f_{N-1}^{\text{couplage}} &= -K_{N-1} (u_{N-1} - u_{N-2}) - K_N u_{N-1}
+\end{align}
+
+\paragraph{2. Introduction du désordre :}
+Pour modéliser le désordre et étudier la localisation d'Anderson, les raideurs des ressorts $K_n$ sont perturbées de manière aléatoire autour de leur valeur nominale $k_0$ :
+\begin{equation}
+    K_n = k_0 \left(1 + \epsilon \left(\delta_n - \frac{1}{2}\right)\right)
+\end{equation}
+où $\epsilon$ représente l'intensité du désordre (\texttt{EPS\_DISORDER}) et les $\delta_n$ sont des variables aléatoires uniformément distribuées sur $[0, 1[$. Dans le cas ordonné, on pose $\epsilon = 0$, soit $K_n = k_0$ pour tout $n$.
+
+\paragraph{Implémentation Python du désordre :}
+\begin{lstlisting}[language=Python]
+k_bonds = np.ones(N+1) * k0
+if is_disordered:
+    for i in range(N+1):
+        k_bonds[i] = k0 * (1.0 + eps * (np.random.random() - 0.5))
+\end{lstlisting}
+
+\subsection{Excitation Source et Conditions aux Limites Absorbantes}
+
+\paragraph{1. Excitation harmonique pulsée :}
+L'onde est injectée par une force harmonique externe appliquée sur un unique site $n_e$ (soit proche du bord gauche $n_e = L_{\text{ABC}} + 50$, soit au centre $n_e = N/2$). Cette force subit une modulation temporelle gaussienne :
+\begin{equation}
+    f_n^{\text{ext}}(t) = \delta_{n, n_e} \cdot \exp\left(-\frac{(t - T_{\text{pulse}})^2}{2 \sigma_t^2}\right) \sin(\omega_{\text{ext}} t) \quad \text{pour } t < 2 T_{\text{pulse}}
+\end{equation}
+avec $\sigma_t = T_{\text{pulse}} / 6$. Pour $t \ge 2 T_{\text{pulse}}$, la force est nulle ($f_n^{\text{ext}} = 0$).
+
+\paragraph{2. Couches absorbantes (ABC) :}
+Pour éviter les réflexions parasites aux extrémités de la chaîne finie, une couche d'amortissement visqueux (\textit{Absorbing Boundary Conditions}) de largeur $L_{\text{ABC}}$ est implémentée à chaque extrémité. La force dissipatrice est proportionnelle à la vitesse :
+\begin{equation}
+    f_n^{\text{ABC}}(t) = -\gamma_n \dot{u}_n(t)
+\end{equation}
+Le profil d'amortissement $\gamma_n$ augmente quadratiquement vers les bords extérieurs :
+\begin{equation}
+    \gamma_n = \begin{cases}
+        \gamma_{\text{max}} \left(\frac{L_{\text{ABC}} - n}{L_{\text{ABC}}}\right)^2 & \text{si } 0 \le n < L_{\text{ABC}} \\
+        \gamma_{\text{max}} \left(\frac{L_{\text{ABC}} - (N - 1 - n)}{L_{\text{ABC}}}\right)^2 & \text{si } N - L_{\text{ABC}} \le n < N \\
+        0 & \text{sinon}
+    \end{cases}
+\end{equation}
+
+\paragraph{Implémentation Python de la force et de l'amortissement :}
+\begin{lstlisting}[language=Python]
+g_profile = np.zeros(N)
+for i in range(L_ABC):
+    g_profile[i] = gamma_max * ((L_ABC - i) / L_ABC)**2
+    g_profile[N-1-i] = gamma_max * ((L_ABC - i) / L_ABC)**2
+
+def get_a(u_c, v_c, t_c):
+    f = np.zeros(N)
+    for i in range(1, N-1):
+        f[i] = -k_bonds[i]*(u_c[i]-u_c[i-1]) - k_bonds[i+1]*(u_c[i]-u_c[i+1])
+    f[0] = -k_bonds[0]*u_c[0] - k_bonds[1]*(u_c[0]-u_c[1])
+    f[N-1] = -k_bonds[N-1]*(u_c[N-1]-u_c[N-2]) - k_bonds[N]*u_c[N-1]
+    for i in range(N): f[i] -= g_profile[i] * v_c[i]
+    if t_c < 2 * T_PULSE:
+        amp = np.exp(-(t_c - T_PULSE)**2 / (2 * (T_PULSE/6)**2))
+        f[node] += 1.0 * amp * np.sin(omega_ext * t_c)
+    return f / m0
+\end{lstlisting}
+
+\subsection{Schéma d'Intégration Temporelle : Algorithme de Verlet à Vitesses}
+
+Le système d'équations différentielles ordinaires du second ordre est intégré numériquement en utilisant l'algorithme de **Verlet à Vitesses** (\textit{Velocity Verlet}). Ce schéma symplectique d'ordre 2 est particulièrement robuste pour la conservation géométrique de l'espace des phases et de l'énergie. 
+
+Le passage de l'état $(\mathbf{u}(t), \mathbf{v}(t))$ à l'état $(\mathbf{u}(t+\Delta t), \mathbf{v}(t+\Delta t))$ s'effectue en quatre étapes :
+\begin{enumerate}
+    \item \textbf{Vitesse à demi-pas :}
+    \begin{equation}
+        \mathbf{v}\left(t + \frac{\Delta t}{2}\right) = \mathbf{v}(t) + \frac{\Delta t}{2} \mathbf{a}(t)
+    \end{equation}
+    \item \textbf{Position au pas suivant :}
+    \begin{equation}
+        \mathbf{u}(t + \Delta t) = \mathbf{u}(t) + \Delta t \mathbf{v}\left(t + \frac{\Delta t}{2}\right)
+    \end{equation}
+    \item \textbf{Nouvelle accélération (avec amortissement semi-implicite) :}
+    \begin{equation}
+        \mathbf{a}(t + \Delta t) = \mathbf{g}\left(\mathbf{u}(t + \Delta t), \mathbf{v}\left(t + \frac{\Delta t}{2}\right), t + \Delta t\right)
+    \end{equation}
+    \textit{Note : La force d'amortissement visqueux utilise la vitesse à demi-pas $\mathbf{v}\left(t + \frac{\Delta t}{2}\right)$ pour garantir la stabilité inconditionnelle du schéma vis-à-vis de la dissipation.}
+    \item \textbf{Vitesse au pas suivant :}
+    \begin{equation}
+        \mathbf{v}(t + \Delta t) = \mathbf{v}\left(t + \frac{\Delta t}{2}\right) + \frac{\Delta t}{2} \mathbf{a}(t + \Delta t)
+    \end{equation}
+\end{enumerate}
+
+\paragraph{Implémentation Python de la boucle d'intégration :}
+\begin{lstlisting}[language=Python]
+a = get_a(u, v, 0.0)
+for i in range(STEPS):
+    t = i * DT
+    v_half = v + 0.5 * DT * a
+    u += v_half * DT
+    
+    # Enregistrement de l'enveloppe maximale
+    for j in range(N):
+        abs_u = abs(u[j])
+        if abs_u > envelope[j]: envelope[j] = abs_u
+        
+    a = get_a(u, v_half, t + DT)
+    v = v_half + 0.5 * DT * a
+\end{lstlisting}
+
+\subsection{Diagnostics Physiques : Enveloppe et Énergie Totale}
+
+Afin de caractériser le comportement dynamique et le transport d'énergie, deux indicateurs physiques sont calculés en temps réel lors de l'intégration :
+
+\paragraph{1. Enveloppe spatiale maximale :}
+L'enveloppe $\mathcal{E}_n$ représente l'amplitude absolue maximale atteinte par le déplacement sur chaque site $n$ sur toute la durée de la simulation :
+\begin{equation}
+    \mathcal{E}_n = \max_{t \in [0, t_{\text{fin}}]} |u_n(t)|
+\end{equation}
+Elle est représentée par les pointillés symétriques sur les figures. Dans le cas ordonné, l'enveloppe s'étend uniformément sur toute la chaîne. Dans le cas désordonné, l'enveloppe décroît exponentiellement à partir de la source, manifestant de façon éclatante la \textbf{localisation d'Anderson}.
+
+\paragraph{2. Énergie totale de la chaîne :}
+L'énergie mécanique totale $E_{\text{tot}}(t)$ est la somme de l'énergie cinétique $E_{\text{c}}$ et de l'énergie potentielle élastique $E_{\text{p}}$ :
+\begin{equation}
+    E_{\text{tot}}(t) = \frac{1}{2} m_0 \sum_{n=0}^{N-1} \dot{u}_n(t)^2 + \frac{1}{2} K_0 u_0(t)^2 + \sum_{n=1}^{N-1} \frac{1}{2} K_n \left(u_n(t) - u_{n-1}(t)\right)^2 + \frac{1}{2} K_N u_{N-1}(t)^2
+\end{equation}
+
+\paragraph{Implémentation Python de l'énergie :}
+\begin{lstlisting}[language=Python]
+ek = 0.5 * m0 * np.sum(v**2)
+ep = 0.5 * k_bonds[0] * u[0]**2
+for j in range(1, N): 
+    ep += 0.5 * k_bonds[j] * (u[j]-u[j-1])**2
+ep += 0.5 * k_bonds[N] * u[N-1]**2
+e_hist[idx] = ek + ep
+\end{lstlisting}
+
+Le tracé de $E_{\text{tot}}(t)$ met en évidence trois phases distinctes :
+\begin{itemize}
+    \item \textbf{Phase d'injection ($t < 2T_{\text{pulse}}$) :} L'énergie totale augmente sous l'effet du forçage extérieur.
+    \item \textbf{Phase de propagation libre :} L'énergie reste constante tant que le paquet d'ondes voyage au sein de la région non amortie.
+    \item \textbf{Phase de dissipation / plateau :}
+    \begin{itemize}
+        \item Dans le cas \textbf{ordonné}, le paquet d'ondes atteint les couches absorbantes (ABC) et l'énergie totale chute exponentiellement vers zéro.
+        \item Dans le cas \textbf{désordonné}, la localisation d'Anderson empêche le paquet d'ondes de se propager jusqu'aux bords. L'énergie reste piégée autour de la source, conduisant à un \textbf{plateau d'énergie totale constant} à long terme, ce qui prouve l'absence complète de transport thermique/mécanique.
+    \end{itemize}
+\end{itemize}
+
+\end{document}

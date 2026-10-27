@@ -53,13 +53,16 @@ def compute_modes(N, eps, is_diatomic=False):
     
     if is_diatomic:
         d_perf = np.zeros(N)
+        e_perf = np.zeros(N-1)
         for i in range(N):
             m_perf = m0[i]
             kl = K_arr[i-1] if i > 0 else 0
             kr = K_arr[i] if i < N-1 else 0
             d_perf[i] = (kl + kr) / m_perf
+            if i < N-1:
+                e_perf[i] = -K_arr[i] / np.sqrt(m0[i] * m0[i+1])
             
-        eigvals_perf, _ = eigh_tridiagonal(d_perf, e)
+        eigvals_perf, _ = eigh_tridiagonal(d_perf, e_perf)
         w_perf = np.sqrt(np.clip(eigvals_perf, 0, None))
     
     prefix = "diatomic_" if is_diatomic else ""

@@ -1,0 +1,111 @@
+\documentclass[11pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+% --- Syntax Highlighting for Python ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\begin{document}
+
+\section{Formalisme de l'Animation : Dynamique des Paquets d'Ondes}
+
+Cette note détaille la structure mathématique du script \texttt{wavepacket\_animation.py}. Elle explicite le passage de l'équation du mouvement discrète à la simulation instationnaire par décomposition modale.
+
+\subsection{Symétrisation de l'Opérateur Dynamique}
+
+Pour une chaîne de $N$ masses, l'équation du mouvement s'écrit sous forme matricielle :
+\begin{equation}
+    \mathbf{M} \mathbf{\ddot{u}} + \mathbf{K} \mathbf{u} = 0
+\end{equation}
+où $\mathbf{M} = \text{diag}(m_n)$ et $\mathbf{K}$ est la matrice de raideur tridiagonale. Pour utiliser les solveurs de valeurs propres optimisés (\texttt{eigh}), nous devons transformer ce problème en un système symétrique standard.
+
+\paragraph{Changement de variable :} 
+On pose $\mathbf{v} = \mathbf{M}^{1/2} \mathbf{u}$. L'équation devient :
+\begin{equation}
+    \mathbf{\ddot{v}} + \mathbf{D} \mathbf{v} = 0, \quad \text{avec } \mathbf{D} = \mathbf{M}^{-1/2} \mathbf{K} \mathbf{M}^{-1/2}
+\end{equation}
+La matrice dynamique $\mathbf{D}$ est symétrique. Ses éléments sont :
+\begin{equation}
+    D_{n,n} = \frac{K_n + K_{n-1}}{m_n}, \quad D_{n,n+1} = -\frac{K_n}{\sqrt{m_n m_{n+1}}}
+\end{equation}
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python]
+# Construction de la matrice D symetrique
+for i in range(N):
+    D[i, i] = (kl + kr) / m[i]
+    if i < N-1:
+        off = -K / np.sqrt(m[i] * m[i+1])
+        D[i, i+1] = D[i+1, i] = off
+\end{lstlisting}
+
+\subsection{Évolution Temporelle par Décomposition Modale}
+
+La solution générale du système est une superposition des modes propres $\mathbf{\Psi}_k$ oscillant aux pulsations $\omega_k$. Pour une condition initiale sans vitesse ($\mathbf{\dot{u}}(0) = 0$), le déplacement au temps $t$ est :
+\begin{equation}
+    \mathbf{v}(t) = \sum_{k=1}^N \alpha_k \mathbf{\Psi}_k \cos(\omega_k t)
+\end{equation}
+
+\paragraph{Projection Spectrale :}
+Les coefficients $\alpha_k$ sont obtenus en projetant la condition initiale $\mathbf{v}(0)$ sur la base des vecteurs propres :
+\begin{equation}
+    \boldsymbol{\alpha} = \mathbf{\Psi}^T \mathbf{v}(0)
+\end{equation}
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python]
+# Resolution spectrale
+omega2, Psi = eigh(D)
+omega = np.sqrt(np.clip(omega2, 1e-9, None))
+
+# Projection et evolution
+coeffs = Psi.T @ v0
+v_t = Psi @ (coeffs * np.cos(omega * t))
+\end{lstlisting}
+
+\subsection{Synthèse du Paquet d'Ondes}
+
+La condition initiale est un paquet d'ondes gaussien localisé autour d'un atome central $n_c$. Sa forme mathématique est définie par le produit d'une enveloppe et d'une porteuse :
+\begin{equation}
+    u_n(0) = \exp\left( -\frac{(n-n_c)^2}{2\sigma^2} \right) \cdot \cos(q_0 (n-n_c))
+\end{equation}
+où $\sigma$ dicte l'étalement spatial et $q_0$ est le vecteur d'onde central (fréquence spatiale).
+
+\paragraph{Implémentation Python :}
+\begin{lstlisting}[language=Python]
+# Definition de l'etat initial
+u0 = np.exp(-(X - center)**2 / (2 * sigma**2))
+if q0 > 0:
+    u0 *= np.cos(q0 * (X - center))
+u0 /= np.linalg.norm(u0) # Normalisation de l'energie totale
+\end{lstlisting}
+
+\end{document}

@@ -12,8 +12,14 @@ output/
 *.run.xml
 *.fdb_latexmk
 *.fls
-*.synctex.gz
+*.synctex*
 *.xdv
+*.nav
+*.snm
+*.vrb
+
+# Allow static template PDF
+!report/title_page/*.pdf
 
 # Python environment & cache
 .venv/
@@ -27,4 +33,3 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
-.agents/

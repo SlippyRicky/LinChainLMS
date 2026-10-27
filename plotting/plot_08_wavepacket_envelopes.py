@@ -19,7 +19,6 @@ plt.rcParams.update({
 })
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(script_dir, "../../../../"))
 import plot_config
 fig_dir = os.path.join(plot_config.FIGURES_ROOT, '02_linear_disorder')
 # Directory creation handled by plot_config
